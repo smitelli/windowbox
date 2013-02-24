@@ -21,6 +21,9 @@ class Post(Base):
     def __repr__(self):
         return '<Post {}>'.format(self.id)
 
+    def get_image(self):
+        return ImageData.query.filter(ImageData.image_id == self.id).first()
+
 
 class ImageData(Base):
     __tablename__ = 'image_data'
