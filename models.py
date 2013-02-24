@@ -85,7 +85,7 @@ class ImageData(Base):
         else:
             size = old_width, old_height
 
-        im = im.transform(size, Image.EXTENT, crop)
+        im = im.transform(size, Image.EXTENT, crop, Image.BICUBIC)
 
         im_io = StringIO()
         im.save(im_io, 'JPEG', quality=100)
