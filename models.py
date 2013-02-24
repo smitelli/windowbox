@@ -22,7 +22,7 @@ class Post(Base):
         return '<Post {}>'.format(self.id)
 
     def get_image(self):
-        return ImageData.query.filter(ImageData.image_id == self.id).first()
+        return ImageData.query.filter(ImageData.image_id == self.image_id).first()
 
 
 class ImageData(Base):

@@ -1,0 +1,7 @@
+<h1>Windowbox</h1>
+
+<ul>
+    {% for post in posts %}
+        <li><a href="{{ url_for('single_post', post_id=post.id) }}">{{ post.message }}</a></li>
+    {% endfor %}
+</ul>

@@ -1,26 +1,27 @@
-from flask import Flask, make_response
+from flask import Flask, render_template, make_response
 from database import db_session
 from models import Post
 
 app = Flask(__name__)
 
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+@app.route('/')
+def index():
+    posts = Post.query.order_by(Post.id).all()
+
+    return render_template('index.html', posts=posts)
 
 
 @app.route('/post/<int:post_id>')
 def single_post(post_id):
     post = Post.query.filter(Post.id == post_id).first()
 
-    return post.message + '<br><img src="/image/' + str(post.image_id) + '">'
+    return render_template('single_post.html', post=post)
 
 
 @app.route('/image/<int:post_id>')
 def image_data(post_id):
-    post = Post.query.filter(Post.id == post_id).first()
-    image = post.get_image()
+    image = Post.query.filter(Post.id == post_id).first().get_image()
 
     response = make_response(image.data)
     response.headers['Content-Type'] = image.mime_type
