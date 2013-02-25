@@ -1,9 +1,16 @@
+from re import match
 from flask import Flask, render_template, make_response, abort
 from jinja2.exceptions import UndefinedError
-from re import match
-from models import Post
 
 app = Flask(__name__)
+app.config.from_object('windowboxconfig')
+
+from windowbox.models.post import Post
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return 'You screwed up!', 404
 
 
 @app.route('/')
@@ -39,11 +46,3 @@ def image_data(post_id, size):
         return response
     except (AttributeError, UndefinedError):
         abort(404)
-
-
-@app.errorhandler(404)
-def page_not_found(error):
-    return 'You screwed up!', 404
-
-if __name__ == '__main__':
-    app.run(debug=True)

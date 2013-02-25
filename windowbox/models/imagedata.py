@@ -1,36 +1,7 @@
 import Image
 import sqlalchemy as sa
-import sqlalchemy.orm as orm
-
 from StringIO import StringIO
-from database import Base, sess
-
-
-class Post(Base):
-    __tablename__ = 'posts'
-    post_id = sa.Column('id', sa.Integer, primary_key=True)
-    image_id = sa.Column(sa.Integer, sa.ForeignKey('image_data.image_id'))
-    timestamp = sa.Column(sa.Integer)
-    message = sa.Column(sa.String(255))
-    ua = sa.Column(sa.String(255))
-
-    def __repr__(self):
-        return '<Post id={}>'.format(self.post_id)
-
-    @classmethod
-    def get_all(cls):
-        return sess.query(cls).order_by(cls.post_id).all()
-
-    @classmethod
-    def get_by_id(cls, post_id):
-        return sess.query(cls).filter(cls.post_id == post_id).first()
-
-    def get_adjacent(self):
-        cls = self.__class__
-        prev = sess.query(cls).filter(cls.post_id < self.post_id).order_by(sa.desc(cls.post_id)).first()
-        next = sess.query(cls).filter(cls.post_id > self.post_id).order_by(cls.post_id).first()
-
-        return (prev, next)
+from . import Base
 
 
 class ImageData(Base):
@@ -38,8 +9,6 @@ class ImageData(Base):
     image_id = sa.Column(sa.Integer, primary_key=True)
     mime_type = sa.Column(sa.String(64))
     data = sa.Column(sa.LargeBinary)
-
-    post = orm.relationship(Post, backref=orm.backref('image', uselist=False))
 
     def __repr__(self):
         return '<ImageData image_id={}>'.format(self.image_id)
@@ -80,5 +49,3 @@ class ImageData(Base):
         im_io = StringIO()
         im.save(im_io, 'JPEG', quality=100)
         return im_io.getvalue()
-
-Base.metadata.create_all()
