@@ -1,5 +1,9 @@
 <h2>{{ post.message }}</h2>
 
-<p><a href="/">Back.</a></p>
+<p>
+    {% if previous %}<a href="{{ url_for('single_post', post_id=previous.post_id) }}">Prev</a> | {% endif %}
+    <a href="/">Index</a>
+    {% if next %} | <a href="{{ url_for('single_post', post_id=next.post_id) }}">Next</a>{% endif %}
+</p>
 
-<p><img src="{{ url_for('image_data', post_id=post.id, size='500x') }}"></p>
+<p><img src="{{ url_for('image_data', post_id=post.post_id, size='500x') }}"></p>

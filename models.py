@@ -1,58 +1,48 @@
 import Image
-from StringIO import StringIO
+import sqlalchemy as sa
+import sqlalchemy.orm as orm
 
-from sqlalchemy import Column, Integer, String, LargeBinary
-from database import Base
+from StringIO import StringIO
+from database import Base, sess
 
 
 class Post(Base):
     __tablename__ = 'posts'
-    id = Column('id', Integer, primary_key=True)
-    image_id = Column('image_id', Integer)
-    timestamp = Column('timestamp', Integer)
-    message = Column('message', String(255))
-    ua = Column('ua', String(255))
-
-    def __init__(self, id=None, image_id=None, timestamp=None, message=None,
-                 ua=None):
-        self.id = id
-        self.image_id = image_id
-        self.timestamp = timestamp
-        self.message = message
-        self.ua = ua
+    post_id = sa.Column('id', sa.Integer, primary_key=True)
+    image_id = sa.Column(sa.Integer, sa.ForeignKey('image_data.image_id'))
+    timestamp = sa.Column(sa.Integer)
+    message = sa.Column(sa.String(255))
+    ua = sa.Column(sa.String(255))
 
     def __repr__(self):
-        return '<Post id={}>'.format(self.id)
+        return '<Post id={}>'.format(self.post_id)
 
     @classmethod
     def get_all(cls):
-        return cls.query.order_by(cls.id).all()
+        return sess.query(cls).order_by(cls.post_id).all()
 
     @classmethod
     def get_by_id(cls, post_id):
-        return cls.query.filter(cls.id == post_id).first()
+        return sess.query(cls).filter(cls.post_id == post_id).first()
 
-    def get_image(self):
-        return ImageData.get_by_id(self.image_id)
+    def get_adjacent(self):
+        cls = self.__class__
+        prev = sess.query(cls).filter(cls.post_id < self.post_id).order_by(sa.desc(cls.post_id)).first()
+        next = sess.query(cls).filter(cls.post_id > self.post_id).order_by(cls.post_id).first()
+
+        return (prev, next)
 
 
 class ImageData(Base):
     __tablename__ = 'image_data'
-    image_id = Column('image_id', Integer, primary_key=True)
-    mime_type = Column('mime_type', String(64))
-    data = Column('data', LargeBinary)
+    image_id = sa.Column(sa.Integer, primary_key=True)
+    mime_type = sa.Column(sa.String(64))
+    data = sa.Column(sa.LargeBinary)
 
-    def __init__(self, image_id=None, mime_type=None, data=None):
-        self.image_id = image_id
-        self.mime_type = mime_type
-        self.data = data
+    post = orm.relationship(Post, backref=orm.backref('image', uselist=False))
 
     def __repr__(self):
         return '<ImageData image_id={}>'.format(self.image_id)
-
-    @classmethod
-    def get_by_id(cls, image_id):
-        return cls.query.filter(cls.image_id == image_id).first()
 
     def get_resized_data(self, width=None, height=None):
         width, height = int(width or 0), int(height or 0)
@@ -90,3 +80,5 @@ class ImageData(Base):
         im_io = StringIO()
         im.save(im_io, 'JPEG', quality=100)
         return im_io.getvalue()
+
+Base.metadata.create_all()

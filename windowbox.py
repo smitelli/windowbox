@@ -1,6 +1,6 @@
 from flask import Flask, render_template, make_response, abort
+from jinja2.exceptions import UndefinedError
 from re import match
-from database import db_session
 from models import Post
 
 app = Flask(__name__)
@@ -15,40 +15,35 @@ def index():
 
 @app.route('/post/<int:post_id>')
 def single_post(post_id):
-    post = Post.get_by_id(post_id)
+    try:
+        post = Post.get_by_id(post_id)
+        previous, next = post.get_adjacent()
 
-    if post is None:
+        return render_template('single_post.html', post=post, previous=previous, next=next)
+    except (AttributeError, UndefinedError):
         abort(404)
-
-    return render_template('single_post.html', post=post)
 
 
 @app.route('/image/<int:post_id>', defaults={'size': ''})
 @app.route('/image/<int:post_id>/<size>')
 def image_data(post_id, size):
-    post = Post.get_by_id(post_id)
-
-    if post is None:
-        abort(404)
-
-    image = post.get_image()
-
     matches = match('(\d*)x(\d*)', size)
     w, h = matches.groups() if matches else (None, None)
 
-    response = make_response(image.get_resized_data(width=w, height=h))
-    response.headers['Content-Type'] = image.mime_type
-    return response
+    try:
+        post = Post.get_by_id(post_id)
+        image = post.image
+
+        response = make_response(image.get_resized_data(width=w, height=h))
+        response.headers['Content-Type'] = image.mime_type
+        return response
+    except (AttributeError, UndefinedError):
+        abort(404)
 
 
 @app.errorhandler(404)
 def page_not_found(error):
     return 'You screwed up!', 404
-
-
-@app.teardown_request
-def shutdown_session(exception=None):
-    db_session.remove()
 
 if __name__ == '__main__':
     app.run(debug=True)
