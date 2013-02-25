@@ -16,21 +16,22 @@ class ImageData(Base):
     def get_resized_data(self, width=None, height=None):
         width, height = int(width or 0), int(height or 0)
 
-        im = Image.open(StringIO(self.data))
+        im = self.data_to_image()
         old_width, old_height = im.size
-        crop = 0, 0, old_width, old_height
 
         if width and height:
             fx = float(old_width) / width
             fy = float(old_height) / height
             f = fx if fx < fy else fy
+            crop_size = int(width * f), int(height * f)
 
-            crop_width, crop_height = int(width * f), int(height * f)
-
+            crop_width, crop_height = crop_size
             trim_x = (old_width - crop_width) / 2
             trim_y = (old_height - crop_height) / 2
 
             crop = trim_x, trim_y, crop_width + trim_x, crop_height + trim_y
+            im = im.transform(crop_size, Image.EXTENT, crop)
+
             size = width, height
 
         elif width and not height:
@@ -44,8 +45,21 @@ class ImageData(Base):
         else:
             size = old_width, old_height
 
-        im = im.transform(size, Image.EXTENT, crop, Image.BICUBIC)
+        im = im.resize(size, Image.ANTIALIAS)
 
-        im_io = StringIO()
-        im.save(im_io, 'JPEG', quality=100)
-        return im_io.getvalue()
+        return self.image_to_data(im)
+
+    def data_to_image(self):
+        return Image.open(StringIO(self.data))
+
+    def image_to_data(self, image):
+        io = StringIO()
+
+        if self.mime_type == 'image/png':
+            image.save(io, 'PNG', optimize=True)
+        elif self.mime_type == 'image/gif':
+            image.save(io, 'GIF')
+        else:
+            image.save(io, 'JPEG', quality=95)
+
+        return io.getvalue()
