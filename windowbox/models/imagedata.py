@@ -1,7 +1,7 @@
 import Image
 import sqlalchemy as sa
 from StringIO import StringIO
-from . import Base
+from windowbox.database import Base
 
 
 class ImageData(Base):
@@ -16,7 +16,7 @@ class ImageData(Base):
     def get_resized_data(self, width=None, height=None):
         width, height = int(width or 0), int(height or 0)
 
-        im = self.data_to_image()
+        im = self._data_to_image()
         old_width, old_height = im.size
 
         if width and height:
@@ -47,12 +47,12 @@ class ImageData(Base):
 
         im = im.resize(size, Image.ANTIALIAS)
 
-        return self.image_to_data(im)
+        return self._image_to_data(im)
 
-    def data_to_image(self):
+    def _data_to_image(self):
         return Image.open(StringIO(self.data))
 
-    def image_to_data(self, image):
+    def _image_to_data(self, image):
         io = StringIO()
 
         if self.mime_type == 'image/png':

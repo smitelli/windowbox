@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
-from . import Base, sess
+from windowbox.database import Base, sess
 from windowbox.models.imagedata import ImageData
 
 
