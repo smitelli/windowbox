@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
+from datetime import datetime
 from windowbox.database import Base, sess
 from windowbox.models.imagedata import ImageData
 
@@ -31,3 +32,8 @@ class Post(Base):
         next = sess.query(cls).filter(cls.post_id > self.post_id).order_by(cls.post_id).first()
 
         return (prev, next)
+
+    @property
+    def readable_date(self):
+        ts = datetime.fromtimestamp(self.timestamp)
+        return ts.strftime('%Y-%m-%d %H:%M:%S')
