@@ -4,7 +4,7 @@ from jinja2.exceptions import UndefinedError
 from windowbox.models.post import Post
 
 
-class ImageDataHandler():
+class ImageHandler():
     def get(self, post_id=None, size=None):
         matches = match('(\d*)x(\d*)', size or '')
         w, h = matches.groups() if matches else (None, None)

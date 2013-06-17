@@ -1,5 +1,5 @@
 virtualenv==1.8.4
 virtualenvwrapper==3.6
-Flask==0.9
-SQLAlchemy==0.8.0b2
+Flask==0.10.1
+SQLAlchemy==0.8.1
 PIL==1.1.7

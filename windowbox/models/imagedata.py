@@ -1,6 +1,6 @@
+from StringIO import StringIO
 import Image
 import sqlalchemy as sa
-from StringIO import StringIO
 from windowbox.database import Base
 
 

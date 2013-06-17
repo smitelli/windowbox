@@ -3,7 +3,7 @@ from jinja2.exceptions import UndefinedError
 from windowbox.models.post import Post
 
 
-class SinglePostHandler():
+class PostHandler():
     def get(self, post_id=None):
         try:
             post = Post.get_by_id(post_id)

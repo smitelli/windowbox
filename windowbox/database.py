@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
-from windowboxconfig import DATABASE_CONFIG
+from windowbox.configs.base import DATABASE_CONFIG
 
 engine = create_engine(DATABASE_CONFIG['URI'], **DATABASE_CONFIG['KWARGS'])
 Base = declarative_base(bind=engine)

@@ -1,6 +1,6 @@
+from datetime import datetime
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
-from datetime import datetime
 from windowbox.database import Base, sess
 from windowbox.models.imagedata import ImageData
 
