@@ -13,6 +13,9 @@ class ImageHandler():
             post = Post.get_by_id(post_id)
             image = post.image
 
+            #TODO
+            image.get_exif_data()
+
             response = make_response(image.get_resized_data(width=w, height=h))
             response.headers['Content-Type'] = image.mime_type
             return response
