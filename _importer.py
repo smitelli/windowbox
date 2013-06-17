@@ -1,33 +1,37 @@
 import csv
 import os
 
-from sqlalchemy import Table, Column, Integer, String, LargeBinary
-from sqlsoup import SQLSoup
+from sqlalchemy import create_engine, Table, Column, MetaData, Integer, String, LargeBinary
 
+
+_path = os.path.abspath(os.path.dirname(__file__))
 
 def get_image_path(id):
-    ipath = '_importable/originals/{}.jpg'.format(id)
+    ipath = os.path.join(_path, '_importable/originals/{}.jpg'.format(id))
     if os.path.isfile(ipath):
         return ('image/jpeg', ipath)
 
-    ipath = '_importable/originals/{}.png'.format(id)
+    ipath = os.path.join(_path, '_importable/originals/{}.png'.format(id))
     if os.path.isfile(ipath):
         return ('image/png', ipath)
 
-    ipath = '_importable/posts/{}.jpg'.format(id)
+    ipath = os.path.join(_path, '_importable/posts/{}.jpg'.format(id))
     if os.path.isfile(ipath):
         return ('image/jpeg', ipath)
 
-    ipath = '_importable/posts/{}.png'.format(id)
+    ipath = os.path.join(_path, '_importable/posts/{}.png'.format(id))
     if os.path.isfile(ipath):
         return ('image/png', ipath)
 
     return (None, None)
 
-db = SQLSoup('sqlite:///windowbox.sqlite')
+fn = os.path.join(_path, 'db.sqlite')
+fn = "/home/ssmitelli/db.sqlite"
+engine = create_engine('sqlite:///{}'.format(fn), echo=False)
+metadata = MetaData()
 
 # Post table schema
-posts = Table('posts', db._metadata,
+posts = Table('posts', metadata,
     Column('id', Integer, primary_key=True),
     Column('image_id', Integer),
     Column('timestamp', Integer),
@@ -35,19 +39,17 @@ posts = Table('posts', db._metadata,
     Column('ua', String(255)))
 
 # Image data schema
-image_data = Table('image_data', db._metadata,
+image_data = Table('image_data', metadata,
     Column('image_id', Integer, primary_key=True),
     Column('mime_type', String(64)),
     Column('data', LargeBinary))
 
 # Ensure tables exist, create if not
-if not db.engine.has_table('posts'):
-    posts.create()
+metadata.create_all(engine)
 
-if not db.engine.has_table('image_data'):
-    image_data.create()
+session = engine.connect()
 
-data = csv.reader(open('_importable/mob1_posts.csv'))
+data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
 fields = ['id', 'image_id', 'timestamp', 'message', 'ua']
 
 for row in data:
@@ -59,7 +61,7 @@ for row in data:
         item[name] = value.strip()
 
     print 'Inserting post #{}...'.format(item['id'])
-    db.posts.insert(**item)
+    session.execute(posts.insert().values(**item))
 
     # Insert image data from the filesystem
     itype, ipath = get_image_path(item['image_id'])
@@ -72,6 +74,6 @@ for row in data:
             'data': f.read()}
 
         print '    (image #{})'.format(item['image_id'])
-        db.image_data.insert(**data)
+        session.execute(image_data.insert().values(**data))
 
-db.commit()
+session.close()

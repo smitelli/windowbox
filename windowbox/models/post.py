@@ -1,20 +1,10 @@
 from datetime import datetime
 import sqlalchemy as sa
-import sqlalchemy.orm as orm
-from windowbox.database import Base, sess
-from windowbox.models.imagedata import ImageData
+from windowbox.database import sess
+from windowbox.models import PostSchema
 
 
-class Post(Base):
-    __tablename__ = 'posts'
-    post_id = sa.Column('id', sa.Integer, primary_key=True)
-    image_id = sa.Column(sa.Integer, sa.ForeignKey('image_data.image_id'))
-    timestamp = sa.Column(sa.Integer)
-    message = sa.Column(sa.String(255))
-    ua = sa.Column(sa.String(255))
-
-    image = orm.relationship(ImageData, backref=orm.backref('post', uselist=False))
-
+class Post(PostSchema):
     def __repr__(self):
         return '<Post id={}>'.format(self.post_id)
 

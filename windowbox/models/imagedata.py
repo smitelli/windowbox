@@ -1,15 +1,9 @@
 from StringIO import StringIO
 import Image
-import sqlalchemy as sa
-from windowbox.database import Base
+from windowbox.models import ImageDataSchema
 
 
-class ImageData(Base):
-    __tablename__ = 'image_data'
-    image_id = sa.Column(sa.Integer, primary_key=True)
-    mime_type = sa.Column(sa.String(64))
-    data = sa.Column(sa.LargeBinary)
-
+class ImageData(ImageDataSchema):
     def __repr__(self):
         return '<ImageData image_id={}>'.format(self.image_id)
 
