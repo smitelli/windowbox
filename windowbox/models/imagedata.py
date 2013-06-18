@@ -17,6 +17,37 @@ class ImageData(ImageDataSchema):
         width, height = int(width or 0), int(height or 0)
 
         im = self._data_to_image()
+        exif = self.get_exif_data(im)
+
+        if exif and 'Orientation' in exif:
+            im = self.rotate_data(im, exif['Orientation'])
+
+        im = self.resize_data(im, width, height)
+        return self._image_to_data(im)
+
+    def rotate_data(self, im, orientation):
+        flags = {
+            1: (None, None),  #no rotation
+            2: (None, Image.FLIP_LEFT_RIGHT),  #no rotation - horizontal flip
+            3: (Image.ROTATE_180, None),  #180deg rotate left
+            4: (Image.ROTATE_180, Image.FLIP_LEFT_RIGHT),  #180deg rotate left - horizontal flip
+            5: (Image.ROTATE_270, Image.FLIP_LEFT_RIGHT),  #90deg rotate right - horizontal flip
+            6: (Image.ROTATE_270, None),  #90deg rotate right
+            7: (Image.ROTATE_90, Image.FLIP_LEFT_RIGHT),  #90deg rotate left - horizontal flip
+            8: (Image.ROTATE_90, None)  #90deg rotate left
+        }
+
+        rotate, flip = flags[orientation]
+
+        if rotate:
+            im = im.transpose(rotate)
+
+        if flip:
+            im = im.transpose(flip)
+
+        return im
+
+    def resize_data(self, im, width, height):
         old_width, old_height = im.size
 
         if width and height:
@@ -47,11 +78,9 @@ class ImageData(ImageDataSchema):
 
         im = im.resize(size, Image.ANTIALIAS)
 
-        return self._image_to_data(im)
+        return im
 
-    def get_exif_data(self):
-        im = self._data_to_image()
-
+    def get_exif_data(self, im):
         try:
             exif = im._getexif()
         except (AttributeError, IOError):
