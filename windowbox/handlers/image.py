@@ -2,6 +2,7 @@ from re import match
 from flask import make_response, abort
 from jinja2.exceptions import UndefinedError
 from windowbox.models.post import Post
+from windowbox.models.imagedata import ImageData
 
 
 class ImageHandler():
@@ -11,10 +12,7 @@ class ImageHandler():
 
         try:
             post = Post.get_by_id(post_id)
-            image = post.image
-
-            #TODO
-            image.get_exif_data()
+            image = ImageData.get_by_id(post.image_id)
 
             response = make_response(image.get_resized_data(width=w, height=h))
             response.headers['Content-Type'] = image.mime_type

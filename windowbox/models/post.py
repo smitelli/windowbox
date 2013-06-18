@@ -10,7 +10,8 @@ class Post(PostSchema):
 
     @classmethod
     def get_all(cls):
-        return sess.query(cls).order_by(cls.post_id).all()
+        for post in sess.query(cls).order_by(cls.post_id):
+            yield post
 
     @classmethod
     def get_by_id(cls, post_id):

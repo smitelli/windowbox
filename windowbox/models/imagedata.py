@@ -1,12 +1,17 @@
 from datetime import time
 from StringIO import StringIO
 from PIL import Image, ExifTags
+from windowbox.database import sess
 from windowbox.models import ImageDataSchema
 
 
 class ImageData(ImageDataSchema):
     def __repr__(self):
         return '<ImageData image_id={}>'.format(self.image_id)
+
+    @classmethod
+    def get_by_id(cls, image_id):
+        return sess.query(cls).filter(cls.image_id == image_id).first()
 
     def get_resized_data(self, width=None, height=None):
         width, height = int(width or 0), int(height or 0)
@@ -45,14 +50,17 @@ class ImageData(ImageDataSchema):
         return self._image_to_data(im)
 
     def get_exif_data(self):
-        exif = self._data_to_image()._getexif()
+        im = self._data_to_image()
+
+        try:
+            exif = im._getexif()
+        except (AttributeError, IOError):
+            return None
 
         if exif:
-            ex = ExifData(exif).todict()
-            #TODO
-            from pprint import pprint; pprint(ex)
-        else:
-            print "No exif!"
+            return ExifData(exif).todict()
+
+        return None
 
     def _data_to_image(self):
         return Image.open(StringIO(self.data))
@@ -105,7 +113,7 @@ class ExifData():
                     mins = v[1][0] / v[1][1]
                     secs, msec = divmod(v[2][0], v[2][1])
                     msec = int((float(msec) / v[2][1]) * 1000000)
-                    value = time(hour, mins, secs, msec).isoformat()
+                    value = time(hour % 24, mins % 60, secs % 60, msec).isoformat()
                 else:
                     # Scalar value, pass through
                     value = v
