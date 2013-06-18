@@ -1,14 +1,19 @@
 from flask import render_template, abort
 from jinja2.exceptions import UndefinedError
-from windowbox.models.post import Post
+from windowbox.models.post import PostFactory
 
 
 class PostHandler():
     def get(self, post_id=None):
         try:
-            post = Post.get_by_id(post_id)
-            previous, next = post.get_adjacent()
+            post = PostFactory().get_by_id(post_id)
+            previous, next = PostFactory().get_adjacent_by_id(post_id)
 
-            return render_template('single_post.html', post=post, previous=previous, next=next)
+            template_vars = {
+                'post': post,
+                'previous': previous,
+                'next': next}
+
+            return render_template('single_post.html', **template_vars)
         except (AttributeError, UndefinedError):
             abort(404)

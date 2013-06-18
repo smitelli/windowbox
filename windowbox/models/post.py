@@ -4,25 +4,23 @@ from windowbox.database import sess
 from windowbox.models import PostSchema
 
 
+class PostFactory():
+    def get_all(self):
+        for post in sess.query(Post).order_by(Post.post_id):
+            yield post
+
+    def get_by_id(self, post_id):
+        return sess.query(Post).filter(Post.post_id == post_id).first()
+
+    def get_adjacent_by_id(self, post_id):
+        prev = sess.query(Post).filter(Post.post_id < post_id).order_by(sa.desc(Post.post_id)).first()
+        next = sess.query(Post).filter(Post.post_id > post_id).order_by(Post.post_id).first()
+        return (prev, next)
+
+
 class Post(PostSchema):
     def __repr__(self):
         return '<Post id={}>'.format(self.post_id)
-
-    @classmethod
-    def get_all(cls):
-        for post in sess.query(cls).order_by(cls.post_id):
-            yield post
-
-    @classmethod
-    def get_by_id(cls, post_id):
-        return sess.query(cls).filter(cls.post_id == post_id).first()
-
-    def get_adjacent(self):
-        cls = self.__class__
-        prev = sess.query(cls).filter(cls.post_id < self.post_id).order_by(sa.desc(cls.post_id)).first()
-        next = sess.query(cls).filter(cls.post_id > self.post_id).order_by(cls.post_id).first()
-
-        return (prev, next)
 
     @property
     def readable_date(self):

@@ -5,36 +5,48 @@ from windowbox.database import sess
 from windowbox.models import ImageDataSchema
 
 
+class ImageDataFactory():
+    def get_by_id(self, image_id):
+        return sess.query(ImageData).filter(ImageData.image_id == image_id).first()
+
+
 class ImageData(ImageDataSchema):
     def __repr__(self):
         return '<ImageData image_id={}>'.format(self.image_id)
 
-    @classmethod
-    def get_by_id(cls, image_id):
-        return sess.query(cls).filter(cls.image_id == image_id).first()
-
-    def get_resized_data(self, width=None, height=None):
+    def get_resize(self, width=None, height=None):
         width, height = int(width or 0), int(height or 0)
 
         im = self._data_to_image()
         exif = self.get_exif_data(im)
 
         if exif and 'Orientation' in exif:
-            im = self.rotate_data(im, exif['Orientation'])
+            im = self._rotate_data(im, exif['Orientation'])
 
-        im = self.resize_data(im, width, height)
+        im = self._resize_data(im, width, height)
         return self._image_to_data(im)
 
-    def rotate_data(self, im, orientation):
+    def get_exif_data(self, im):
+        try:
+            exif = im._getexif()
+        except (AttributeError, IOError):
+            return None
+
+        if exif:
+            return ExifData(exif).todict()
+
+        return None
+
+    def _rotate_data(self, im, orientation):
         flags = {
-            1: (None, None),  #no rotation
-            2: (None, Image.FLIP_LEFT_RIGHT),  #no rotation - horizontal flip
-            3: (Image.ROTATE_180, None),  #180deg rotate left
-            4: (Image.ROTATE_180, Image.FLIP_LEFT_RIGHT),  #180deg rotate left - horizontal flip
-            5: (Image.ROTATE_270, Image.FLIP_LEFT_RIGHT),  #90deg rotate right - horizontal flip
-            6: (Image.ROTATE_270, None),  #90deg rotate right
-            7: (Image.ROTATE_90, Image.FLIP_LEFT_RIGHT),  #90deg rotate left - horizontal flip
-            8: (Image.ROTATE_90, None)  #90deg rotate left
+            1: (None, None),  # no rotation
+            2: (None, Image.FLIP_LEFT_RIGHT),  # no rotation - horizontal flip
+            3: (Image.ROTATE_180, None),  # 180deg rotate left
+            4: (Image.ROTATE_180, Image.FLIP_LEFT_RIGHT),  # 180deg rotate left - horizontal flip
+            5: (Image.ROTATE_270, Image.FLIP_LEFT_RIGHT),  # 90deg rotate right - horizontal flip
+            6: (Image.ROTATE_270, None),  # 90deg rotate right
+            7: (Image.ROTATE_90, Image.FLIP_LEFT_RIGHT),  # 90deg rotate left - horizontal flip
+            8: (Image.ROTATE_90, None)  # 90deg rotate left
         }
 
         rotate, flip = flags[orientation]
@@ -47,7 +59,7 @@ class ImageData(ImageDataSchema):
 
         return im
 
-    def resize_data(self, im, width, height):
+    def _resize_data(self, im, width, height):
         old_width, old_height = im.size
 
         if width and height:
@@ -79,17 +91,6 @@ class ImageData(ImageDataSchema):
         im = im.resize(size, Image.ANTIALIAS)
 
         return im
-
-    def get_exif_data(self, im):
-        try:
-            exif = im._getexif()
-        except (AttributeError, IOError):
-            return None
-
-        if exif:
-            return ExifData(exif).todict()
-
-        return None
 
     def _data_to_image(self):
         return Image.open(StringIO(self.data))
@@ -146,7 +147,7 @@ class ExifData():
                 else:
                     # Scalar value, pass through
                     value = v
-                
+
                 data[key] = value
 
         return data;

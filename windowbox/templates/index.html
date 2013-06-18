@@ -2,6 +2,6 @@
 
 <ul>
     {% for post in posts %}
-        <li><a href="{{ url_for('single_post', post_id=post.post_id) }}">{{ post.message }}</a></li>
+        <li><a href="{{ url_for('get_post', post_id=post.post_id) }}">{{ post.message }}</a></li>
     {% endfor %}
 </ul>

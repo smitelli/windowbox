@@ -1,11 +1,11 @@
 <h2>{{ post.message }}</h2>
 
 <p>
-    {% if previous %}<a href="{{ url_for('single_post', post_id=previous.post_id) }}">Prev</a> | {% endif %}
-    <a href="/">Index</a>
-    {% if next %} | <a href="{{ url_for('single_post', post_id=next.post_id) }}">Next</a>{% endif %}
+    {% if previous %}<a href="{{ url_for('get_post', post_id=previous.post_id) }}">Prev</a> | {% endif %}
+    <a href="{{ url_for('get_index') }}">Index</a>
+    {% if next %} | <a href="{{ url_for('get_post', post_id=next.post_id) }}">Next</a>{% endif %}
 </p>
 
-<p><img src="{{ url_for('image_data', post_id=post.post_id, size='500x') }}"></p>
+<p><img src="{{ url_for('get_image', post_id=post.post_id, size='500x') }}"></p>
 
 <p>{{ post.readable_date }}</p>
