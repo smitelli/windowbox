@@ -1,7 +1,7 @@
 from datetime import datetime
 import sqlalchemy as sa
 from windowbox.database import sess
-from windowbox.models import PostSchema
+from windowbox.models import PostSchema, BaseModel
 
 
 class PostFactory():
@@ -18,7 +18,7 @@ class PostFactory():
         return (prev, next)
 
 
-class Post(PostSchema):
+class Post(PostSchema, BaseModel):
     def __repr__(self):
         return '<Post id={}>'.format(self.post_id)
 

@@ -2,7 +2,7 @@ from datetime import time
 from StringIO import StringIO
 from PIL import Image, ExifTags
 from windowbox.database import sess
-from windowbox.models import ImageDataSchema
+from windowbox.models import ImageDataSchema, BaseModel
 
 
 class ImageDataFactory():
@@ -10,7 +10,7 @@ class ImageDataFactory():
         return sess.query(ImageData).filter(ImageData.image_id == image_id).first()
 
 
-class ImageData(ImageDataSchema):
+class ImageData(ImageDataSchema, BaseModel):
     def __repr__(self):
         return '<ImageData image_id={}>'.format(self.image_id)
 

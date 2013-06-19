@@ -1,7 +1,8 @@
 import csv
 import os
-
-from sqlalchemy import create_engine, Table, Column, MetaData, Integer, String, LargeBinary
+from windowbox.database import sess
+from windowbox.models.post import Post
+from windowbox.models.imagedata import ImageData
 
 
 _path = os.path.abspath(os.path.dirname(__file__))
@@ -25,55 +26,29 @@ def get_image_path(id):
 
     return (None, None)
 
-fn = os.path.join(_path, 'db.sqlite')
-fn = "/home/ssmitelli/db.sqlite"
-engine = create_engine('sqlite:///{}'.format(fn), echo=False)
-metadata = MetaData()
-
-# Post table schema
-posts = Table('posts', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('image_id', Integer),
-    Column('timestamp', Integer),
-    Column('message', String(255)),
-    Column('ua', String(255)))
-
-# Image data schema
-image_data = Table('image_data', metadata,
-    Column('image_id', Integer, primary_key=True),
-    Column('mime_type', String(64)),
-    Column('data', LargeBinary))
-
-# Ensure tables exist, create if not
-metadata.create_all(engine)
-
-session = engine.connect()
-
 data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
-fields = ['id', 'image_id', 'timestamp', 'message', 'ua']
+fields = ['post_id', 'image_id', 'timestamp', 'message', 'ua']
+
+Post.__table__.create()
+ImageData.__table__.create()
 
 for row in data:
-    # Insert post data from the CSV file
-    items = zip(fields, row)
-    item = {}
+    item = dict(zip(fields, row))
 
-    for (name, value) in items:
-        item[name] = value.strip()
+    print 'Inserting post #{}...'.format(item['post_id'])
+    Post(**item).save()
 
-    print 'Inserting post #{}...'.format(item['id'])
-    session.execute(posts.insert().values(**item))
-
-    # Insert image data from the filesystem
     itype, ipath = get_image_path(item['image_id'])
+    f = open(ipath, 'r')
+    data = {
+        'image_id': item['image_id'],
+        'mime_type': itype,
+        'data': f.read()}
 
-    if itype and ipath:
-        f = open(ipath, 'r')
-        data = {
-            'image_id': item['image_id'],
-            'mime_type': itype,
-            'data': f.read()}
+    print '\tand image #{}...'.format(item['image_id'])
+    ImageData(**data).save()
 
-        print '    (image #{})'.format(item['image_id'])
-        session.execute(image_data.insert().values(**data))
+    sess.flush()
 
-session.close()
+sess.commit()
+sess.close()
