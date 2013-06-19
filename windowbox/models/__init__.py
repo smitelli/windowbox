@@ -1,8 +1,8 @@
 import sqlalchemy as sa
-from windowbox.database import Base, sess
+from windowbox.database import DeclarativeBase, session
 
 
-class PostSchema(Base):
+class PostSchema(DeclarativeBase):
     __tablename__ = 'posts'
     post_id = sa.Column(sa.Integer, primary_key=True)
     image_id = sa.Column(sa.Integer, sa.ForeignKey('image_data.image_id'))
@@ -11,7 +11,7 @@ class PostSchema(Base):
     ua = sa.Column(sa.String(255))
 
 
-class ImageDataSchema(Base):
+class ImageDataSchema(DeclarativeBase):
     __tablename__ = 'image_data'
     image_id = sa.Column(sa.Integer, primary_key=True)
     mime_type = sa.Column(sa.String(64))
@@ -19,6 +19,6 @@ class ImageDataSchema(Base):
 
 class BaseModel():
     def save(self, force=False):
-        sess.add(self)
+        session.add(self)
         if force:
-            sess.flush()
+            session.flush()

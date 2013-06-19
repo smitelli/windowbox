@@ -1,5 +1,5 @@
 from flask import Flask
-from windowbox.database import sess as db_session
+from windowbox.database import session as db_session
 from windowbox.handlers.index import IndexHandler
 from windowbox.handlers.post import PostHandler
 from windowbox.handlers.image import ImageHandler
@@ -30,4 +30,4 @@ def get_image(post_id, size):
 
 @app.teardown_request
 def shutdown_session(exception=None):
-    db_session.remove()
+    db_session.close()

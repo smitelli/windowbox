@@ -1,13 +1,13 @@
 from datetime import time
 from StringIO import StringIO
 from PIL import Image, ExifTags
-from windowbox.database import sess
+from windowbox.database import session as db_session
 from windowbox.models import ImageDataSchema, BaseModel
 
 
 class ImageDataFactory():
     def get_by_id(self, image_id):
-        return sess.query(ImageData).filter(ImageData.image_id == image_id).first()
+        return db_session.query(ImageData).filter(ImageData.image_id == image_id).first()
 
 
 class ImageData(ImageDataSchema, BaseModel):

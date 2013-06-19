@@ -1,13 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 from windowbox.configs.base import DATABASE_CONFIG
 
-engine = create_engine(DATABASE_CONFIG['URI'], **DATABASE_CONFIG['KWARGS'])
-Base = declarative_base(bind=engine)
-Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-
-sess = scoped_session(Session)
+_engine = create_engine(DATABASE_CONFIG['URI'], **DATABASE_CONFIG['KWARGS'])
+DeclarativeBase = declarative_base(bind=_engine)
+session = sessionmaker(bind=_engine, autocommit=False, autoflush=False)()
 
 # Following classes copied from SQLAlchemy docs (examples/vertical/dictlike.py)
 class VerticalProperty(object):

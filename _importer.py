@@ -1,6 +1,6 @@
 import csv
 import os
-from windowbox.database import sess
+from windowbox.database import session as db_session
 from windowbox.models.post import Post
 from windowbox.models.imagedata import ImageData
 
@@ -48,7 +48,7 @@ for row in data:
     print '\tand image #{}...'.format(item['image_id'])
     ImageData(**data).save()
 
-    sess.flush()
+    db_session.flush()
 
-sess.commit()
-sess.close()
+db_session.commit()
+db_session.close()
