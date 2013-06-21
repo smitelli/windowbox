@@ -7,6 +7,7 @@ _engine = create_engine(DATABASE_CONFIG['URI'], **DATABASE_CONFIG['KWARGS'])
 DeclarativeBase = declarative_base(bind=_engine)
 session = sessionmaker(bind=_engine, autocommit=False, autoflush=False)()
 
+
 # Following classes copied from SQLAlchemy docs (examples/vertical/dictlike.py)
 class VerticalProperty(object):
     def __init__(self, key, value):

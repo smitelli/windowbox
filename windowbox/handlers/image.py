@@ -12,7 +12,7 @@ class ImageHandler():
 
         try:
             post = PostFactory().get_by_id(post_id)
-            image = ImageDataFactory().get_by_id(post.image_id)
+            image = ImageDataFactory().get_by_id(post.post_id)
 
             response = make_response(image.get_resize(width=w, height=h))
             response.headers['Content-Type'] = image.mime_type

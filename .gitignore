@@ -6,4 +6,5 @@ env
 dist
 *.egg-info
 _importable/
+storage/
 *.sqlite

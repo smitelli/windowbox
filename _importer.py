@@ -2,10 +2,10 @@ import csv
 import os
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
-from windowbox.models.imagedata import ImageData
-
+from windowbox.models.image import ImageOriginal
 
 _path = os.path.abspath(os.path.dirname(__file__))
+
 
 def get_image_path(id):
     ipath = os.path.join(_path, '_importable/originals/{}.jpg'.format(id))
@@ -26,29 +26,31 @@ def get_image_path(id):
 
     return (None, None)
 
-data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
-fields = ['post_id', 'image_id', 'timestamp', 'message', 'ua']
-
 Post.__table__.create()
-ImageData.__table__.create()
+ImageOriginal.__table__.create()
+
+fields = ['post_id', 'image_id', 'timestamp', 'message', 'ua']
+data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
 
 for row in data:
-    item = dict(zip(fields, row))
+    rowdata = dict(zip(fields, row))
+    imime, ipath = get_image_path(rowdata['image_id'])
 
-    print 'Inserting post #{}...'.format(item['post_id'])
-    Post(**item).save()
+    postdata = {
+        'post_id': rowdata['post_id'],
+        'timestamp': rowdata['timestamp'],
+        'message': rowdata['message'],
+        'ua': rowdata['ua']}
 
-    itype, ipath = get_image_path(item['image_id'])
-    f = open(ipath, 'r')
-    data = {
-        'image_id': item['image_id'],
-        'mime_type': itype,
-        'data': f.read()}
+    print 'Inserting post #{}...'.format(rowdata['post_id'])
+    post = Post(**postdata).create()
 
-    print '\tand image #{}...'.format(item['image_id'])
-    ImageData(**data).save()
+    imagedata = {
+        'post_id': rowdata['post_id'],
+        'mime_type': imime}
 
-    db_session.flush()
+    print 'Inserting image...'
+    image = ImageOriginal(**imagedata).create()
+    image.set_data_from_file(ipath)
 
-db_session.commit()
 db_session.close()

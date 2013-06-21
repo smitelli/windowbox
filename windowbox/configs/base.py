@@ -11,3 +11,5 @@ DATABASE_CONFIG = {
     'KWARGS': {
         'convert_unicode': True,
         'echo': False}}
+
+STORAGE_DIR = os.path.join(_confdir, '..', '..', 'storage')

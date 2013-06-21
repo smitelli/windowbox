@@ -1,18 +1,18 @@
 from datetime import time
 from StringIO import StringIO
 from PIL import Image, ExifTags
-from windowbox.database import session as db_session
-from windowbox.models import ImageDataSchema, BaseModel
+from windowbox.models import ImageOriginalSchema
+from windowbox.models.image import ImageFactory
 
 
 class ImageDataFactory():
-    def get_by_id(self, image_id):
-        return db_session.query(ImageData).filter(ImageData.image_id == image_id).first()
+    def get_by_id(self, post_id):
+        return ImageData(post_id=post_id)
 
 
-class ImageData(ImageDataSchema, BaseModel):
+class ImageData(ImageOriginalSchema):
     def __repr__(self):
-        return '<ImageData image_id={}>'.format(self.image_id)
+        return '<ImageData id={}>'.format(self.post_id)
 
     def get_resize(self, width=None, height=None):
         width, height = int(width or 0), int(height or 0)
@@ -93,14 +93,15 @@ class ImageData(ImageDataSchema, BaseModel):
         return im
 
     def _data_to_image(self):
-        return Image.open(StringIO(self.data))
+        self.img = ImageFactory().get_original_by_id(self.post_id)
+        return Image.open(StringIO(self.img.get_data()))
 
     def _image_to_data(self, image):
         io = StringIO()
 
-        if self.mime_type == 'image/png':
+        if self.img.mime_type == 'image/png':
             image.save(io, 'PNG', optimize=True)
-        elif self.mime_type == 'image/gif':
+        elif self.img.mime_type == 'image/gif':
             image.save(io, 'GIF')
         else:
             image.save(io, 'JPEG', quality=95)
@@ -150,4 +151,4 @@ class ExifData():
 
                 data[key] = value
 
-        return data;
+        return data
