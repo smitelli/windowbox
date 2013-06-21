@@ -1,5 +1,4 @@
 from datetime import time
-from StringIO import StringIO
 from PIL import Image, ExifTags
 from windowbox.models import ImageOriginalSchema
 
@@ -12,7 +11,7 @@ class xxxImageData(ImageOriginalSchema):
             return None
 
         if exif:
-            return ExifData(exif).todict()
+            return xxxExifData(exif).todict()
 
         return None
 
@@ -35,39 +34,6 @@ class xxxImageData(ImageOriginalSchema):
 
         if flip:
             im = im.transpose(flip)
-
-        return im
-
-    def _resize_data(self, im, width, height):
-        old_width, old_height = im.size
-
-        if width and height:
-            fx = float(old_width) / width
-            fy = float(old_height) / height
-            f = fx if fx < fy else fy
-            crop_size = int(width * f), int(height * f)
-
-            crop_width, crop_height = crop_size
-            trim_x = (old_width - crop_width) / 2
-            trim_y = (old_height - crop_height) / 2
-
-            crop = trim_x, trim_y, crop_width + trim_x, crop_height + trim_y
-            im = im.transform(crop_size, Image.EXTENT, crop)
-
-            size = width, height
-
-        elif width and not height:
-            f = float(old_width) / width
-            size = width, int(old_height / f)
-
-        elif height and not width:
-            f = float(old_height) / height
-            size = int(old_width / f), height
-
-        else:
-            size = old_width, old_height
-
-        im = im.resize(size, Image.ANTIALIAS)
 
         return im
 

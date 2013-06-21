@@ -22,6 +22,9 @@ class ImageFactory():
             derivative = ImageDerivative(post_id=post_id, size=clean_size)
             derivative.rebuild()
 
+        if not os.path.isfile(derivative.get_file_name()):
+            derivative.rebuild()
+
         return derivative
 
 
@@ -52,7 +55,7 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         matches = match('(\d*)x(\d*)', size or '')
         width, height = matches.groups() if matches else (0, 0)
 
-        return (width or 0, height or 0)
+        return (int(width or 0), int(height or 0))
 
     def rebuild(self):
         source = ImageFactory().get_original_by_id(self.post_id)
@@ -60,15 +63,49 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         self.mime_type = source.mime_type
         im = Image.open(source.get_file_name())
 
+        # TODO
         #exif = self.get_exif_data(im)
         #if exif and 'Orientation' in exif:
         #    im = self._rotate_data(im, exif['Orientation'])
 
         width, height = self.get_dimensions(self.size)
-        #im = self._resize_data(im, width, height)
+        im = self._resize_data(im, width, height)
 
         self.save(commit=True)
         self._save_derivative(im)
+
+    def _resize_data(self, im, width, height):
+        old_width, old_height = im.size
+
+        if width and height:
+            fx = float(old_width) / width
+            fy = float(old_height) / height
+            f = fx if fx < fy else fy
+            crop_size = int(width * f), int(height * f)
+
+            crop_width, crop_height = crop_size
+            trim_x = (old_width - crop_width) / 2
+            trim_y = (old_height - crop_height) / 2
+
+            crop = trim_x, trim_y, crop_width + trim_x, crop_height + trim_y
+            im = im.transform(crop_size, Image.EXTENT, crop)
+
+            size = width, height
+
+        elif width and not height:
+            f = float(old_width) / width
+            size = width, int(old_height / f)
+
+        elif height and not width:
+            f = float(old_height) / height
+            size = int(old_width / f), height
+
+        else:
+            size = old_width, old_height
+
+        im = im.resize(size, Image.ANTIALIAS)
+
+        return im
 
     def _save_derivative(self, image):
         io = StringIO()
