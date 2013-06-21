@@ -2,30 +2,9 @@ from datetime import time
 from StringIO import StringIO
 from PIL import Image, ExifTags
 from windowbox.models import ImageOriginalSchema
-from windowbox.models.image import ImageFactory
 
 
-class ImageDataFactory():
-    def get_by_id(self, post_id):
-        return ImageData(post_id=post_id)
-
-
-class ImageData(ImageOriginalSchema):
-    def __repr__(self):
-        return '<ImageData id={}>'.format(self.post_id)
-
-    def get_resize(self, width=None, height=None):
-        width, height = int(width or 0), int(height or 0)
-
-        im = self._data_to_image()
-        exif = self.get_exif_data(im)
-
-        if exif and 'Orientation' in exif:
-            im = self._rotate_data(im, exif['Orientation'])
-
-        im = self._resize_data(im, width, height)
-        return self._image_to_data(im)
-
+class xxxImageData(ImageOriginalSchema):
     def get_exif_data(self, im):
         try:
             exif = im._getexif()
@@ -92,24 +71,8 @@ class ImageData(ImageOriginalSchema):
 
         return im
 
-    def _data_to_image(self):
-        self.img = ImageFactory().get_original_by_id(self.post_id)
-        return Image.open(StringIO(self.img.get_data()))
 
-    def _image_to_data(self, image):
-        io = StringIO()
-
-        if self.img.mime_type == 'image/png':
-            image.save(io, 'PNG', optimize=True)
-        elif self.img.mime_type == 'image/gif':
-            image.save(io, 'GIF')
-        else:
-            image.save(io, 'JPEG', quality=95)
-
-        return io.getvalue()
-
-
-class ExifData():
+class xxxExifData():
     DEEP_KEYS = {
         'GPSInfo': ExifTags.GPSTAGS}
     _parsed_dict = None

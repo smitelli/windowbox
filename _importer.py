@@ -2,7 +2,7 @@ import csv
 import os
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
-from windowbox.models.image import ImageOriginal
+from windowbox.models.image import ImageOriginal, ImageDerivative
 
 _path = os.path.abspath(os.path.dirname(__file__))
 
@@ -28,6 +28,7 @@ def get_image_path(id):
 
 Post.__table__.create()
 ImageOriginal.__table__.create()
+ImageDerivative.__table__.create()
 
 fields = ['post_id', 'image_id', 'timestamp', 'message', 'ua']
 data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
@@ -43,14 +44,14 @@ for row in data:
         'ua': rowdata['ua']}
 
     print 'Inserting post #{}...'.format(rowdata['post_id'])
-    post = Post(**postdata).create()
+    post = Post(**postdata).save(commit=True)
 
     imagedata = {
         'post_id': rowdata['post_id'],
         'mime_type': imime}
 
     print 'Inserting image...'
-    image = ImageOriginal(**imagedata).create()
+    image = ImageOriginal(**imagedata).save(commit=True)
     image.set_data_from_file(ipath)
 
 db_session.close()
