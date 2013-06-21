@@ -1,5 +1,5 @@
 from datetime import time
-from PIL import Image, ExifTags
+from PIL import ExifTags
 from windowbox.models import ImageOriginalSchema
 
 
@@ -14,28 +14,6 @@ class xxxImageData(ImageOriginalSchema):
             return xxxExifData(exif).todict()
 
         return None
-
-    def _rotate_data(self, im, orientation):
-        flags = {
-            1: (None, None),  # no rotation
-            2: (None, Image.FLIP_LEFT_RIGHT),  # no rotation - horizontal flip
-            3: (Image.ROTATE_180, None),  # 180deg rotate left
-            4: (Image.ROTATE_180, Image.FLIP_LEFT_RIGHT),  # 180deg rotate left - horizontal flip
-            5: (Image.ROTATE_270, Image.FLIP_LEFT_RIGHT),  # 90deg rotate right - horizontal flip
-            6: (Image.ROTATE_270, None),  # 90deg rotate right
-            7: (Image.ROTATE_90, Image.FLIP_LEFT_RIGHT),  # 90deg rotate left - horizontal flip
-            8: (Image.ROTATE_90, None)  # 90deg rotate left
-        }
-
-        rotate, flip = flags[orientation]
-
-        if rotate:
-            im = im.transpose(rotate)
-
-        if flip:
-            im = im.transpose(flip)
-
-        return im
 
 
 class xxxExifData():

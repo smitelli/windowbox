@@ -1,6 +1,8 @@
 import errno
 import os
 import sqlalchemy as sa
+from sqlalchemy.orm import class_mapper
+import windowbox.configs.base as cfg
 from windowbox.database import DeclarativeBase, session
 
 
@@ -14,7 +16,7 @@ class PostSchema(DeclarativeBase):
 
 class ImageOriginalSchema(DeclarativeBase):
     __tablename__ = 'image_originals'
-    post_id = sa.Column(sa.Integer, primary_key=True)
+    post_id = sa.Column(sa.Integer, primary_key=True, autoincrement=False)
     mime_type = sa.Column(sa.String(64))
 
 
@@ -38,11 +40,8 @@ class BaseModel():
 
 
 class BaseFSEntity():
-    def get_data(self):
-        with open(self.get_file_name(), mode='rb') as fh:
-            data = fh.read()
-
-        return data
+    STORAGE_DIR = cfg.STORAGE_DIR
+    MIME_MAP = {}
 
     def set_data(self, data):
         file_name = self.get_file_name()
@@ -59,14 +58,27 @@ class BaseFSEntity():
         with open(file_name, mode='wb') as fh:
             fh.write(data)
 
-    def set_data_from_file(self, file_name):
-        with open(file_name, mode='rb') as fh:
+    def set_data_from_file(self, source_file):
+        with open(source_file, mode='rb') as fh:
             data = fh.read()
 
         self.set_data(data)
 
+    def get_data(self):
+        with open(self.get_file_name(), mode='rb') as fh:
+            data = fh.read()
+
+        return data
+
     def get_file_name(self):
-        id_str = self.get_file_identifier()
+        primary_key = class_mapper(self.__class__).primary_key[0].name
+        id_str = str(getattr(self, primary_key))
+
+        extension = ''
+        try:
+            extension = self.MIME_MAP[self.mime_type]
+        except KeyError:
+            pass
 
         if len(id_str) <= 1:
             d1, d2 = ('0', '0')
@@ -75,15 +87,6 @@ class BaseFSEntity():
         else:
             d1, d2 = (id_str[0], id_str[1])
 
-        file_name = '{}{}'.format(id_str, self.get_extension())
+        file_name = '{}{}'.format(id_str, extension)
 
         return os.path.join(self.STORAGE_DIR, d1, d2, file_name)
-
-    def get_file_identifier(self):
-        return str(self.post_id)
-
-    def get_extension(self):
-        try:
-            return self.MIME_MAP[self.mime_type]
-        except KeyError:
-            return ''

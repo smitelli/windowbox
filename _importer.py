@@ -35,8 +35,6 @@ data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
 
 for row in data:
     rowdata = dict(zip(fields, row))
-    imime, ipath = get_image_path(rowdata['image_id'])
-
     postdata = {
         'post_id': rowdata['post_id'],
         'timestamp': rowdata['timestamp'],
@@ -46,8 +44,9 @@ for row in data:
     print 'Inserting post #{}...'.format(rowdata['post_id'])
     post = Post(**postdata).save(commit=True)
 
+    imime, ipath = get_image_path(rowdata['image_id'])
     imagedata = {
-        'post_id': rowdata['post_id'],
+        'post_id': post.post_id,
         'mime_type': imime}
 
     print 'Inserting image...'

@@ -47,9 +47,6 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         return '<ImageDerivative id={} post_id={} size={}>'.format(
             self.derivative_id, self.post_id, self.size)
 
-    def get_file_identifier(self):
-        return str(self.derivative_id)
-
     @staticmethod
     def get_dimensions(size):
         matches = match('(\d*)x(\d*)', size or '')
@@ -66,15 +63,15 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         # TODO
         #exif = self.get_exif_data(im)
         #if exif and 'Orientation' in exif:
-        #    im = self._rotate_data(im, exif['Orientation'])
+        #    im = self._transpose_derivative(im, exif['Orientation'])
 
         width, height = self.get_dimensions(self.size)
-        im = self._resize_data(im, width, height)
+        im = self._resize_derivative(im, width, height)
 
         self.save(commit=True)
         self._save_derivative(im)
 
-    def _resize_data(self, im, width, height):
+    def _resize_derivative(self, im, width, height):
         old_width, old_height = im.size
 
         if width and height:
@@ -101,21 +98,45 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
             size = int(old_width / f), height
 
         else:
-            size = old_width, old_height
+            return im
 
-        im = im.resize(size, Image.ANTIALIAS)
+        return im.resize(size, Image.ANTIALIAS)
+
+    def _transpose_derivative(self, im, orient_code):
+        operations = {
+            1: (None, None),  # no rotation
+            2: (None, Image.FLIP_LEFT_RIGHT),  # no rotation - horizontal flip
+            3: (Image.ROTATE_180, None),  # 180deg rotate left
+            4: (Image.ROTATE_180, Image.FLIP_LEFT_RIGHT),  # 180deg rotate left - horizontal flip
+            5: (Image.ROTATE_270, Image.FLIP_LEFT_RIGHT),  # 90deg rotate right - horizontal flip
+            6: (Image.ROTATE_270, None),  # 90deg rotate right
+            7: (Image.ROTATE_90, Image.FLIP_LEFT_RIGHT),  # 90deg rotate left - horizontal flip
+            8: (Image.ROTATE_90, None)  # 90deg rotate left
+        }
+
+        try:
+            rotate, flip = operations[orient_code]
+        except KeyError:
+            return im
+
+        if rotate:
+            im = im.transpose(rotate)
+
+        if flip:
+            im = im.transpose(flip)
 
         return im
 
-    def _save_derivative(self, image):
+    def _save_derivative(self, im):
         io = StringIO()
 
+        # TODO
         #if self.mime_type == 'image/png':
         #    image.save(io, 'PNG', optimize=True)
         #elif self.mime_type == 'image/gif':
         #    image.save(io, 'GIF')
         #else:
         #    image.save(io, 'JPEG', quality=95)
-        image.save(io, 'JPEG', quality=95)
+        im.save(io, 'JPEG', quality=95)
 
         self.set_data(io.getvalue())
