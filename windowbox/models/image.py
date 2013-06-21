@@ -30,22 +30,22 @@ class ImageFactory():
 
 class ImageOriginal(ImageOriginalSchema, BaseModel, BaseFSEntity):
     STORAGE_DIR = os.path.join(cfg.STORAGE_DIR, 'original')
-    MIME_MAP = {
+    MIME_EXTENSION_MAP = {
         'image/jpeg': '.jpg',
         'image/png': '.png',
         'image/gif': '.gif'}
 
     def __repr__(self):
-        return '<ImageOriginal id={}>'.format(self.post_id)
+        return '<{} id={}>'.format(self.__class__.__name__, self.post_id)
 
 
 class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
-    STORAGE_DIR = os.path.join(cfg.STORAGE_DIR, 'derivatives')
-    MIME_MAP = ImageOriginal.MIME_MAP
+    STORAGE_DIR = os.path.join(cfg.STORAGE_DIR, 'derivative')
+    MIME_EXTENSION_MAP = ImageOriginal.MIME_EXTENSION_MAP
 
     def __repr__(self):
-        return '<ImageDerivative id={} post_id={} size={}>'.format(
-            self.derivative_id, self.post_id, self.size)
+        return '<{} id={} post_id={} size={}>'.format(
+            self.__class__.__name__, self.derivative_id, self.post_id, self.size)
 
     @staticmethod
     def get_dimensions(size):
@@ -111,8 +111,7 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
             5: (Image.ROTATE_270, Image.FLIP_LEFT_RIGHT),  # 90deg rotate right - horizontal flip
             6: (Image.ROTATE_270, None),  # 90deg rotate right
             7: (Image.ROTATE_90, Image.FLIP_LEFT_RIGHT),  # 90deg rotate left - horizontal flip
-            8: (Image.ROTATE_90, None)  # 90deg rotate left
-        }
+            8: (Image.ROTATE_90, None)}  # 90deg rotate left
 
         try:
             rotate, flip = operations[orient_code]

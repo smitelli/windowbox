@@ -41,7 +41,7 @@ class BaseModel():
 
 class BaseFSEntity():
     STORAGE_DIR = cfg.STORAGE_DIR
-    MIME_MAP = {}
+    MIME_EXTENSION_MAP = {}
 
     def set_data(self, data):
         file_name = self.get_file_name()
@@ -76,7 +76,7 @@ class BaseFSEntity():
 
         extension = ''
         try:
-            extension = self.MIME_MAP[self.mime_type]
+            extension = self.MIME_EXTENSION_MAP[self.mime_type]
         except KeyError:
             pass
 
