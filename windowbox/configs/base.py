@@ -12,4 +12,4 @@ DATABASE_CONFIG = {
         'convert_unicode': True,
         'echo': False}}
 
-STORAGE_DIR = os.path.join(_confdir, '..', '..', 'storage')
+STORAGE_DIR = os.path.abspath(os.path.join(_confdir, '..', '..', 'storage'))

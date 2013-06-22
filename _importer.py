@@ -47,10 +47,12 @@ for row in data:
     imime, ipath = get_image_path(rowdata['image_id'])
     imagedata = {
         'post_id': post.post_id,
-        'mime_type': imime}
+        'mime_type': '',
+        'exif_data': ''}
 
     print 'Inserting image...'
-    image = ImageOriginal(**imagedata).save(commit=True)
+    image = ImageOriginal(**imagedata)
     image.set_data_from_file(ipath)
+    image.save(commit=True)
 
 db_session.close()

@@ -1,7 +1,7 @@
 import errno
 import os
 import sqlalchemy as sa
-from sqlalchemy.orm import class_mapper
+from magic import Magic
 import windowbox.configs.base as cfg
 from windowbox.database import DeclarativeBase, session
 
@@ -10,23 +10,24 @@ class PostSchema(DeclarativeBase):
     __tablename__ = 'posts'
     post_id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     timestamp = sa.Column(sa.Integer)
-    message = sa.Column(sa.String(255))
+    message = sa.Column(sa.Text())
     ua = sa.Column(sa.String(255))
 
 
 class ImageOriginalSchema(DeclarativeBase):
     __tablename__ = 'image_originals'
-    post_id = sa.Column(sa.Integer, primary_key=True, autoincrement=False)
-    mime_type = sa.Column(sa.String(64))
+    post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.post_id'), primary_key=True, autoincrement=False)
+    mime_type = sa.Column(sa.String(255))
+    exif_data = sa.Column(sa.Text())
 
 
 class ImageDerivativeSchema(DeclarativeBase):
     __tablename__ = 'image_derivatives'
     __table_args__ = (sa.Index('post_id_and_size', 'post_id', 'size'), )
     derivative_id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    post_id = sa.Column(sa.Integer)
-    size = sa.Column(sa.String(10))
-    mime_type = sa.Column(sa.String(64))
+    post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.post_id'))
+    size = sa.Column(sa.String(11))
+    mime_type = sa.Column(sa.String(255))
 
 
 class BaseModel():
@@ -44,6 +45,8 @@ class BaseFSEntity():
     MIME_EXTENSION_MAP = {}
 
     def set_data(self, data):
+        self.mime_type = self._identify_mime_type(data)
+
         file_name = self.get_file_name()
         path = os.path.dirname(file_name)
 
@@ -71,7 +74,7 @@ class BaseFSEntity():
         return data
 
     def get_file_name(self):
-        primary_key = class_mapper(self.__class__).primary_key[0].name
+        primary_key = sa.orm.class_mapper(self.__class__).primary_key[0].name
         id_str = str(getattr(self, primary_key))
 
         extension = ''
@@ -90,3 +93,7 @@ class BaseFSEntity():
         file_name = '{}{}'.format(id_str, extension)
 
         return os.path.join(self.STORAGE_DIR, d1, d2, file_name)
+
+    def _identify_mime_type(self, buffer):
+        magic = Magic(mime=True)
+        return magic.from_buffer(buffer)
