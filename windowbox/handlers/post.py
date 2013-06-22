@@ -11,7 +11,7 @@ class PostHandler():
 
             from pprint import pprint
             from windowbox.models.image import ImageFactory
-            pprint(ImageFactory().get_original_by_id(post_id=post_id).get_exif_data())
+            pprint(ImageFactory().get_original_by_id(post_id=post_id).exif_data)
 
             template_vars = {
                 'post': post,

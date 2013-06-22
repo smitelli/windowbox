@@ -2,7 +2,7 @@ import os
 
 _confdir = os.path.abspath(os.path.dirname(__file__))
 
-FLASK_CONFIG = {
+FLASK_KWARGS = {
     'debug': True,
     'host': '0.0.0.0'}
 
@@ -13,3 +13,5 @@ DATABASE_CONFIG = {
         'echo': False}}
 
 STORAGE_DIR = os.path.abspath(os.path.join(_confdir, '..', '..', 'storage'))
+
+EXIFTOOL = '/usr/local/bin/exiftool'

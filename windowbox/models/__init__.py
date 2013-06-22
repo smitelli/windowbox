@@ -3,14 +3,14 @@ import os
 import sqlalchemy as sa
 from magic import Magic
 import windowbox.configs.base as cfg
-from windowbox.database import DeclarativeBase, session
+from windowbox.database import DeclarativeBase, JSONEncodedDict, session
 
 
 class PostSchema(DeclarativeBase):
     __tablename__ = 'posts'
     post_id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     timestamp = sa.Column(sa.Integer)
-    message = sa.Column(sa.Text())
+    message = sa.Column(sa.Text)
     ua = sa.Column(sa.String(255))
 
 
@@ -18,7 +18,7 @@ class ImageOriginalSchema(DeclarativeBase):
     __tablename__ = 'image_originals'
     post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.post_id'), primary_key=True, autoincrement=False)
     mime_type = sa.Column(sa.String(255))
-    exif_data = sa.Column(sa.Text())
+    exif_data = sa.Column(JSONEncodedDict)
 
 
 class ImageDerivativeSchema(DeclarativeBase):

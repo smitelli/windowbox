@@ -43,14 +43,38 @@ class ImageOriginal(ImageOriginalSchema, BaseModel, BaseFSEntity):
     def set_data(self, *args, **kwargs):
         super(ImageOriginal, self).set_data(*args, **kwargs)
 
-        with ExifTool() as exif:
-            file_name = self.get_file_name()
-            exif_data = exif.get_metadata(file_name)
+        self.exif_data = self._get_exif_data()
 
-            self.exif_data = json.dumps(exif_data)
+    def _get_exif_data(self):
+        # Ask ExifTool to read file info, then convert it to a dict
+        args = [cfg.EXIFTOOL, '-json', '-long', '-g', self.get_file_name()]
+        json_data = subprocess.check_output(args)
+        dict_data = json.loads(json_data)[0]
 
-    def get_exif_data(self):
-        return json.loads(self.exif_data)
+        # The following bits of data are not useful; they will be stripped
+        bad_groups = ['ExifTool', 'SourceFile']
+        bad_keys = [
+            ('Composite', 'ThumbnailImage'),
+            ('EXIF', 'ThumbnailLength'),
+            ('EXIF', 'ThumbnailOffset'),
+            ('File', 'Directory'),
+            ('File', 'FileAccessDate'),
+            ('File', 'FileInodeChangeDate'),
+            ('File', 'FileModifyDate'),
+            ('File', 'FileName'),
+            ('File', 'FilePermissions'),
+            ('File', 'MIMEType'),
+            ('JFIF', 'ThumbnailImage')]
+
+        for group in bad_groups:
+            if group in dict_data:
+                del dict_data[group]
+
+        for group, key in bad_keys:
+            if group in dict_data and key in dict_data[group]:
+                del dict_data[group][key]
+
+        return dict_data
 
 
 class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
@@ -74,10 +98,12 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         self.mime_type = source.mime_type
         im = Image.open(source.get_file_name())
 
-        # TODO
-        #exif = self.get_exif_data(im)
-        #if exif and 'Orientation' in exif:
-        #    im = self._transpose_derivative(im, exif['Orientation'])
+        exif = source.exif_data
+        try:
+            orient_code = exif['EXIF']['Orientation']['num']
+            im = self._transpose_derivative(im, orient_code)
+        except KeyError:
+            pass
 
         width, height = self.get_dimensions(self.size)
         im = self._resize_derivative(im, width, height)
@@ -153,38 +179,3 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         im.save(io, 'JPEG', quality=95)
 
         self.set_data(io.getvalue())
-
-
-class ExifTool(object):
-    sentinel = "{ready}\n"
-
-    def __init__(self, executable="/usr/bin/exiftool"):
-        self.executable = executable
-
-    def __enter__(self):
-        self.process = subprocess.Popen(
-            [self.executable, "-stay_open", "True",  "-@", "-"],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.process.stdin.write("-stay_open\nFalse\n")
-        self.process.stdin.flush()
-
-    def execute(self, *args):
-        args = args + ("-execute\n",)
-        self.process.stdin.write(str.join("\n", args))
-        self.process.stdin.flush()
-        output = ""
-        fd = self.process.stdout.fileno()
-        while not output.endswith(self.sentinel):
-            output += os.read(fd, 4096)
-        return output[:-len(self.sentinel)]
-
-    def get_metadata(self, *filenames):
-        data = self.execute("-G", "-j", "-n", *filenames)
-
-        try:
-            return json.loads(data)[0]
-        except ValueError:
-            return None
