@@ -9,6 +9,7 @@ class PostHandler():
             post = PostFactory().get_by_id(post_id)
             previous, next = PostFactory().get_adjacent_by_id(post_id)
 
+            # TODO Temporary!
             from pprint import pprint
             from windowbox.models.image import ImageFactory
             pprint(ImageFactory().get_original_by_id(post_id=post_id).exif_data)

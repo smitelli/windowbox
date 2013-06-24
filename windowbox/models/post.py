@@ -20,7 +20,7 @@ class PostFactory():
 
 class Post(PostSchema, BaseModel):
     def __repr__(self):
-        return '<{} id={}>'.format(self.__class__.__name__, self.post_id)
+        return '<{} post_id={}>'.format(self.__class__.__name__, self.post_id)
 
     @property
     def readable_date(self):

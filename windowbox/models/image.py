@@ -33,12 +33,12 @@ class ImageFactory():
 class ImageOriginal(ImageOriginalSchema, BaseModel, BaseFSEntity):
     STORAGE_DIR = os.path.join(cfg.STORAGE_DIR, 'original')
     MIME_EXTENSION_MAP = {
+        'image/gif': '.gif',
         'image/jpeg': '.jpg',
-        'image/png': '.png',
-        'image/gif': '.gif'}
+        'image/png': '.png'}
 
     def __repr__(self):
-        return '<{} id={}>'.format(self.__class__.__name__, self.post_id)
+        return '<{} post_id={}>'.format(self.__class__.__name__, self.post_id)
 
     def set_data(self, *args, **kwargs):
         super(ImageOriginal, self).set_data(*args, **kwargs)
@@ -167,15 +167,11 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         return im
 
     def _save_derivative(self, im):
+        save_options = {
+            'image/gif': {'format': 'GIF'},
+            'image/jpeg': {'format': 'JPEG', 'quality': 95},
+            'image/png': {'format': 'PNG', 'optimize': True}}
+
         io = StringIO()
-
-        # TODO
-        #if self.mime_type == 'image/png':
-        #    image.save(io, 'PNG', optimize=True)
-        #elif self.mime_type == 'image/gif':
-        #    image.save(io, 'GIF')
-        #else:
-        #    image.save(io, 'JPEG', quality=95)
-        im.save(io, 'JPEG', quality=95)
-
+        im.save(io, **save_options[self.mime_type])
         self.set_data(io.getvalue())
