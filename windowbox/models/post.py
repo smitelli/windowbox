@@ -1,5 +1,5 @@
-from datetime import datetime
 import sqlalchemy as sa
+import windowbox.configs.base as cfg
 from windowbox.database import session as db_session
 from windowbox.models import PostSchema, BaseModel
 
@@ -24,5 +24,5 @@ class Post(PostSchema, BaseModel):
 
     @property
     def readable_date(self):
-        ts = datetime.fromtimestamp(self.timestamp)
-        return ts.strftime('%Y-%m-%d %H:%M:%S')
+        date_local = self.date_gmt.astimezone(cfg.DISPLAY_TIMEZONE)
+        return date_local.strftime('%Y-%m-%d %H:%M:%S %Z')

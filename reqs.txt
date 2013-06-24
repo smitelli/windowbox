@@ -1,6 +1,5 @@
-virtualenv==1.8.4
-virtualenvwrapper==3.6
 Flask==0.10.1
 SQLAlchemy==0.8.1
+pytz==2013b
 PIL==1.1.7
 python-magic==0.4.3

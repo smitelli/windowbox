@@ -112,6 +112,8 @@ class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
         self._save_derivative(im)
 
     def _resize_derivative(self, im, width, height):
+        im = im.convert('RGB')
+
         old_width, old_height = im.size
 
         if width and height:

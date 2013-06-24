@@ -1,10 +1,13 @@
 import csv
 import os
+import pytz
+from datetime import datetime
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
 from windowbox.models.image import ImageOriginal, ImageDerivative
 
 _path = os.path.abspath(os.path.dirname(__file__))
+_tz = pytz.timezone('America/New_York')
 
 
 def get_image_path(id):
@@ -34,11 +37,20 @@ fields = ['post_id', 'image_id', 'timestamp', 'message', 'ua']
 data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
 
 for row in data:
+    # Convert from the miserable CoMoblog post table format
     rowdata = dict(zip(fields, row))
+
+    try:
+        body = unicode(rowdata['message'], 'ascii')
+    except UnicodeError:
+        body = unicode(rowdata['message'], 'utf-8')
+    else:
+        body = rowdata['message']
+
     postdata = {
         'post_id': rowdata['post_id'],
-        'timestamp': rowdata['timestamp'],
-        'message': rowdata['message'],
+        'date_gmt': _tz.localize(datetime.fromtimestamp(float(rowdata['timestamp']))),
+        'message': body,
         'ua': rowdata['ua']}
 
     print 'Inserting post #{}...'.format(rowdata['post_id'])

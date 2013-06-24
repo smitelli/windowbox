@@ -3,14 +3,15 @@ import os
 import sqlalchemy as sa
 from magic import Magic
 import windowbox.configs.base as cfg
-from windowbox.database import DeclarativeBase, JSONEncodedDict, session
+from windowbox.database import (
+    DeclarativeBase, UTCDateTime, JSONEncodedDict, session)
 
 
 class PostSchema(DeclarativeBase):
     __tablename__ = 'posts'
     post_id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    timestamp = sa.Column(sa.Integer)
-    message = sa.Column(sa.Text)
+    date_gmt = sa.Column(UTCDateTime)
+    message = sa.Column(sa.UnicodeText)
     ua = sa.Column(sa.String(255))
 
 
