@@ -44,8 +44,6 @@ for row in data:
         body = unicode(rowdata['message'], 'ascii')
     except UnicodeError:
         body = unicode(rowdata['message'], 'utf-8')
-    else:
-        body = rowdata['message']
 
     postdata = {
         'post_id': rowdata['post_id'],
