@@ -6,6 +6,6 @@
     {% if next %} | <a href="{{ url_for('get_post', post_id=next.id) }}">Next</a>{% endif %}
 </p>
 
-<p><img src="{{ url_for('get_attachment_derivative', post_id=post.id, dimensions='500x') }}"></p>
+<p><img src="{{ url_for('get_attachment_derivative', attachment_id=post.get_attachment().id, dimensions='500x') }}"></p>
 
 <p>{{ post.readable_date }}</p>

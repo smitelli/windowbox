@@ -3,17 +3,21 @@ import windowbox.configs.base as cfg
 from windowbox.database import (
     DeclarativeBase, session as db_session, UTCDateTime)
 from windowbox.models import BaseModel
+from windowbox.models.attachment import AttachmentManager
 
 
 class PostManager():
-    def get_all(self):
+    @staticmethod
+    def get_all():
         for post in db_session.query(Post).order_by(Post.id):
             yield post
 
-    def get_by_id(self, post_id):
+    @staticmethod
+    def get_by_id(post_id):
         return db_session.query(Post).filter(Post.id == post_id).first()
 
-    def get_adjacent_by_id(self, post_id):
+    @staticmethod
+    def get_adjacent_by_id(post_id):
         prev = db_session.query(Post).filter(Post.id < post_id).order_by(sa.desc(Post.id)).first()
         next = db_session.query(Post).filter(Post.id > post_id).order_by(Post.id).first()
         return (prev, next)
@@ -30,6 +34,9 @@ class PostSchema(DeclarativeBase):
 class Post(PostSchema, BaseModel):
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
+
+    def get_attachment(self):
+        return AttachmentManager.get_by_post_id(self.id)
 
     @property
     def readable_date(self):

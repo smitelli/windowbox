@@ -17,3 +17,7 @@ DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
 STORAGE_DIR = os.path.abspath(os.path.join(_confdir, '..', '..', 'storage'))
 
 EXIFTOOL = '/usr/local/bin/exiftool'
+
+ALLOWED_DIMENSIONS = [
+    '500x',
+    '25x25']

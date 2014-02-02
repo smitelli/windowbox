@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import subprocess
 import sqlalchemy as sa
 import windowbox.configs.base as cfg
@@ -12,8 +13,34 @@ from windowbox.models import BaseModel, BaseFSEntity
 
 
 class AttachmentManager():
-    def get_attachment_by_post_id(self, post_id):
+    @staticmethod
+    def get_by_id(attachment_id):
+        return db_session.query(Attachment).filter(Attachment.id == attachment_id).first()
+
+    @staticmethod
+    def get_by_post_id(post_id):
         return db_session.query(Attachment).filter(Attachment.post_id == post_id).first()
+
+    @staticmethod
+    def decode_dimensions(dimensions):
+        if dimensions not in cfg.ALLOWED_DIMENSIONS:
+            return (None, None)
+
+        matches = re.match('(?P<width>\d*)x(?P<height>\d*)', dimensions)
+
+        if matches:
+            def str_to_int(value):
+                try:
+                    return int(value)
+                except ValueError:
+                    return None
+
+            width = str_to_int(matches.group('width'))
+            height = str_to_int(matches.group('height'))
+        else:
+            width = height = None
+
+        return (width, height)
 
 
 class AttachmentAttributesSchema(DeclarativeBase):

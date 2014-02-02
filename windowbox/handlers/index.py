@@ -4,7 +4,7 @@ from windowbox.models.post import PostManager
 
 class IndexHandler():
     def get(self):
-        posts = PostManager().get_all()
+        posts = PostManager.get_all()
 
         template_vars = {
             'posts': posts}
