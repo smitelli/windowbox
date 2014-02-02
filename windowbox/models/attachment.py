@@ -129,9 +129,9 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         im = PILImage.open(source.get_file_name())
 
         try:
-            orient_code = source.attributes['EXIF.Orientation.num']
+            orient_code = int(source.attributes['EXIF.Orientation.num'])
             im = self._transpose_derivative(im, orient_code)
-        except KeyError:
+        except (KeyError, ValueError):
             pass
 
         im = self._resize_derivative(im, self.width, self.height)
