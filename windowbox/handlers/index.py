@@ -1,10 +1,10 @@
 from flask import render_template
-from windowbox.models.post import PostFactory
+from windowbox.models.post import PostManager
 
 
 class IndexHandler():
     def get(self):
-        posts = PostFactory().get_all()
+        posts = PostManager().get_all()
 
         template_vars = {
             'posts': posts}

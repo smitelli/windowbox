@@ -2,38 +2,13 @@ import errno
 import os
 import sqlalchemy as sa
 from magic import Magic
-import windowbox.configs.base as cfg
-from windowbox.database import (
-    DeclarativeBase, UTCDateTime, JSONEncodedDict, session)
-
-
-class PostSchema(DeclarativeBase):
-    __tablename__ = 'posts'
-    post_id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    date_gmt = sa.Column(UTCDateTime)
-    message = sa.Column(sa.UnicodeText)
-    ua = sa.Column(sa.String(255))
-
-
-class ImageOriginalSchema(DeclarativeBase):
-    __tablename__ = 'image_originals'
-    post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.post_id'), primary_key=True, autoincrement=False)
-    mime_type = sa.Column(sa.String(255))
-    exif_data = sa.Column(JSONEncodedDict)
-
-
-class ImageDerivativeSchema(DeclarativeBase):
-    __tablename__ = 'image_derivatives'
-    __table_args__ = (sa.Index('post_id_and_size', 'post_id', 'size'), )
-    derivative_id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.post_id'))
-    size = sa.Column(sa.String(11))
-    mime_type = sa.Column(sa.String(255))
+from windowbox.database import session
 
 
 class BaseModel():
     def save(self, commit=False):
         session.add(self)
+        session.flush()
 
         if commit:
             session.commit()
@@ -42,10 +17,19 @@ class BaseModel():
 
 
 class BaseFSEntity():
-    STORAGE_DIR = cfg.STORAGE_DIR
-    MIME_EXTENSION_MAP = {}
+    storage_path = ''
+    mime_extension_map = {}
+
+    def get_data(self):
+        with open(self.get_file_name(), mode='rb') as fh:
+            data = fh.read()
+
+        return data
 
     def set_data(self, data):
+        # Need to save() to ensure we know our auto-increment ID
+        self.save(commit=False)
+
         self.mime_type = self._identify_mime_type(data)
 
         file_name = self.get_file_name()
@@ -68,19 +52,13 @@ class BaseFSEntity():
 
         self.set_data(data)
 
-    def get_data(self):
-        with open(self.get_file_name(), mode='rb') as fh:
-            data = fh.read()
-
-        return data
-
     def get_file_name(self):
         primary_key = sa.orm.class_mapper(self.__class__).primary_key[0].name
         id_str = str(getattr(self, primary_key))
 
         extension = ''
         try:
-            extension = self.MIME_EXTENSION_MAP[self.mime_type]
+            extension = self.mime_extension_map[self.mime_type]
         except KeyError:
             pass
 
@@ -93,7 +71,7 @@ class BaseFSEntity():
 
         file_name = '{}{}'.format(id_str, extension)
 
-        return os.path.join(self.STORAGE_DIR, d1, d2, file_name)
+        return os.path.join(self.storage_path, d1, d2, file_name)
 
     def _identify_mime_type(self, buffer):
         magic = Magic(mime=True)

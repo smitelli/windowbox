@@ -1,10 +1,4 @@
-.DS_Store
-*.pyc
-*.pyo
-*.db
-env
-dist
-*.egg-info
 _importable/
 storage/
+*.pyc
 *.sqlite

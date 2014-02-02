@@ -4,7 +4,7 @@ import pytz
 from datetime import datetime
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
-from windowbox.models.image import ImageOriginal, ImageDerivative
+from windowbox.models.image import Image, ImageDerivative
 
 _path = os.path.abspath(os.path.dirname(__file__))
 _tz = pytz.timezone('America/New_York')
@@ -30,7 +30,7 @@ def get_image_path(id):
     return (None, None)
 
 Post.__table__.create()
-ImageOriginal.__table__.create()
+Image.__table__.create()
 ImageDerivative.__table__.create()
 
 fields = ['post_id', 'image_id', 'timestamp', 'message', 'ua']
@@ -46,8 +46,8 @@ for row in data:
         body = unicode(rowdata['message'], 'utf-8')
 
     postdata = {
-        'post_id': rowdata['post_id'],
-        'date_gmt': _tz.localize(datetime.fromtimestamp(float(rowdata['timestamp']))),
+        'id': rowdata['post_id'],
+        'created_utc': _tz.localize(datetime.fromtimestamp(float(rowdata['timestamp']))),
         'message': body,
         'ua': rowdata['ua']}
 
@@ -56,12 +56,12 @@ for row in data:
 
     imime, ipath = get_image_path(rowdata['image_id'])
     imagedata = {
-        'post_id': post.post_id,
+        'post_id': post.id,
         'mime_type': '',
         'exif_data': ''}
 
     print 'Inserting image...'
-    image = ImageOriginal(**imagedata)
+    image = Image(**imagedata)
     image.set_data_from_file(ipath)
     image.save(commit=True)
 

@@ -22,10 +22,10 @@ def get_post(post_id):
     return PostHandler().get(post_id)
 
 
-@app.route('/image/<int:post_id>', defaults={'size': None})
-@app.route('/image/<int:post_id>/<size>')
-def get_image(post_id, size):
-    return ImageHandler().get(post_id, size)
+@app.route('/image/<int:post_id>', defaults={'dimensions': ''})
+@app.route('/image/<int:post_id>/<dimensions>')
+def get_image(post_id, dimensions):
+    return ImageHandler().get(post_id, dimensions)
 
 
 @app.teardown_request
