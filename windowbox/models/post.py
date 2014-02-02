@@ -1,8 +1,8 @@
 import sqlalchemy as sa
 import windowbox.configs.base as cfg
-from windowbox.database import session as db_session
+from windowbox.database import (
+    DeclarativeBase, session as db_session, UTCDateTime)
 from windowbox.models import BaseModel
-from windowbox.database import DeclarativeBase, UTCDateTime
 
 
 class PostManager():

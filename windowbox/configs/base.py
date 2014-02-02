@@ -7,11 +7,10 @@ FLASK_KWARGS = {
     'debug': True,
     'host': '0.0.0.0'}
 
-DATABASE_CONFIG = {
-    'URI': 'sqlite:///' + os.path.join(_confdir, '..', '..', 'db.sqlite'),
-    'KWARGS': {
-        'convert_unicode': True,
-        'echo': False}}
+DATABASE_URI = 'sqlite:///' + os.path.join(_confdir, '..', '..', 'db.sqlite')
+DATABASE_KWARGS = {
+    'convert_unicode': True,
+    'echo': False}
 
 DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
 

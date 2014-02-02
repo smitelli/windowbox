@@ -1,12 +1,12 @@
 import json
 import os
-from PIL import Image as PILImage
-from StringIO import StringIO
 import subprocess
 import sqlalchemy as sa
+import windowbox.configs.base as cfg
+from PIL import Image as PILImage
+from StringIO import StringIO
 from sqlalchemy.orm.collections import column_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy
-import windowbox.configs.base as cfg
 from windowbox.database import DeclarativeBase, session as db_session
 from windowbox.models import BaseModel, BaseFSEntity
 
@@ -29,6 +29,7 @@ class AttachmentAttributesSchema(DeclarativeBase):
 
 
 class AttachmentSchema(DeclarativeBase):
+    # Used to form the one-to-many relationship with AttachmentAttributesSchema
     _attrs = AttachmentAttributesSchema
     _attrs_dict = sa.orm.relation(_attrs, collection_class=column_mapped_collection(_attrs.name))
 
@@ -40,7 +41,7 @@ class AttachmentSchema(DeclarativeBase):
 
 
 class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
-    storage_path = os.path.join(cfg.STORAGE_DIR, 'original')
+    storage_path = os.path.join(cfg.STORAGE_DIR, 'attachments')
     mime_extension_map = {
         'image/gif': '.gif',
         'image/jpeg': '.jpg',
@@ -118,7 +119,7 @@ class AttachmentDerivativeSchema(DeclarativeBase):
 
 
 class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
-    storage_path = os.path.join(cfg.STORAGE_DIR, 'derivative')
+    storage_path = os.path.join(cfg.STORAGE_DIR, 'derivatives')
     mime_extension_map = Attachment.mime_extension_map
 
     def __repr__(self):
