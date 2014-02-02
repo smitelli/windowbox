@@ -8,8 +8,13 @@ from windowbox.models.attachment import AttachmentManager
 
 class PostManager():
     @staticmethod
-    def get_all():
-        for post in db_session.query(Post).order_by(Post.id):
+    def get_all(until_id=None, limit=None):
+        if until_id is not None:
+            query = db_session.query(Post).filter(Post.id < until_id).order_by(Post.id.desc()).limit(limit)
+        else:
+            query = db_session.query(Post).order_by(Post.id.desc()).limit(limit)
+
+        for post in query:
             yield post
 
     @staticmethod
