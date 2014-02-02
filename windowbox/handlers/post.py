@@ -9,11 +9,6 @@ class PostHandler():
             post = PostManager().get_by_id(post_id)
             previous, next = PostManager().get_adjacent_by_id(post_id)
 
-            # TODO Temporary!
-            from pprint import pprint
-            from windowbox.models.image import ImageManager
-            pprint(ImageManager().get_image_by_post_id(post_id=post_id).exif_data)
-
             template_vars = {
                 'post': post,
                 'previous': previous,

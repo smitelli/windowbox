@@ -1,9 +1,9 @@
 import re
 from flask import make_response, abort
-from windowbox.models.image import ImageManager
+from windowbox.models.attachment import AttachmentManager
 
 
-class ImageHandler():
+class AttachmentHandler():
     def get(self, post_id=None, dimensions=''):
         try:
             matches = re.match('(?P<width>\d*)x(?P<height>\d*)', dimensions)
@@ -20,11 +20,11 @@ class ImageHandler():
             else:
                 width = height = None
 
-            image = ImageManager().get_image_by_post_id(post_id=post_id)
-            deriv = image.get_derivative(width, height)
+            attachment = AttachmentManager().get_attachment_by_post_id(post_id=post_id)
+            derivative = attachment.get_derivative(width, height)
 
-            response = make_response(deriv.get_data())
-            response.headers['Content-Type'] = deriv.mime_type
+            response = make_response(derivative.get_data())
+            response.headers['Content-Type'] = derivative.mime_type
 
             return response
         except (AttributeError):

@@ -10,20 +10,20 @@ from windowbox.database import (
 from windowbox.models import BaseModel, BaseFSEntity
 
 
-class ImageManager():
-    def get_image_by_post_id(self, post_id):
-        return db_session.query(Image).filter(Image.post_id == post_id).first()
+class AttachmentManager():
+    def get_attachment_by_post_id(self, post_id):
+        return db_session.query(Attachment).filter(Attachment.post_id == post_id).first()
 
 
-class ImageSchema(DeclarativeBase):
-    __tablename__ = 'images'
+class AttachmentSchema(DeclarativeBase):
+    __tablename__ = 'attachments'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.id'))
     mime_type = sa.Column(sa.String(255))
     exif_data = sa.Column(JSONEncodedDict)
 
 
-class Image(ImageSchema, BaseModel, BaseFSEntity):
+class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
     storage_path = os.path.join(cfg.STORAGE_DIR, 'original')
     mime_extension_map = {
         'image/gif': '.gif',
@@ -34,16 +34,18 @@ class Image(ImageSchema, BaseModel, BaseFSEntity):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
 
     def set_data(self, *args, **kwargs):
-        super(Image, self).set_data(*args, **kwargs)
+        super(Attachment, self).set_data(*args, **kwargs)
 
         self.exif_data = self._load_exif_data()
 
     def get_derivative(self, width=None, height=None):
-        derivative = db_session.query(ImageDerivative).filter(
-            ImageDerivative.image_id == self.id, ImageDerivative.width == width, ImageDerivative.height == height).first()
+        derivative = db_session.query(AttachmentDerivative).filter(
+            AttachmentDerivative.attachment_id == self.id,
+            AttachmentDerivative.width == width,
+            AttachmentDerivative.height == height).first()
 
         if not derivative:
-            derivative = ImageDerivative(image_id=self.id, width=width, height=height)
+            derivative = AttachmentDerivative(attachment_id=self.id, width=width, height=height)
             derivative.rebuild(source=self)
 
         if not os.path.isfile(derivative.get_file_name()):
@@ -83,19 +85,19 @@ class Image(ImageSchema, BaseModel, BaseFSEntity):
         return dict_data
 
 
-class ImageDerivativeSchema(DeclarativeBase):
-    __tablename__ = 'image_derivatives'
-    __table_args__ = (sa.Index('image_id_and_dimensions', 'image_id', 'width', 'height'), )
+class AttachmentDerivativeSchema(DeclarativeBase):
+    __tablename__ = 'attachment_derivatives'
+    __table_args__ = (sa.Index('attachment_id_dimensions', 'attachment_id', 'width', 'height'), )
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    image_id = sa.Column(sa.Integer, sa.ForeignKey('images.id'))
+    attachment_id = sa.Column(sa.Integer, sa.ForeignKey('attachments.id'))
     width = sa.Column(sa.Integer, nullable=True)
     height = sa.Column(sa.Integer, nullable=True)
     mime_type = sa.Column(sa.String(255))
 
 
-class ImageDerivative(ImageDerivativeSchema, BaseModel, BaseFSEntity):
+class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
     storage_path = os.path.join(cfg.STORAGE_DIR, 'derivative')
-    mime_extension_map = Image.mime_extension_map
+    mime_extension_map = Attachment.mime_extension_map
 
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)

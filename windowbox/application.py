@@ -2,7 +2,7 @@ from flask import Flask
 from windowbox.database import session as db_session
 from windowbox.handlers.index import IndexHandler
 from windowbox.handlers.post import PostHandler
-from windowbox.handlers.image import ImageHandler
+from windowbox.handlers.attachment import AttachmentHandler
 
 app = Flask(__name__)
 
@@ -22,10 +22,10 @@ def get_post(post_id):
     return PostHandler().get(post_id)
 
 
-@app.route('/image/<int:post_id>', defaults={'dimensions': ''})
-@app.route('/image/<int:post_id>/<dimensions>')
-def get_image(post_id, dimensions):
-    return ImageHandler().get(post_id, dimensions)
+@app.route('/attachment/<int:post_id>', defaults={'dimensions': ''})
+@app.route('/attachment/<int:post_id>/<dimensions>')
+def get_attachment_derivative(post_id, dimensions):
+    return AttachmentHandler().get(post_id, dimensions)
 
 
 @app.teardown_request

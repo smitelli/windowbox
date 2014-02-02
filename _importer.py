@@ -4,13 +4,13 @@ import pytz
 from datetime import datetime
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
-from windowbox.models.image import Image, ImageDerivative
+from windowbox.models.attachment import Attachment, AttachmentDerivative
 
 _path = os.path.abspath(os.path.dirname(__file__))
 _tz = pytz.timezone('America/New_York')
 
 
-def get_image_path(id):
+def get_attachment_path(id):
     ipath = os.path.join(_path, '_importable/originals/{}.jpg'.format(id))
     if os.path.isfile(ipath):
         return ('image/jpeg', ipath)
@@ -30,10 +30,10 @@ def get_image_path(id):
     return (None, None)
 
 Post.__table__.create()
-Image.__table__.create()
-ImageDerivative.__table__.create()
+Attachment.__table__.create()
+AttachmentDerivative.__table__.create()
 
-fields = ['post_id', 'image_id', 'timestamp', 'message', 'ua']
+fields = ['post_id', 'attachment_id', 'timestamp', 'message', 'ua']
 data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
 
 for row in data:
@@ -54,15 +54,15 @@ for row in data:
     print 'Inserting post #{}...'.format(rowdata['post_id'])
     post = Post(**postdata).save(commit=True)
 
-    imime, ipath = get_image_path(rowdata['image_id'])
-    imagedata = {
+    imime, ipath = get_attachment_path(rowdata['attachment_id'])
+    attach_data = {
         'post_id': post.id,
         'mime_type': '',
         'exif_data': ''}
 
-    print 'Inserting image...'
-    image = Image(**imagedata)
-    image.set_data_from_file(ipath)
-    image.save(commit=True)
+    print 'Inserting attachment...'
+    attachment = Attachment(**attach_data)
+    attachment.set_data_from_file(ipath)
+    attachment.save(commit=True)
 
 db_session.close()
