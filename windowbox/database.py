@@ -1,4 +1,3 @@
-import json
 import pytz
 from datetime import datetime
 import sqlalchemy as sa
@@ -22,17 +21,3 @@ class UTCDateTime(sa.types.TypeDecorator):
             return datetime(value.year, value.month, value.day,
                             value.hour, value.minute, value.second,
                             value.microsecond, tzinfo=pytz.UTC)
-
-
-class JSONEncodedDict(sa.types.TypeDecorator):
-    impl = sa.types.Text
-
-    def process_bind_param(self, value, dialect):
-        if value is not None:
-            value = json.dumps(value)
-        return value
-
-    def process_result_value(self, value, dialect):
-        if value is not None:
-            value = json.loads(value)
-        return value

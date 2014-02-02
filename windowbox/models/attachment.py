@@ -4,9 +4,10 @@ from PIL import Image as PILImage
 from StringIO import StringIO
 import subprocess
 import sqlalchemy as sa
+from sqlalchemy.orm.collections import column_mapped_collection
+from sqlalchemy.ext.associationproxy import association_proxy
 import windowbox.configs.base as cfg
-from windowbox.database import (
-    DeclarativeBase, JSONEncodedDict, session as db_session)
+from windowbox.database import DeclarativeBase, session as db_session
 from windowbox.models import BaseModel, BaseFSEntity
 
 
@@ -15,12 +16,27 @@ class AttachmentManager():
         return db_session.query(Attachment).filter(Attachment.post_id == post_id).first()
 
 
+class AttachmentAttributesSchema(DeclarativeBase):
+    __tablename__ = 'attachment_attributes'
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    attachment_id = sa.Column(sa.Integer, sa.ForeignKey('attachments.id'))
+    name = sa.Column(sa.String(255))
+    value = sa.Column(sa.String(255))
+
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+
 class AttachmentSchema(DeclarativeBase):
+    _attrs = AttachmentAttributesSchema
+    _attrs_dict = sa.orm.relation(_attrs, collection_class=column_mapped_collection(_attrs.name))
+
     __tablename__ = 'attachments'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.id'))
     mime_type = sa.Column(sa.String(255))
-    exif_data = sa.Column(JSONEncodedDict)
+    attributes = association_proxy('_attrs_dict', 'value', creator=_attrs)
 
 
 class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
@@ -36,7 +52,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
     def set_data(self, *args, **kwargs):
         super(Attachment, self).set_data(*args, **kwargs)
 
-        self.exif_data = self._load_exif_data()
+        self.attributes = self._load_exif_data()
 
     def get_derivative(self, width=None, height=None):
         derivative = db_session.query(AttachmentDerivative).filter(
@@ -54,35 +70,41 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         return derivative
 
     def _load_exif_data(self):
+        def flatten_dict(d):
+            def expand(key, value):
+                if isinstance(value, dict):
+                    return [(key + '.' + k, v) for k, v in flatten_dict(value).items()]
+                else:
+                    return [(key, str(value))]
+            return dict([item for k, v in d.items() for item in expand(k, v)])
+
         # Ask ExifTool to read file info, then convert it to a dict
         args = [cfg.EXIFTOOL, '-json', '-long', '-g', self.get_file_name()]
         json_data = subprocess.check_output(args)
         dict_data = json.loads(json_data)[0]
+        flat_data = flatten_dict(dict_data)
 
         # The following bits of data are not useful; they will be stripped
-        bad_groups = ['ExifTool', 'SourceFile']
-        bad_keys = [
-            ('Composite', 'ThumbnailImage'),
-            ('EXIF', 'ThumbnailLength'),
-            ('EXIF', 'ThumbnailOffset'),
-            ('File', 'Directory'),
-            ('File', 'FileAccessDate'),
-            ('File', 'FileInodeChangeDate'),
-            ('File', 'FileModifyDate'),
-            ('File', 'FileName'),
-            ('File', 'FilePermissions'),
-            ('File', 'MIMEType'),
-            ('JFIF', 'ThumbnailImage')]
+        bad_keys = (
+            'ExifTool',
+            'SourceFile'
+            'Composite.ThumbnailImage',
+            'EXIF.ThumbnailLength',
+            'EXIF.ThumbnailOffset',
+            'File.Directory',
+            'File.FileAccessDate',
+            'File.FileInodeChangeDate',
+            'File.FileModifyDate',
+            'File.FileName',
+            'File.FilePermissions',
+            'File.MIMEType',
+            'JFIF.ThumbnailImage')
 
-        for group in bad_groups:
-            if group in dict_data:
-                del dict_data[group]
+        for k in flat_data.keys():
+            if k.startswith(bad_keys):
+                del flat_data[k]
 
-        for group, key in bad_keys:
-            if group in dict_data and key in dict_data[group]:
-                del dict_data[group][key]
-
-        return dict_data
+        return flat_data
 
 
 class AttachmentDerivativeSchema(DeclarativeBase):
@@ -106,9 +128,8 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         self.mime_type = source.mime_type
         im = PILImage.open(source.get_file_name())
 
-        exif = source.exif_data
         try:
-            orient_code = exif['EXIF']['Orientation']['num']
+            orient_code = source.attributes['EXIF.Orientation.num']
             im = self._transpose_derivative(im, orient_code)
         except KeyError:
             pass

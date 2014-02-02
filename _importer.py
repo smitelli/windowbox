@@ -4,7 +4,8 @@ import pytz
 from datetime import datetime
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
-from windowbox.models.attachment import Attachment, AttachmentDerivative
+from windowbox.models.attachment import (
+    Attachment, AttachmentDerivative, AttachmentAttributesSchema)
 
 _path = os.path.abspath(os.path.dirname(__file__))
 _tz = pytz.timezone('America/New_York')
@@ -32,6 +33,7 @@ def get_attachment_path(id):
 Post.__table__.create()
 Attachment.__table__.create()
 AttachmentDerivative.__table__.create()
+AttachmentAttributesSchema.__table__.create()
 
 fields = ['post_id', 'attachment_id', 'timestamp', 'message', 'ua']
 data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
@@ -58,7 +60,7 @@ for row in data:
     attach_data = {
         'post_id': post.id,
         'mime_type': '',
-        'exif_data': ''}
+        'attributes': {}}
 
     print 'Inserting attachment...'
     attachment = Attachment(**attach_data)
