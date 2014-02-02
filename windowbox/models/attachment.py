@@ -47,7 +47,7 @@ class AttachmentAttributesSchema(DeclarativeBase):
     __tablename__ = 'attachment_attributes'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     attachment_id = sa.Column(sa.Integer, sa.ForeignKey('attachments.id'))
-    name = sa.Column(sa.String(255))
+    name = sa.Column(sa.String(64))
     value = sa.Column(sa.String(255))
 
     def __init__(self, name, value):
@@ -62,7 +62,7 @@ class AttachmentSchema(DeclarativeBase):
 
     __tablename__ = 'attachments'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.id'))
+    post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.id'), index=True)
     mime_type = sa.Column(sa.String(255))
     attributes = association_proxy('_attrs_dict', 'value', creator=_attrs)
 
@@ -137,7 +137,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
 class AttachmentDerivativeSchema(DeclarativeBase):
     __tablename__ = 'attachment_derivatives'
-    __table_args__ = (sa.Index('attachment_id_dimensions', 'attachment_id', 'width', 'height'), )
+    __table_args__ = (sa.Index('attachment_id_dimensions', 'attachment_id', 'width', 'height', unique=True), )
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     attachment_id = sa.Column(sa.Integer, sa.ForeignKey('attachments.id'))
     width = sa.Column(sa.Integer, nullable=True)
