@@ -115,7 +115,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         # The following bits of data are not useful; they will be stripped
         bad_keys = (
             'ExifTool',
-            'SourceFile'
+            'SourceFile',
             'Composite.ThumbnailImage',
             'EXIF.ThumbnailLength',
             'EXIF.ThumbnailOffset',
@@ -128,9 +128,9 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             'File.MIMEType',
             'JFIF.ThumbnailImage')
 
-        for k in flat_data.keys():
-            if k.startswith(bad_keys):
-                del flat_data[k]
+        for key in flat_data.keys():
+            if key.startswith(bad_keys):
+                del flat_data[key]
 
         return flat_data
 
