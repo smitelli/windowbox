@@ -29,9 +29,8 @@ class BaseFSEntity():
     def set_data(self, buffer_str):
         self.mime_type = self._identify_mime_type(buffer_str)
 
-        # Ensure the new mime_type is committed. Also ensures we have an auto-
-        # increment ID for get_file_name().
-        self.save(commit=True)
+        # Ensures we have an auto-increment ID for get_file_name().
+        self.save(commit=False)
 
         file_name = self.get_file_name()
         path = os.path.dirname(file_name)
