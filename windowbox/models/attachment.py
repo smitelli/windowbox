@@ -164,8 +164,8 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
 
         im = self._resize_derivative(im, self.width, self.height)
 
-        self.save(commit=True)
         self._save_derivative(im)
+        self.save(commit=True)
 
     @staticmethod
     def _transpose_derivative(im, orient_code):

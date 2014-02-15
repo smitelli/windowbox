@@ -22,15 +22,15 @@ class BaseFSEntity():
 
     def get_data(self):
         with open(self.get_file_name(), mode='rb') as fh:
-            data = fh.read()
+            buffer_str = fh.read()
 
-        return data
+        return buffer_str
 
-    def set_data(self, data):
+    def set_data(self, buffer_str):
         # Need to save() to ensure we know our auto-increment ID
         self.save(commit=False)
 
-        self.mime_type = self._identify_mime_type(data)
+        self.mime_type = self._identify_mime_type(buffer_str)
 
         file_name = self.get_file_name()
         path = os.path.dirname(file_name)
@@ -44,13 +44,13 @@ class BaseFSEntity():
                 raise
 
         with open(file_name, mode='wb') as fh:
-            fh.write(data)
+            fh.write(buffer_str)
 
     def set_data_from_file(self, source_file):
         with open(source_file, mode='rb') as fh:
-            data = fh.read()
+            buffer_str = fh.read()
 
-        self.set_data(data)
+        self.set_data(buffer_str)
 
     def get_file_name(self):
         primary_key = sa.orm.class_mapper(self.__class__).primary_key[0].name
