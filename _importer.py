@@ -49,7 +49,8 @@ for row in data:
 
     postdata = {
         'id': rowdata['post_id'],
-        'created_utc': _tz.localize(datetime.fromtimestamp(float(rowdata['timestamp']))),
+        'created_utc': _tz.localize(datetime.fromtimestamp(
+            float(rowdata['timestamp']))),
         'message': body,
         'ua': rowdata['ua']}
 

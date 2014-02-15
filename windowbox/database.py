@@ -1,5 +1,6 @@
 import pytz
 import sqlalchemy as sa
+import sqlalchemy.orm as orm
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from windowbox.configs.base import DATABASE_URI, DATABASE_KWARGS
@@ -8,7 +9,7 @@ _engine = sa.create_engine(DATABASE_URI, **DATABASE_KWARGS)
 
 DeclarativeBase = declarative_base(bind=_engine)
 
-session = sa.orm.sessionmaker(bind=_engine, autocommit=False, autoflush=False)()
+session = orm.sessionmaker(bind=_engine, autocommit=False, autoflush=False)()
 
 
 class UTCDateTime(sa.types.TypeDecorator):
