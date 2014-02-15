@@ -52,15 +52,19 @@ class AttachmentAttributesSchema(DeclarativeBase):
 
 
 class AttachmentSchema(DeclarativeBase):
-    # Used to form the one-to-many relationship with AttachmentAttributesSchema
-    _attrs = AttachmentAttributesSchema
-    _attrs_dict = sa.orm.relation(_attrs, collection_class=column_mapped_collection(_attrs.name))
-
     __tablename__ = 'attachments'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.id'), index=True)
     mime_type = sa.Column(sa.String(255))
-    attributes = association_proxy('_attrs_dict', 'value', creator=_attrs)
+
+    # Used to form the one-to-many relationship with AttachmentAttributesSchema
+    _attributes_dict = sa.orm.relation(
+        AttachmentAttributesSchema,
+        collection_class=column_mapped_collection(AttachmentAttributesSchema.name))
+
+    attributes = association_proxy(
+        '_attributes_dict', 'value',
+        creator=lambda n, v: AttachmentAttributesSchema(name=n, value=v))
 
 
 class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
