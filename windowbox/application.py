@@ -22,9 +22,9 @@ def get_post(post_id):
     return PostHandler.get(post_id)
 
 
-@app.route('/attachment/<int:attachment_id>', defaults={'dimensions': ''})
+@app.route('/attachment/<int:attachment_id>')
 @app.route('/attachment/<int:attachment_id>/<dimensions>')
-def get_attachment_derivative(attachment_id, dimensions):
+def get_attachment_derivative(attachment_id, dimensions=''):
     return AttachmentHandler.get(attachment_id, dimensions)
 
 
