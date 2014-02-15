@@ -3,7 +3,8 @@ from windowbox.models.post import PostManager
 
 
 class IndexHandler():
-    def get(self):
+    @staticmethod
+    def get():
         posts = PostManager.get_all()
 
         template_vars = {

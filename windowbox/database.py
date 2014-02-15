@@ -20,6 +20,6 @@ class UTCDateTime(sa.types.TypeDecorator):
 
     def process_result_value(self, value, dialect):
         if value is not None:
-            return datetime(value.year, value.month, value.day,
-                            value.hour, value.minute, value.second,
-                            value.microsecond, tzinfo=pytz.UTC)
+            return datetime(
+                value.year, value.month, value.day, value.hour, value.minute,
+                value.second, value.microsecond, tzinfo=pytz.UTC)

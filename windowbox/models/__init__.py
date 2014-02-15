@@ -73,6 +73,7 @@ class BaseFSEntity():
 
         return os.path.join(self.storage_path, d1, d2, file_name)
 
-    def _identify_mime_type(self, buffer):
+    @staticmethod
+    def _identify_mime_type(buffer):
         magic = Magic(mime=True)
         return magic.from_buffer(buffer)

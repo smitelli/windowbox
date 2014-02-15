@@ -28,17 +28,17 @@ class AttachmentManager():
 
         matches = re.match('(?P<width>\d*)x(?P<height>\d*)', dimensions)
 
-        if matches:
-            def str_to_int(value):
-                try:
-                    return int(value)
-                except ValueError:
-                    return None
+        if not matches:
+            return (None, None)
 
-            width = str_to_int(matches.group('width'))
-            height = str_to_int(matches.group('height'))
-        else:
-            width = height = None
+        def str_to_int(value):
+            try:
+                return int(value)
+            except ValueError:
+                return None
+
+        width = str_to_int(matches.group('width'))
+        height = str_to_int(matches.group('height'))
 
         return (width, height)
 
@@ -167,7 +167,8 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         self.save(commit=True)
         self._save_derivative(im)
 
-    def _transpose_derivative(self, im, orient_code):
+    @staticmethod
+    def _transpose_derivative(im, orient_code):
         operations = {
             1: (None, None),  # no rotation
             2: (None, PILImage.FLIP_LEFT_RIGHT),  # no rotation - horizontal flip
@@ -191,7 +192,8 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
 
         return im
 
-    def _resize_derivative(self, im, width, height):
+    @staticmethod
+    def _resize_derivative(im, width, height):
         im = im.convert('RGB')
 
         old_width, old_height = im.size

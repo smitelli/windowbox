@@ -3,8 +3,9 @@ from windowbox.models.attachment import AttachmentManager
 
 
 class AttachmentHandler():
-    def get(self, attachment_id=None, dimensions=''):
-        #try:
+    @staticmethod
+    def get(attachment_id=None, dimensions=''):
+        try:
             attachment = AttachmentManager.get_by_id(attachment_id=attachment_id)
             width, height = AttachmentManager.decode_dimensions(dimensions)
 
@@ -14,5 +15,5 @@ class AttachmentHandler():
             response.headers['Content-Type'] = derivative.mime_type
 
             return response
-        #except (AttributeError):
-        #    abort(404)
+        except (AttributeError):
+            abort(404)
