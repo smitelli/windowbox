@@ -6,7 +6,7 @@ class AttachmentHandler():
     @staticmethod
     def get(attachment_id=None, dimensions=''):
         try:
-            attachment = AttachmentManager.get_by_id(attachment_id=attachment_id)
+            attachment = AttachmentManager.get_by_id(attachment_id)
             width, height = AttachmentManager.decode_dimensions(dimensions)
 
             derivative = attachment.get_derivative(width, height)
