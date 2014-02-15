@@ -50,10 +50,6 @@ class AttachmentAttributesSchema(DeclarativeBase):
     name = sa.Column(sa.String(64))
     value = sa.Column(sa.String(255))
 
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
-
 
 class AttachmentSchema(DeclarativeBase):
     # Used to form the one-to-many relationship with AttachmentAttributesSchema
