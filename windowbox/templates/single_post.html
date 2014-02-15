@@ -8,4 +8,4 @@
 
 <p><img src="{{ url_for('get_attachment_derivative', attachment_id=post.get_attachment().id, dimensions='500x') }}"></p>
 
-<p>{{ post.readable_date }}</p>
+<p>{{ post.get_created_date() }}</p>

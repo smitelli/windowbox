@@ -43,7 +43,10 @@ class Post(PostSchema, BaseModel):
     def get_attachment(self):
         return AttachmentManager.get_by_post_id(self.id)
 
-    @property
-    def readable_date(self):
+    def get_created_date(self, format=None):
+        if format is None:
+            format = '%Y-%m-%d %H:%M:%S %Z'
+
         date_local = self.created_utc.astimezone(cfg.DISPLAY_TIMEZONE)
-        return date_local.strftime('%Y-%m-%d %H:%M:%S %Z')
+
+        return date_local.strftime(format)
