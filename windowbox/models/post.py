@@ -39,7 +39,7 @@ class PostSchema(DeclarativeBase):
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     created_utc = sa.Column(UTCDateTime)
     message = sa.Column(sa.UnicodeText)
-    ua = sa.Column(sa.String(255))
+    user_agent = sa.Column(sa.String(255))
 
 
 class Post(PostSchema, BaseModel):

@@ -35,7 +35,7 @@ Attachment.__table__.create()
 AttachmentDerivative.__table__.create()
 AttachmentAttributesSchema.__table__.create()
 
-fields = ['post_id', 'attachment_id', 'timestamp', 'message', 'ua']
+fields = ['post_id', 'attachment_id', 'timestamp', 'message', 'user_agent']
 data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
 
 for row in data:
@@ -52,7 +52,7 @@ for row in data:
         'created_utc': _tz.localize(datetime.fromtimestamp(
             float(rowdata['timestamp']))),
         'message': body,
-        'ua': rowdata['ua']}
+        'user_agent': rowdata['user_agent']}
 
     print 'Inserting post #{}...'.format(rowdata['post_id'])
     post = Post(**postdata).save(commit=True)
