@@ -1,7 +1,5 @@
-<h1>Windowbox</h1>
-
 <ul>
-    {% for post in posts %}
+    {% for post in items %}
         <li>
             <img src="{{ url_for('get_attachment_derivative', attachment_id=post.get_attachment().id, dimensions='25x25') }}">
             <a href="{{ url_for('get_post', post_id=post.id) }}">{{ post.message }}</a>

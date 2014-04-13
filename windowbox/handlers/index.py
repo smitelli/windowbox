@@ -1,5 +1,6 @@
-from flask import render_template
 from windowbox.models.post import PostManager
+from windowbox.views.index import IndexView
+from windowbox.views.page import PageView
 
 
 class IndexHandler():
@@ -12,10 +13,9 @@ class IndexHandler():
 
     @staticmethod
     def render_html(posts):
-        template_vars = {
-            'posts': posts}
+        body_html = IndexView(items=posts).render_html()
 
-        return render_template('index.html', **template_vars)
+        return PageView(title=None, body=body_html).render_html()
 
     @staticmethod
     def render_json(posts):

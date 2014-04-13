@@ -1,6 +1,8 @@
-from flask import render_template, abort
+from flask import abort
 from jinja2.exceptions import UndefinedError
 from windowbox.models.post import PostManager
+from windowbox.views.page import PageView
+from windowbox.views.single import SingleView
 
 
 class PostHandler():
@@ -17,12 +19,9 @@ class PostHandler():
 
     @staticmethod
     def render_html(post, previous, next):
-        template_vars = {
-            'post': post,
-            'previous': previous,
-            'next': next}
+        body_html = SingleView(item=post, prev_item=previous, next_item=next).render_html()
 
-        return render_template('single_post.html', **template_vars)
+        return PageView(title=post.message, body=body_html).render_html()
 
     @staticmethod
     def render_json(post, previous, next):

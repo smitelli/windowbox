@@ -26,3 +26,7 @@ class AppPath(object):
     @classmethod
     def templates(cls, subpath):
         return path.join(_src, 'templates', subpath)
+
+    @classmethod
+    def views(cls, subpath):
+        return path.join(_src, 'views', subpath)
