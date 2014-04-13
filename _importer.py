@@ -4,8 +4,7 @@ import pytz
 from datetime import datetime
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
-from windowbox.models.attachment import (
-    Attachment, AttachmentDerivative, AttachmentAttributesSchema)
+from windowbox.models.attachment import (Attachment, AttachmentDerivative, AttachmentAttributesSchema)
 
 _path = os.path.abspath(os.path.dirname(__file__))
 _tz = pytz.timezone('America/New_York')
@@ -49,8 +48,7 @@ for row in data:
 
     postdata = {
         'id': rowdata['post_id'],
-        'created_utc': _tz.localize(datetime.fromtimestamp(
-            float(rowdata['timestamp']))),
+        'created_utc': _tz.localize(datetime.fromtimestamp(float(rowdata['timestamp']))),
         'message': body,
         'user_agent': rowdata['user_agent']}
 

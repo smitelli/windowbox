@@ -1,7 +1,6 @@
 import sqlalchemy as sa
 import windowbox.configs.base as cfg
-from windowbox.database import (
-    DeclarativeBase, session as db_session, UTCDateTime)
+from windowbox.database import DeclarativeBase, session as db_session, UTCDateTime
 from windowbox.models import BaseModel
 from windowbox.models.attachment import AttachmentManager
 
@@ -26,10 +25,8 @@ class PostManager():
 
     @staticmethod
     def get_adjacent_by_id(post_id):
-        prev = db_session.query(Post).filter(Post.id < post_id) \
-            .order_by(sa.desc(Post.id)).first()
-        next = db_session.query(Post).filter(Post.id > post_id) \
-            .order_by(Post.id).first()
+        prev = db_session.query(Post).filter(Post.id < post_id).order_by(sa.desc(Post.id)).first()
+        next = db_session.query(Post).filter(Post.id > post_id).order_by(Post.id).first()
 
         return (prev, next)
 

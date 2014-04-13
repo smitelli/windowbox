@@ -6,6 +6,7 @@ from windowbox.handlers.attachment import AttachmentHandler
 
 app = Flask(__name__)
 
+
 def request_wants_json():
     json_score = request.accept_mimetypes['application/json']
     html_score = request.accept_mimetypes['text/html']

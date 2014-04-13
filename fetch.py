@@ -22,8 +22,7 @@ for uid in results[0].split():
 
     message = email.message_from_string(parts[0][1])
 
-    created_utc = datetime.fromtimestamp(email.utils.mktime_tz(
-        email.utils.parsedate_tz(message.get('date'))), pytz.utc)
+    created_utc = datetime.fromtimestamp(email.utils.mktime_tz(email.utils.parsedate_tz(message.get('date'))), pytz.utc)
     user_agent = message.get('x-mailer')
     message_body = {}
     attachments = []
@@ -40,9 +39,7 @@ for uid in results[0].split():
             if not ctype in message_body:
                 message_body[ctype] = ''
 
-            message_body[ctype] += unicode(
-                payload, encoding=charset, errors='ignore') \
-                .encode('utf8', errors='replace')
+            message_body[ctype] += unicode(payload, encoding=charset, errors='ignore').encode('utf8', errors='replace')
         else:
             attachments.append(part)
 
