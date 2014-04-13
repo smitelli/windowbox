@@ -8,5 +8,5 @@
 </ul>
 
 {% if has_next %}
-    <a href="?until={{ last_id }}">Next Page</a>
+    <a href="{{ url_for('get_index', until=last_id) }}">Next Page</a>
 {% endif %}
