@@ -9,6 +9,7 @@ class IndexView(object):
     def render_html(self):
         template_vars = {
             'items': self.items,
-            'has_next': self.has_next}
+            'has_next': self.has_next,
+            'last_id': self.items[-1].id}
 
         return render_template('index_posts.html', **template_vars)

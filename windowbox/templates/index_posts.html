@@ -7,4 +7,6 @@
     {% endfor %}
 </ul>
 
-has next = {{ has_next }}
+{% if has_next %}
+    <a href="?until={{ last_id }}">Next Page</a>
+{% endif %}
