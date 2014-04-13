@@ -9,15 +9,18 @@ class PostManager():
     @staticmethod
     def get_all(until_id=None, limit=None):
         query = db_session.query(Post).order_by(Post.id.desc())
+        has_next = False
 
         if until_id is not None:
             query = query.filter(Post.id < until_id)
 
         if limit is not None:
-            query = query.limit(limit)
+            query = query.limit(limit + 1)
+            has_next = (query.count() > limit)
 
-        for post in query:
-            yield post
+        posts = query.all()
+
+        return (posts[:limit], has_next)
 
     @staticmethod
     def get_by_id(post_id):
