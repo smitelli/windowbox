@@ -3,6 +3,7 @@ from windowbox.database import session as db_session
 from windowbox.handlers.index import IndexHandler
 from windowbox.handlers.post import PostHandler
 from windowbox.handlers.attachment import AttachmentHandler
+from windowbox.handlers.feed import FeedHandler
 
 app = Flask(__name__)
 
@@ -35,6 +36,16 @@ def get_post(post_id):
 @app.route('/attachment/<int:attachment_id>/<dimensions>')
 def get_attachment_derivative(attachment_id, dimensions=''):
     return AttachmentHandler.get(attachment_id, dimensions)
+
+
+@app.route('/rss')
+def get_rss2():
+    return FeedHandler.get_rss2()
+
+
+@app.route('/atom')
+def get_atom():
+    return FeedHandler.get_atom()
 
 
 @app.teardown_request

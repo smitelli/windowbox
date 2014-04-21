@@ -1,0 +1,4 @@
+atom
+{% for post in items %}
+    <tag>{{ post.message }}</tag>
+{% endfor %}
