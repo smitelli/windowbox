@@ -38,12 +38,12 @@ def get_attachment_derivative(attachment_id, dimensions=''):
     return AttachmentHandler.get(attachment_id, dimensions)
 
 
-@app.route('/rss')
+@app.route('/rss.xml')
 def get_rss2():
     return FeedHandler.get_rss2()
 
 
-@app.route('/atom')
+@app.route('/atom.xml')
 def get_atom():
     return FeedHandler.get_atom()
 

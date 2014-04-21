@@ -21,16 +21,18 @@ class IndexView(object):
         return self._render_xml(format='atom')
 
     def _render_xml(self, format):
-        templates = {
-            'rss2': 'index_posts_rss2.xml',
-            'atom': 'index_posts_atom.xml'}
+        template_name, content_type = {
+            #TODO are these c-types right?
+            'rss2': ('index_posts_rss2.xml', 'application/rss+xml'),
+            'atom': ('index_posts_atom.xml', 'application/atom+xml')
+        }[format]
 
         template_vars = {
             'items': self.items}
 
-        body_xml = render_template(templates[format], **template_vars)
+        body_xml = render_template(template_name, **template_vars)
 
         response = make_response(body_xml)
-        response.headers['Content-Type'] = 'application/xml'
+        response.headers['Content-Type'] = content_type
 
         return response

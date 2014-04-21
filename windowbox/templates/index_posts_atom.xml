@@ -1,4 +1,25 @@
-atom
-{% for post in items %}
-    <tag>{{ post.message }}</tag>
-{% endfor %}
+<?xml version="1.0" encoding="UTF-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Trigger and Freewheel</title>
+    <subtitle>It&#039;s a webcomic.</subtitle>
+    <updated>2013-12-31T00:00:00-05:00</updated>
+    <link href="http://www.triggerandfreewheel.com/" rel="alternate" />
+    <link href="http://www.triggerandfreewheel.com/atom" rel="self" type="application/atom+xml" />
+    <id>http://www.triggerandfreewheel.com/</id>
+
+    {% for post in items %}
+        <entry>
+            <title>Sleep All Day</title>
+            <link href="http://www.triggerandfreewheel.com/comic/sleep-all-day" rel="alternate" />
+            <updated>2011-11-24T00:00:00-05:00</updated>
+            <id>http://www.triggerandfreewheel.com/comic/sleep-all-day</id>
+            <summary type="html"><![CDATA[
+                <p><img src="http://www.triggerandfreewheel.com/image/sleep-all-day" alt="Sleep All Day"></p>
+                <p>Be careful what you wish for...</p>
+            ]]></summary>
+            <author>
+                <name>Trigger and Freewheel</name>
+            </author>
+        </entry>
+    {% endfor %}
+</feed>

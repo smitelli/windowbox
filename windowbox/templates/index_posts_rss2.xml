@@ -1,4 +1,50 @@
-rss2
-{% for post in items %}
-    <tag>{{ post.message }}</tag>
-{% endfor %}
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+    xmlns:georss="http://www.georss.org/georss"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+    xmlns:media="http://search.yahoo.com/mrss/"
+>
+    <channel>
+        <title>TODO WordPress.com News</title>
+        <atom:link href="http://TODO/rss.xml" rel="self" type="application/rss+xml" />
+        <link>http://TODO</link>
+        <description>TODO The latest news on WordPress.com and the WordPress community.</description>
+        <lastBuildDate>TODO RFC 822</lastBuildDate>
+        <language>en</language>
+        <sy:updatePeriod>hourly</sy:updatePeriod>
+        <sy:updateFrequency>1</sy:updateFrequency>
+        <generator>Windowbox</generator>
+        <image>
+            <url>http://s2.wp.com/i/buttonw-com.png</url>
+            <title>WordPress.com News</title>
+            <link>http://en.blog.wordpress.com</link>
+        </image>
+
+        {% for post in items %}
+            <item>
+                <title>{{ post.message }}</title><!-- escape for XML only -->
+                <guid isPermaLink="false">http://en.blog.wordpress.com/?p=26522</guid>
+                <link>http://en.blog.wordpress.com/2014/04/21/monday-morning-edition-7/</link>
+                <pubDate>Mon, 21 Apr 2014 12:00:59 +0000</pubDate>
+                <dc:creator><![CDATA[Ben Huberman]]></dc:creator>
+                <description><![CDATA[In case you missed it, a quick recap of the past week on WordPress.com, from new features to great blogs to discover.<img alt="" border="0" src="http://stats.wordpress.com/b.gif?host=en.blog.wordpress.com&#038;blog=3584907&#038;post=26522&#038;subd=en.blog&#038;ref=&#038;feed=1" width="1" height="1" />]]></description>
+                <media:thumbnail url="http://en-blog.files.wordpress.com/2014/03/812743852_fbe4c1555a_o.jpg?w=150" />
+                <media:content url="http://en-blog.files.wordpress.com/2014/03/812743852_fbe4c1555a_o.jpg?w=150" medium="image">
+                    <media:title type="html">capuccino Monday morning edition</media:title>
+                </media:content>
+                <media:content url="http://0.gravatar.com/avatar/663dcd498e8c5f255bfb230a7ba07678?s=96&#38;d=retro" medium="image">
+                    <media:title type="html">benhuberman</media:title>
+                </media:content>
+                <media:content url="https://en.blog.files.wordpress.com/2014/04/monument.jpg?w=635" medium="image">
+                    <media:title type="html">monument photo challenge 2812 photography</media:title>
+                </media:content>
+            </item>
+        {% endfor %}
+    </channel>
+</rss>
