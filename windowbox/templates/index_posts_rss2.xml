@@ -20,6 +20,8 @@
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
         <generator>Windowbox</generator>
+        <copyright>All images copyright (c) 2004-2011 Scott Smitelli</copyright>
+        <docs>http://backend.userland.com/rss</docs>
         <image>
             <url>http://s2.wp.com/i/buttonw-com.png</url>
             <title>WordPress.com News</title>
@@ -31,9 +33,13 @@
                 <title>{{ post.message }}</title><!-- escape for XML only -->
                 <guid isPermaLink="false">http://en.blog.wordpress.com/?p=26522</guid>
                 <link>http://en.blog.wordpress.com/2014/04/21/monday-morning-edition-7/</link>
+                <comments>http://vipersniper.dnsalias.com/moblog/post.php/2406</comments>
                 <pubDate>Mon, 21 Apr 2014 12:00:59 +0000</pubDate>
                 <dc:creator><![CDATA[Ben Huberman]]></dc:creator>
+                <!-- author? -->
                 <description><![CDATA[In case you missed it, a quick recap of the past week on WordPress.com, from new features to great blogs to discover.<img alt="" border="0" src="http://stats.wordpress.com/b.gif?host=en.blog.wordpress.com&#038;blog=3584907&#038;post=26522&#038;subd=en.blog&#038;ref=&#038;feed=1" width="1" height="1" />]]></description>
+                <!-- enclosure -->
+                <!-- location -->
                 <media:thumbnail url="http://en-blog.files.wordpress.com/2014/03/812743852_fbe4c1555a_o.jpg?w=150" />
                 <media:content url="http://en-blog.files.wordpress.com/2014/03/812743852_fbe4c1555a_o.jpg?w=150" medium="image">
                     <media:title type="html">capuccino Monday morning edition</media:title>
