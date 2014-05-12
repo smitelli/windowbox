@@ -1,7 +1,7 @@
 from os import path
 
 # This is the absolute, real path to the package directory
-_base = path.abspath(path.join(path.dirname(__file__), '..'))
+_base = path.abspath(path.join(path.dirname(__file__)))
 
 
 class AppPath(object):
