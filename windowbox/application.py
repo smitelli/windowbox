@@ -4,7 +4,6 @@ from windowbox.handlers.index import IndexHandler
 from windowbox.handlers.post import PostHandler
 from windowbox.handlers.attachment import AttachmentHandler
 from windowbox.handlers.feed import FeedHandler
-from windowbox.handlers.static import StaticHandler
 
 app = Flask(__name__)
 
@@ -47,12 +46,6 @@ def get_rss2():
 @app.route('/atom.xml')
 def get_atom():
     return FeedHandler.get_atom()
-
-
-@app.route('/static/<filename>')
-def get_static(filename):
-    import pdb; pdb.set_trace()
-    return StaticHandler.get_file(filename)
 
 
 @app.teardown_request

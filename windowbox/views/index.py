@@ -22,7 +22,6 @@ class IndexView(object):
 
     def _render_xml(self, format):
         template_name, content_type = {
-            #TODO are these c-types right?
             'rss2': ('index_posts_rss2.xml', 'application/rss+xml'),
             'atom': ('index_posts_atom.xml', 'application/atom+xml')
         }[format]
