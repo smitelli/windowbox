@@ -8,7 +8,7 @@ class AppPath(object):
     """Collection of class methods to build paths relative to any directory."""
 
     @classmethod
-    def windowbox(cls, subpath=''):
+    def package(cls, subpath=''):
         return cls._join(_base, subpath)
 
     @classmethod

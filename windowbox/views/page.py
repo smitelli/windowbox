@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import render_template
 
 
@@ -9,6 +10,7 @@ class PageView(object):
     def render_html(self):
         template_vars = {
             'page_title': self.title,
-            'page_body': self.body}
+            'page_body': self.body,
+            'copyright_year': datetime.now().year}
 
         return render_template('page.html', **template_vars)
