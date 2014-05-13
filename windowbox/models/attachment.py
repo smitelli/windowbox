@@ -107,7 +107,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             return dict([item for k, v in d.items() for item in expand(k, v)])
 
         # Ask ExifTool to read file info, then convert it to a dict
-        args = [cfg.EXIFTOOL, '-json', '-long', '-g', self.get_file_name()]
+        args = [cfg.EXIFTOOL, '-json', '-long', '-groupHeadings', self.get_file_name()]
         json_data = subprocess.check_output(args)
         dict_data = json.loads(json_data)[0]
         flat_data = flatten_dict(dict_data)

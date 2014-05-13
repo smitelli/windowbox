@@ -1,4 +1,6 @@
 _importable/
+node_modules/
 storage/
 *.pyc
 *.sqlite
+*.sqlite-journal
