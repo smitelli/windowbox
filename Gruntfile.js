@@ -2,10 +2,6 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg : grunt.file.readJSON('package.json'),
 
-        pkgDir : {
-            css : 'windowbox/static/css'
-        },
-
         sass : {
             options : {
                 precision    : 5,
@@ -14,15 +10,15 @@ module.exports = function (grunt) {
             },
             dist : {
                 files : {
-                    '<%= pkgDir.css %>/main.css' : '<%= pkgDir.css %>/main.scss'
+                    '<%= pkg.dir.stylesheet %>/main.css' : '<%= pkg.dir.stylesheet %>/main.scss'
                 }
             }
         },
 
         watch : {
-            css : {
-                files : '<%= pkgDir.css %>/**/*.scss',
-                tasks : ['sass']
+            stylesheet : {
+                files : '<%= pkg.dir.stylesheet %>/**/*.scss',
+                tasks : 'sass'
             }
         }
     });
