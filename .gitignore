@@ -1,6 +1,8 @@
+.sass-cache/
 _importable/
 node_modules/
 storage/
+*.css
 *.pyc
 *.sqlite
 *.sqlite-journal
