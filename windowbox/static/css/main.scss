@@ -1,1 +1,34 @@
+@import 'variables';
+@import 'mixins';
 @import 'reset';
+@import 'index';
+
+body {
+    color: $body_color_text;
+    background-color: $body_color_bg;
+    font: 14px Helvetica, Arial, sans-serif;
+}
+
+main {
+    background-color: $content_color_bg;
+}
+
+#topbar {
+    padding: 20px 0 20px;
+    background: $body_color_accent;
+
+    .link-root img {
+        width: 75px;
+        height: 75px;
+    }
+}
+
+#bottombar {
+    @include pagewrap;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.pagewrap {
+    @include pagewrap;
+}

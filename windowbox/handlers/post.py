@@ -9,7 +9,7 @@ class PostHandler():
     @classmethod
     def get(cls, post_id=None, as_json=False):
         try:
-            render = cls.render_json if as_json else cls.render_html
+            render = cls._render_json if as_json else cls._render_html
             post = PostManager.get_by_id(post_id)
             previous, next = PostManager.get_adjacent_by_id(post_id)
 
@@ -18,11 +18,11 @@ class PostHandler():
             abort(404)
 
     @staticmethod
-    def render_html(post, previous, next):
+    def _render_html(post, previous, next):
         body_html = SingleView(item=post, prev_item=previous, next_item=next).render_html()
 
         return PageView(title=post.message, body=body_html).render_html()
 
     @staticmethod
-    def render_json(post, previous, next):
+    def _render_json(post, previous, next):
         return 'TODO not implemented either'

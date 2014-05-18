@@ -4,21 +4,21 @@ from windowbox.views.page import PageView
 
 
 class IndexHandler():
-    per_page = 10
+    page_limit = 36
 
     @classmethod
     def get(cls, until_id=None, as_json=False):
-        render = cls.render_json if as_json else cls.render_html
-        posts, has_next = PostManager.get_all(until_id=until_id, limit=cls.per_page)
+        render = cls._render_json if as_json else cls._render_html
+        posts, has_next = PostManager.get_all(until_id=until_id, limit=cls.page_limit)
 
         return render(posts, has_next)
 
     @staticmethod
-    def render_html(posts, has_next):
+    def _render_html(posts, has_next):
         body_html = IndexView(items=posts, has_next=has_next).render_html()
 
         return PageView(title=None, body=body_html).render_html()
 
     @staticmethod
-    def render_json(posts, has_next):
+    def _render_json(posts, has_next):
         return 'TODO not implemented'
