@@ -6,7 +6,11 @@
 body {
     color: $body_color_text;
     background-color: $body_color_bg;
-    font: 14px Helvetica, Arial, sans-serif;
+    font: 10px $body_font_stack;
+}
+
+a {
+    text-decoration: none;
 }
 
 main {
@@ -25,8 +29,15 @@ main {
 
 #bottombar {
     @include pagewrap;
+    margin-top: 20px;
     margin-bottom: 20px;
+    color: $footer_color_text;
+    font-size: 1.4em;
     text-align: center;
+
+    a {
+        color: $body_color_accent;
+    }
 }
 
 .pagewrap {

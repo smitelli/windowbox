@@ -30,6 +30,9 @@
             width: $tile_size - ($caption_pad * 2);
             color: #fff;
             background-color: transparentize(#000, 0.25);
+            font-size: 1.2em;
+            line-height: 115%;
+            font-weight: bold;
         }
     }
 }
