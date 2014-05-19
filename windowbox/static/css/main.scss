@@ -21,10 +21,15 @@ main {
     padding: 13px 0;
     background: $body_color_accent;
 
-    .link-root img {
+    .link-root {
         display: block;
         width: 100px;
         height: 100px;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
     }
 }
 
