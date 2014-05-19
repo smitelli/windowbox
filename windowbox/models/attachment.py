@@ -23,10 +23,14 @@ class AttachmentManager():
         return db_session.query(Attachment).filter(Attachment.post_id == post_id).first()
 
     @staticmethod
-    def decode_dimensions(dimensions):
-        if dimensions not in cfg.ALLOWED_DIMENSIONS:
-            return (None, None)
+    def encode_dimensions(width=None, height=None):
+        if not width and not height:
+            return ''
+        else:
+            return '{}x{}'.format(width or '', height or '')
 
+    @staticmethod
+    def decode_dimensions(dimensions):
         matches = re.match('(?P<width>\d*)x(?P<height>\d*)', dimensions)
 
         if not matches:
@@ -83,6 +87,11 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
         self.attributes = self._load_exif_data()
 
+    def get_derivative_url(self, width=None, height=None):
+        dimensions = AttachmentManager.encode_dimensions(width, height)
+
+        return url_for('get_attachment_derivative', attachment_id=self.id, dimensions=dimensions)
+
     def get_derivative(self, width=None, height=None):
         derivative = db_session.query(AttachmentDerivative).filter(
             AttachmentDerivative.attachment_id == self.id,
@@ -97,6 +106,34 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             derivative.rebuild(source=self)
 
         return derivative
+
+    @property
+    def width(self):
+        width_keys = ['EXIF.ExifImageWidth.val', 'PNG.ImageWidth.val']
+
+        for width_key in width_keys:
+            try:
+                return int(self.attributes[width_key])
+            except KeyError:
+                pass
+
+        return None
+
+    @property
+    def height(self):
+        height_keys = ['EXIF.ExifImageHeight.val', 'PNG.ImageHeight.val']
+
+        for height_key in height_keys:
+            try:
+                return int(self.attributes[height_key])
+            except KeyError:
+                pass
+
+        return None
+
+    @property
+    def is_portrait(self):
+        return (self.height > self.width)
 
     def _load_exif_data(self):
         def flatten_dict(d):
@@ -167,16 +204,6 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
 
         self._save_derivative(im)
         self.save(commit=True)
-
-    @property
-    def url(self):
-        dimensions = '{}x{}'.format(self.width or '', self.height or '')
-
-        return url_for('get_attachment_derivative', attachment_id=self.attachment_id, dimensions=dimensions)
-
-    @property
-    def is_portrait(self):
-        return (self.height > self.width)
 
     @staticmethod
     def _transpose_derivative(im, orient_code):

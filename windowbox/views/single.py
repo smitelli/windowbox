@@ -10,6 +10,7 @@ class SingleView(object):
     def render_html(self):
         template_vars = {
             'item': self.item,
+            'attachment': self.item.get_attachment(),
             'prev_item': self.prev_item,
             'next_item': self.next_item}
 

@@ -1,5 +1,6 @@
 <section id="single-post">
     <h2>{{ item.message }}</h2>
+    <h2>{{ attachment.is_portrait }} {{attachment.width}}x{{attachment.height}}</h2>
 
     <p>
         {% if prev_item %}<a href="{{ url_for('get_post', post_id=prev_item.id) }}">Prev</a> | {% endif %}
@@ -7,7 +8,7 @@
         {% if next_item %} | <a href="{{ url_for('get_post', post_id=next_item.id) }}">Next</a>{% endif %}
     </p>
 
-    <p><img src="{{ url_for('get_attachment_derivative', attachment_id=item.get_attachment().id, dimensions='960x') }}"></p>
+    <p><img src="{{ attachment.get_derivative_url(width=960) }}"></p>
 
     <p>{{ item.get_created_date() }}</p>
 </section>
