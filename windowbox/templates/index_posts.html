@@ -1,18 +1,16 @@
 <section id="index-posts">
-    <div class="pagewrap">
-        <h1>Recent Posts</h1>
+    <h1>Recent Posts</h1>
 
-        {% for post in items %}
-            <article>
-                <a href="{{ url_for('get_post', post_id=post.id) }}">
-                    <img src="{{ url_for('get_attachment_derivative', attachment_id=post.get_attachment().id, dimensions='150x150') }}" alt="{{ post.message }}">
-                    <h2>{{ post.message }}</h2>
-                </a>
-            </article>
-        {% endfor %}
+    {% for post in items %}
+        <article>
+            <a href="{{ url_for('get_post', post_id=post.id) }}">
+                <img src="{{ url_for('get_attachment_derivative', attachment_id=post.get_attachment().id, dimensions='300x300') }}" alt="{{ post.message }}">
+                <h2>{{ post.message }}</h2>
+            </a>
+        </article>
+    {% endfor %}
 
-        {% if has_next %}
-            <a href="{{ url_for('get_index', until=last_id) }}">Next Page</a>
-        {% endif %}
-    </div>
+    {% if has_next %}
+        <a href="{{ url_for('get_index', until=last_id) }}" class="next-page">Next Page</a>
+    {% endif %}
 </section>

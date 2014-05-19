@@ -1,7 +1,6 @@
 @import 'variables';
 @import 'mixins';
 @import 'reset';
-@import 'index';
 
 body {
     color: $body_color_text;
@@ -14,16 +13,18 @@ a {
 }
 
 main {
+    display: block;
     background-color: $content_color_bg;
 }
 
 #topbar {
-    padding: 20px 0 20px;
+    padding: 13px 0;
     background: $body_color_accent;
 
     .link-root img {
-        width: 75px;
-        height: 75px;
+        display: block;
+        width: 100px;
+        height: 100px;
     }
 }
 
@@ -43,3 +44,6 @@ main {
 .pagewrap {
     @include pagewrap;
 }
+
+@import 'index';
+@import 'single';

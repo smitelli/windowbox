@@ -4,7 +4,7 @@ from windowbox.views.page import PageView
 
 
 class IndexHandler():
-    page_limit = 36
+    page_limit = 9
 
     @classmethod
     def get(cls, until_id=None, as_json=False):

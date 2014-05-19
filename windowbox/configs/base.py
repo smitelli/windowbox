@@ -19,5 +19,6 @@ STORAGE_DIR = os.path.abspath(os.path.join(_confdir, '..', '..', 'storage'))
 EXIFTOOL = '/usr/bin/exiftool'
 
 ALLOWED_DIMENSIONS = [
-    '500x',
-    '150x150']
+    '300x300',
+    '960x',
+    'x960']

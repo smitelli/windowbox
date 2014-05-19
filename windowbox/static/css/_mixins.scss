@@ -1,4 +1,4 @@
 @mixin pagewrap {
     margin: 0 auto;
-    width: 960px;
+    width: $content_width;
 }
