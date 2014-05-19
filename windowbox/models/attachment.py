@@ -170,7 +170,7 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
 
     @property
     def url(self):
-        dimensions = '{}x{}'.format(self.width, self.height)
+        dimensions = '{}x{}'.format(self.width or '', self.height or '')
 
         return url_for('get_attachment_derivative', attachment_id=self.attachment_id, dimensions=dimensions)
 
