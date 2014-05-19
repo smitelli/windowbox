@@ -2,9 +2,10 @@
     <h1>Recent Posts</h1>
 
     {% for post in items %}
+        {% set derivative = post.get_attachment().get_derivative(300, 300) %}
         <article>
             <a href="{{ url_for('get_post', post_id=post.id) }}">
-                <img src="{{ url_for('get_attachment_derivative', attachment_id=post.get_attachment().id, dimensions='300x300') }}" alt="{{ post.message }}">
+                <img src="{{ derivative.url }}" alt="{{ post.message }}">
                 <h2>{{ post.message }}</h2>
             </a>
         </article>

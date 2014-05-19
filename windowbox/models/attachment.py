@@ -6,6 +6,7 @@ import sqlalchemy as sa
 import windowbox.configs.base as cfg
 from PIL import Image as PILImage
 from StringIO import StringIO
+from flask import url_for
 from sqlalchemy.orm.collections import column_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy
 from windowbox.database import DeclarativeBase, session as db_session
@@ -166,6 +167,16 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
 
         self._save_derivative(im)
         self.save(commit=True)
+
+    @property
+    def url(self):
+        dimensions = '{}x{}'.format(self.width, self.height)
+
+        return url_for('get_attachment_derivative', attachment_id=self.attachment_id, dimensions=dimensions)
+
+    @property
+    def is_portrait(self):
+        return (self.height > self.width)
 
     @staticmethod
     def _transpose_derivative(im, orient_code):
