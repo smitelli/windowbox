@@ -1,0 +1,15 @@
+#error {
+    @include pagewrap;
+    padding: 15px 0;
+
+    h1 {
+        padding-bottom: 30px;
+        font-size: 2.4em;
+        font-weight: bold;
+    }
+
+    p {
+        padding-bottom: 30px;
+        font-size: 1.6em;
+    }
+}

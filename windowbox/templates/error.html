@@ -1,3 +1,7 @@
 <section id="error" class="code-{{ code }}">
     <h1>{{ title }}</h1>
+
+    {% if code == 404 %}
+        <p>Whatever you're looking for isn't here. Sorry about that.</p>
+    {% endif %}
 </section>
