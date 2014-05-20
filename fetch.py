@@ -36,7 +36,7 @@ for uid in results[0].split():
             charset = str(part.get_content_charset())
             payload = part.get_payload(decode=True)
 
-            if not ctype in message_body:
+            if ctype not in message_body:
                 message_body[ctype] = ''
 
             message_body[ctype] += unicode(payload, encoding=charset, errors='ignore').encode('utf8', errors='replace')

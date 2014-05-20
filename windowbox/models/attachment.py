@@ -87,11 +87,6 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
         self.attributes = self._load_exif_data()
 
-    def get_derivative_url(self, width=None, height=None):
-        dimensions = AttachmentManager.encode_dimensions(width, height)
-
-        return url_for('get_attachment_derivative', attachment_id=self.id, dimensions=dimensions)
-
     def get_derivative(self, width=None, height=None):
         derivative = db_session.query(AttachmentDerivative).filter(
             AttachmentDerivative.attachment_id == self.id,
@@ -106,6 +101,11 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             derivative.rebuild(source=self)
 
         return derivative
+
+    def get_derivative_url(self, width=None, height=None):
+        dimensions = AttachmentManager.encode_dimensions(width, height)
+
+        return url_for('get_attachment_derivative', attachment_id=self.id, dimensions=dimensions)
 
     @property
     def width(self):

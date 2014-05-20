@@ -16,6 +16,7 @@ npm Modules:
 Python Packages:
 
 * run `pip install -r reqs.txt`
+* Dev requirements: `pip install flake8`
 
 Ruby Gems:
 

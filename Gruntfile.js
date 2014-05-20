@@ -2,6 +2,14 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg : grunt.file.readJSON('package.json'),
 
+        flake8 : {
+            options : {
+                maxLineLength : 120,
+                errorsOnly    : true
+            },
+            src : ['**/*.py'],
+        },
+
         sass : {
             options : {
                 precision    : 5,
@@ -23,10 +31,12 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    //grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    //grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-flake8');
 
     grunt.registerTask('default', ['watch']);
+    grunt.registerTask('lint', ['flake8']);
 };
