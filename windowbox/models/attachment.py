@@ -107,34 +107,6 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
         return url_for('get_attachment_derivative', attachment_id=self.id, dimensions=dimensions)
 
-    @property
-    def width(self):
-        width_keys = ['EXIF.ExifImageWidth.val', 'PNG.ImageWidth.val']
-
-        for width_key in width_keys:
-            try:
-                return int(self.attributes[width_key])
-            except KeyError:
-                pass
-
-        return None
-
-    @property
-    def height(self):
-        height_keys = ['EXIF.ExifImageHeight.val', 'PNG.ImageHeight.val']
-
-        for height_key in height_keys:
-            try:
-                return int(self.attributes[height_key])
-            except KeyError:
-                pass
-
-        return None
-
-    @property
-    def is_portrait(self):
-        return (self.height > self.width)
-
     def _load_exif_data(self):
         def flatten_dict(d):
             def expand(key, value):

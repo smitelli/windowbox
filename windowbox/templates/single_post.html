@@ -1,6 +1,5 @@
 <section id="single-post">
     <h2>{{ item.message }}</h2>
-    <h2>{{ attachment.is_portrait }} {{attachment.width}}x{{attachment.height}}</h2>
 
     <p>
         {% if prev_item %}<a href="{{ url_for('get_post', post_id=prev_item.id) }}">Prev</a> | {% endif %}
