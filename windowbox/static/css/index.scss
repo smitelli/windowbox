@@ -1,10 +1,10 @@
 #index-posts {
     $tile_size: 300px;
     $tiles_per_line: 3;
+    $tile_margin: ($content_width - ($tile_size * $tiles_per_line)) / $tiles_per_line;
 
     @include pagewrap;
     overflow: hidden;
-    $tile_margin: ($content_width - ($tile_size * $tiles_per_line)) / $tiles_per_line;
     padding: $tile_margin 0;
 
     h1 {
@@ -40,15 +40,15 @@
     }
 
     a.next-page {
-        $pad: 10px;
+        $button_pad: 10px;
 
         display: block;
         clear: both;
         position: relative;
         margin: 0 auto;
-        padding: $pad;
+        padding: $button_pad;
         left: -($tile_margin / 2);
-        width: 300px - ($pad * 2);
+        width: 300px - ($button_pad * 2);
         color: #fff;
         background: $body_color_accent;
         font-size: 1.6em;
