@@ -1,3 +1,4 @@
+from flask import abort
 from windowbox.models.post import PostManager
 from windowbox.views.index import IndexView
 from windowbox.views.page import PageView
@@ -15,9 +16,12 @@ class IndexHandler():
 
     @staticmethod
     def _render_html(posts, has_next):
-        body_html = IndexView(items=posts, has_next=has_next).render_html()
+        try:
+            body_html = IndexView(items=posts, has_next=has_next).render_html()
 
-        return PageView(title=None, body=body_html).render_html()
+            return PageView(title=None, body=body_html).render_html()
+        except IndexError:
+            abort(404)
 
     @staticmethod
     def _render_json(posts, has_next):
