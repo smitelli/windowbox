@@ -5,7 +5,7 @@ from windowbox.models.attachment import AttachmentManager
 
 class AttachmentDerivativeHandler():
     @staticmethod
-    def get(attachment_id=None, dimensions=''):
+    def get(attachment_id=None, dimensions='', allow_crop=True):
         if dimensions in cfg.ALLOWED_DIMENSIONS:
             width, height = AttachmentManager.decode_dimensions(dimensions)
         else:
@@ -13,7 +13,7 @@ class AttachmentDerivativeHandler():
 
         try:
             attachment = AttachmentManager.get_by_id(attachment_id)
-            derivative = attachment.get_derivative(width, height)
+            derivative = attachment.get_derivative(width, height, allow_crop=allow_crop)
 
             response = make_response(derivative.get_data())
             response.headers['Content-Type'] = derivative.mime_type

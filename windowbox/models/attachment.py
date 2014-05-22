@@ -87,14 +87,15 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
         self.attributes = self._load_exif_data()
 
-    def get_derivative(self, width=None, height=None):
+    def get_derivative(self, width=None, height=None, allow_crop=True):
         derivative = db_session.query(AttachmentDerivative).filter(
             AttachmentDerivative.attachment_id == self.id,
             AttachmentDerivative.width == width,
-            AttachmentDerivative.height == height).first()
+            AttachmentDerivative.height == height,
+            AttachmentDerivative.allow_crop == allow_crop).first()
 
         if not derivative:
-            derivative = AttachmentDerivative(attachment_id=self.id, width=width, height=height)
+            derivative = AttachmentDerivative(attachment_id=self.id, width=width, height=height, allow_crop=allow_crop)
             derivative.rebuild(source=self)
 
         if not os.path.isfile(derivative.get_file_name()):
@@ -102,10 +103,17 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
         return derivative
 
-    def get_derivative_url(self, width=None, height=None):
+    def get_derivative_url(self, width=None, height=None, allow_crop=True):
         dimensions = AttachmentManager.encode_dimensions(width, height)
 
-        return url_for('get_attachment_derivative', attachment_id=self.id, dimensions=dimensions)
+        kwargs = {
+            'attachment_id': self.id,
+            'dimensions': dimensions}
+
+        if allow_crop == False:
+            kwargs['crop'] = 'false'
+
+        return url_for('get_attachment_derivative', **kwargs)
 
     def _load_exif_data(self):
         def flatten_dict(d):
@@ -147,11 +155,13 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
 class AttachmentDerivativeSchema(DeclarativeBase):
     __tablename__ = 'attachment_derivatives'
-    __table_args__ = (sa.Index('attachment_id_dimensions', 'attachment_id', 'width', 'height', unique=True), )
+    __table_args__ = (sa.Index(
+        'attachment_id_dimensions', 'attachment_id', 'width', 'height', 'allow_crop', unique=True), )
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     attachment_id = sa.Column(sa.Integer, sa.ForeignKey('attachments.id'))
     width = sa.Column(sa.Integer, nullable=True)
     height = sa.Column(sa.Integer, nullable=True)
+    allow_crop = sa.Column(sa.Boolean)
     mime_type = sa.Column(sa.String(255))
 
 
@@ -172,7 +182,7 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         except (KeyError, ValueError):
             pass
 
-        im = self._resize_derivative(im, self.width, self.height)
+        im = self._resize_derivative(im, self.width, self.height, self.allow_crop)
 
         self._save_derivative(im)
         self.save(commit=True)
@@ -203,7 +213,8 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         return im
 
     @staticmethod
-    def _resize_derivative(im, width, height):
+    def _resize_derivative(im, width, height, allow_crop):
+        # TODO allow_crop handling
         im = im.convert('RGB')
 
         old_width, old_height = im.size
