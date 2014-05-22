@@ -110,7 +110,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             'attachment_id': self.id,
             'dimensions': dimensions}
 
-        if allow_crop == False:
+        if not allow_crop:
             kwargs['crop'] = 'false'
 
         return url_for('get_attachment_derivative', **kwargs)
@@ -214,7 +214,6 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
 
     @staticmethod
     def _resize_derivative(im, width, height, allow_crop):
-        # TODO allow_crop handling
         im = im.convert('RGB')
 
         old_width, old_height = im.size
@@ -222,17 +221,22 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         if width > 0 and height > 0:
             fx = float(old_width) / width
             fy = float(old_height) / height
-            f = fx if fx < fy else fy
-            crop_size = int(width * f), int(height * f)
 
-            crop_width, crop_height = crop_size
-            trim_x = (old_width - crop_width) / 2
-            trim_y = (old_height - crop_height) / 2
+            if allow_crop:
+                f = min(fx, fy)
+                crop_size = int(width * f), int(height * f)
 
-            crop = trim_x, trim_y, crop_width + trim_x, crop_height + trim_y
-            im = im.transform(crop_size, PILImage.EXTENT, crop)
+                crop_width, crop_height = crop_size
+                trim_x = (old_width - crop_width) / 2
+                trim_y = (old_height - crop_height) / 2
 
-            size = width, height
+                crop = trim_x, trim_y, crop_width + trim_x, crop_height + trim_y
+                im = im.transform(crop_size, PILImage.EXTENT, crop)
+
+                size = width, height
+            else:
+                f = max(fx, fy)
+                size = int(old_width / f), int(old_height / f)
 
         elif width > 0 and height is None:
             f = float(old_width) / width

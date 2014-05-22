@@ -20,5 +20,4 @@ EXIFTOOL = '/usr/bin/exiftool'
 
 ALLOWED_DIMENSIONS = [
     '300x300',
-    '960x',
-    'x960']
+    '960x720']
