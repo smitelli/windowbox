@@ -1,4 +1,5 @@
 from flask import render_template
+from windowbox.views.metadata import MetadataView
 
 
 class SingleView(object):
@@ -8,9 +9,13 @@ class SingleView(object):
         self.next_item = next_item
 
     def render_html(self):
+        attachment = self.item.get_attachment()
+        metadata = MetadataView(attachment)
+
         template_vars = {
             'item': self.item,
-            'attachment': self.item.get_attachment(),
+            'attachment': attachment,
+            'metadata': metadata.render_html(),
             'prev_item': self.prev_item,
             'next_item': self.next_item}
 

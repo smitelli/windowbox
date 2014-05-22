@@ -17,6 +17,10 @@
         <div id="attachment">
             <img src="{{ attachment.get_derivative_url(width=960, height=720, allow_crop=False) }}">
 
+            <div class="metadata">
+                {{ metadata|safe }}
+            </div>
+
             {% if prev_item %}
                 <a href="{{ url_for('get_post', post_id=prev_item.id) }}" class="arrow previous">Previous Post</a>
             {% endif %}
