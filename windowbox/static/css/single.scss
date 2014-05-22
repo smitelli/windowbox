@@ -25,7 +25,9 @@
 
         #attachment {
             position: relative;
+            overflow: hidden;
             clear: both;
+            background: #111;
 
             img {
                 display: block;
@@ -37,18 +39,19 @@
                 overflow: hidden;
                 position: absolute;
                 top: 50%;
-                height: 100px;
+                height: 60px;
                 width: 50px;
+                background: transparent url('../images/arrow-sprites.png') no-repeat;
                 text-indent: -1000px;
 
                 &.previous {
-                    left: 0;
-                    background: #800;
+                    left: 20px;
+                    background-position: 0px 0px;
                 }
 
                 &.next {
-                    right: 0;
-                    background: #0f0;
+                    right: 20px;
+                    background-position: -45px 0px;
                 }
             }
         }
