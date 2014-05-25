@@ -6,7 +6,8 @@
     "url": "https://github.com/smitelli/windowbox.git"
   },
   "dependencies": {
-    "jquery": "2.1.1"
+    "jquery": "2.1.1",
+    "lodash": "2.4.1"
   },
   "devDependencies": {
     "browserify": "~4.1.5",
