@@ -6,3 +6,4 @@ storage/
 *.pyc
 *.sqlite
 *.sqlite-journal
+windowbox/static/js/main-dist.js
