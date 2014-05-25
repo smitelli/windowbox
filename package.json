@@ -1,15 +1,21 @@
 {
-    "name": "windowbox",
-    "version": "0.0.1",
-    "devDependencies": {
-        "grunt": "~0.4.5",
-        "grunt-contrib-jshint": "~0.10.0",
-        "grunt-contrib-sass": "~0.7.3",
-        "grunt-contrib-uglify": "~0.4.0",
-        "grunt-contrib-watch": "~0.6.1",
-        "grunt-flake8": "~0.1.3"
-    },
-    "dir": {
-        "stylesheet": "windowbox/static/css"
-    }
+  "name": "windowbox",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smitelli/windowbox.git"
+  },
+  "devDependencies": {
+    "browserify": "~4.1.5",
+    "grunt": "~0.4.5",
+    "grunt-browserify": "~2.1.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-sass": "~0.7.3",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-flake8": "~0.1.3"
+  },
+  "dir": {
+    "stylesheet": "windowbox/static/css"
+  }
 }
