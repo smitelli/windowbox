@@ -2,8 +2,8 @@ from flask import render_template
 
 
 class MetadataView(object):
-    def __init__(self, attachment):
-        self.attachment = attachment
+    def __init__(self, metadata):
+        self.metadata = metadata
 
     def render_html(self):
         template_vars = {}
