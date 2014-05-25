@@ -85,5 +85,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-flake8');
 
     grunt.registerTask('default', ['watch']);
+    grunt.registerTask('dev', ['browserify', 'sass']);
     grunt.registerTask('lint', ['flake8', 'jshint']);
 };
