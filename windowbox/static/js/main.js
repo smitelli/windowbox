@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = require('jquery'),
     _ = require('lodash'),
 
