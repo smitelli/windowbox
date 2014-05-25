@@ -2,14 +2,6 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg : grunt.file.readJSON('package.json'),
 
-        browserify : {
-            dist : {
-                files : {
-                    '<%= pkg.dir.javascript %>/main-dist.js' : '<%= pkg.dir.javascript %>/main.js'
-                }
-            }
-        },
-
         flake8 : {
             options : {
                 maxLineLength : 120,
@@ -49,7 +41,15 @@ module.exports = function (grunt) {
                 // Relaxing
                 loopfunc : true
             },
-            all : ['<%= pkg.dir.javascript %>/**/*.js', '!<%= pkg.dir.javascript %>/main-dist.js']
+            src : ['<%= pkg.dir.javascript %>/**/*.js', '!<%= pkg.dir.javascript %>/main-dist.js']
+        },
+
+        browserify : {
+            dist : {
+                files : {
+                    '<%= pkg.dir.javascript %>/main-dist.js' : '<%= pkg.dir.javascript %>/main.js'
+                }
+            }
         },
 
         sass : {
