@@ -10,7 +10,7 @@
                         {{ item.get_created_date('%B %-d, %Y at %-I:%M %p') }}
                     </time>
                 </li>
-                <li>from FakeTown, TODO</li>
+                <li>from {{ attachment._load_address_data() }}</li>
             </ul>
         </header>
 

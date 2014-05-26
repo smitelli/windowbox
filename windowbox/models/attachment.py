@@ -2,6 +2,7 @@ import json
 import os
 import re
 import subprocess
+import requests
 import sqlalchemy as sa
 import windowbox.configs.base as cfg
 from PIL import Image as PILImage
@@ -151,6 +152,29 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
                 del flat_data[key]
 
         return flat_data
+
+    def _load_address_data(self):
+        try:
+            lat = self.attributes['Composite.GPSLatitude.num']
+            lng = self.attributes['Composite.GPSLongitude.num']
+        except KeyError:
+            return None
+
+        url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&sensor=true'.format(lat, lng)
+        response = requests.get(url, timeout=10)
+        if response.status_code is not requests.codes.ok:
+            return None
+
+        response_dict = response.json()
+        if response_dict['status'] != 'OK':
+            return None
+
+        for result in response_dict['results']:
+            if result['geometry']['location_type'] != 'APPROXIMATE':
+                continue
+            return result['formatted_address']
+
+        return None
 
 
 class AttachmentDerivativeSchema(DeclarativeBase):
