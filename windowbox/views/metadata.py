@@ -83,6 +83,7 @@ class MetadataView(object):
 
     def render_html(self):
         template_vars = {
+            'metadata': self.metadata,
             'optical': self._collect_items(OPTICAL_ITEMS),
             'image': self._collect_items(IMAGE_ITEMS),
             'software': self._collect_items(SOFTWARE_ITEMS),
@@ -92,18 +93,17 @@ class MetadataView(object):
         return render_template('metadata.html', **template_vars)
 
     def _collect_items(self, category):
-        items = []
-        for key in category:
-            if not isinstance(key, tuple):
-                item = self.metadata[key]
-            else:
-                item = None
-                for subkey in key:
-                    item = self.metadata[subkey]
-                    if item.is_built():
-                        break
+        items = [self._lookup_item(key) for key in category]
 
+        return [itm for itm in items if itm is not None]
+
+    def _lookup_item(self, key):
+        if not isinstance(key, tuple):
+            key = (key, )
+
+        for candidate in key:
+            item = self.metadata[candidate]
             if item.is_built():
-                items.append(item)
+                return item
 
-        return items
+        return None
