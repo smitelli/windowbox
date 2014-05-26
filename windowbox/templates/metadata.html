@@ -1,1 +1,61 @@
-METADATA!
+<section id="metadata">
+    {% if optical %}
+        <section class="category optical">
+            <h1>Optical</h1>
+
+            <table>
+                {% for item in optical %}
+                    <tr>
+                        <th>{{ item.display_name }}</th>
+                        <td>{{ item.display_value }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </section>
+    {% endif %}
+
+    {% if image %}
+        <section class="category image">
+            <h1>Image</h1>
+
+            <table>
+                {% for item in image %}
+                    <tr>
+                        <th>{{ item.display_name }}</th>
+                        <td>{{ item.display_value }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </section>
+    {% endif %}
+
+    {% if software %}
+        <section class="category software">
+            <h1>Software</h1>
+
+            <table>
+                {% for item in software %}
+                    <tr>
+                        <th>{{ item.display_name }}</th>
+                        <td>{{ item.display_value }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </section>
+    {% endif %}
+
+    {% if physical %}
+        <section class="category physical">
+            <h1>Physical</h1>
+
+            <table>
+                {% for item in physical %}
+                    <tr>
+                        <th>{{ item.display_name }}</th>
+                        <td>{{ item.display_value }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </section>
+    {% endif %}
+</section>

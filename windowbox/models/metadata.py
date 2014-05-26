@@ -2,43 +2,52 @@ from collections import defaultdict
 
 
 class Metadata(object):
-    def __init__(self, attributes=None):
-        self.sections = defaultdict(MetadataSection)
-
-        if attributes:
-            self.parse_attributes(attributes)
-
-    def parse_attributes(self, attributes):
-        for key, data in attributes.iteritems():
-            section_key = key.split('.')[0]
-
-            self.sections[section_key].set_property(key, data)
-
-
-class MetadataSection(object):
-    def __init__(self):
+    def __init__(self, attributes):
         self.items = defaultdict(MetadataItem)
 
-    def set_property(self, key, data):
-        parts = key.split('.')
-        kind = parts.pop(-1)
-        item_key = '.'.join(parts)
+        for key, data in attributes.iteritems():
+            item_key, kind = key.rsplit('.', 1)
+            self.items[item_key].add_data(kind, data)
 
-        self.items[item_key].set_property(kind, data)
+        for key, item in self.items.iteritems():
+            item.key = key
+
+    def __getitem__(self, item_key):
+        try:
+            return self.items[item_key]
+        except KeyError:
+            return None
 
 
 class MetadataItem(object):
-    def __init__(self, description=None, number=None, value=None):
-        self.description = description
-        self.number = number
-        self.value = value
+    def __init__(self):
+        self.key = None
+        self.description = None
+        self.raw_value = None
+        self.value = None
 
-    def set_property(self, kind, data):
+    def add_data(self, kind, data):
         if kind == 'desc':
             self.description = data
         elif kind == 'num':
-            self.number = data
+            self.raw_value = data
         elif kind == 'val':
             self.value = data
         else:
             raise AttributeError
+
+    def is_built(self):
+        if not (self.description or self.key):
+            return False
+        elif not (self.value or self.raw_value):
+            return False
+        else:
+            return True
+
+    @property
+    def display_name(self):
+        return self.description or '<{}>'.format(self.key)
+
+    @property
+    def display_value(self):
+        return self.value or '<{}>'.format(self.raw_value)
