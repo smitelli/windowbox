@@ -87,8 +87,7 @@ class MetadataView(object):
             'image': self._collect_items(IMAGE_ITEMS),
             'software': self._collect_items(SOFTWARE_ITEMS),
             'physical': self._collect_items(PHYSICAL_ITEMS),
-            'gps': self._collect_items(GPS_ITEMS)
-        }
+            'gps': self._collect_items(GPS_ITEMS)}
 
         return render_template('metadata.html', **template_vars)
 
