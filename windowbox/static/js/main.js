@@ -4,7 +4,8 @@ var $ = require('jquery'),
     _ = require('lodash'),
 
     handlers = {
-        '#single-post' : require('./handlers/single_post.js')
+        '#single-post' : require('./handlers/single_post.js'),
+        '#metadata'    : require('./handlers/metadata.js')
     };
 
 $(function () {

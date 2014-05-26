@@ -1,61 +1,53 @@
 <section id="metadata">
-    {% if optical %}
-        <section class="category optical">
-            <h1>Optical</h1>
+    {% if camera %}
+        <section class="category camera">
+            <h1>Camera Metadata</h1>
 
-            <table>
-                {% for item in optical %}
-                    <tr>
-                        <th>{{ item.display_name }}</th>
-                        <td>{{ item.display_value }}</td>
-                    </tr>
+            <dl>
+                {% for item in camera %}
+                    <dt>{{ item.display_name }}</dt>
+                    <dd>{{ item.display_value }}</dd>
                 {% endfor %}
-            </table>
+            </dl>
         </section>
     {% endif %}
 
     {% if image %}
         <section class="category image">
-            <h1>Image</h1>
+            <h1>Image Metadata</h1>
 
-            <table>
+            <dl>
                 {% for item in image %}
-                    <tr>
-                        <th>{{ item.display_name }}</th>
-                        <td>{{ item.display_value }}</td>
-                    </tr>
+                    <dt>{{ item.display_name }}</dt>
+                    <dd>{{ item.display_value }}</dd>
                 {% endfor %}
-            </table>
+            </dl>
         </section>
     {% endif %}
 
-    {% if software %}
-        <section class="category software">
-            <h1>Software</h1>
+    {% if environment %}
+        <section class="category environment">
+            <h1>Environment</h1>
 
-            <table>
-                {% for item in software %}
-                    <tr>
-                        <th>{{ item.display_name }}</th>
-                        <td>{{ item.display_value }}</td>
-                    </tr>
+            <dl>
+                {% for item in environment %}
+                    <dt>{{ item.display_name }}</dt>
+                    <dd>{{ item.display_value }}</dd>
                 {% endfor %}
-            </table>
+            </dl>
         </section>
     {% endif %}
 
-    {% if physical %}
-        <section class="category physical">
-            <h1>Physical</h1>
+    {% if hardware %}
+        <section class="category hardware">
+            <h1>Hardware</h1>
 
-            <table>
-                {% for item in physical %}
-                    <tr>
-                        <th>{{ item.display_name }}</th>
-                        <td>{{ item.display_value }}</td>
-                    </tr>
+            <dl>
+                {% for item in hardware %}
+                    <dt>{{ item.display_name }}</dt>
+                    <dd>{{ item.display_value }}</dd>
                 {% endfor %}
-            </table>
+            </dl>
         </section>
     {% endif %}
 </section>

@@ -1,71 +1,71 @@
 from flask import render_template
 
-OPTICAL_ITEMS = [
-    'Composite.CircleOfConfusion',
-    'Composite.FOV',
-    'Composite.HyperfocalDistance',
-    'Composite.LightValue',
+CAMERA_ITEMS = [
+    'EXIF.FocalLength',
+    'EXIF.FocalLengthIn35mmFormat',
     'Composite.ScaleFactor35efl',
+    'EXIF.DigitalZoomRatio',
     ('Composite.ShutterSpeed', 'EXIF.ShutterSpeedValue'),
     'EXIF.ApertureValue',
-    'EXIF.BrightnessValue',
-    'EXIF.DigitalZoomRatio',
+    'EXIF.ISO',
+    'EXIF.Flash',
+    'EXIF.WhiteBalance',
+    'EXIF.MeteringMode',
     'EXIF.ExposureMode',
     'EXIF.ExposureProgram',
     'EXIF.ExposureTime',
     'EXIF.FNumber',
-    'EXIF.Flash',
-    'EXIF.FocalLength',
-    'EXIF.FocalLengthIn35mmFormat',
-    'EXIF.ISO',
-    'EXIF.MeteringMode',
-    'EXIF.WhiteBalance']
+    'Composite.CircleOfConfusion',
+    'Composite.FOV',
+    'Composite.HyperfocalDistance',
+    'EXIF.BrightnessValue',
+    'Composite.LightValue']
 
 IMAGE_ITEMS = [
-    ('PNG.ColorType', 'EXIF.ColorSpace'),
-    'EXIF.ComponentsConfiguration',
-    ('PNG.Compression', 'EXIF.Compression'),
-    ('PNG.ImageHeight', 'EXIF.ExifImageHeight', 'File.ImageHeight'),
     ('PNG.ImageWidth', 'EXIF.ExifImageWidth', 'File.ImageWidth'),
-    'EXIF.Gamma',
+    ('PNG.ImageHeight', 'EXIF.ExifImageHeight', 'File.ImageHeight'),
     'EXIF.Orientation',
-    ('EXIF.ResolutionUnit', 'JFIF.ResolutionUnit'),
-    'EXIF.SceneCaptureType',
-    'EXIF.SceneType',
-    'EXIF.SensingMethod',
-    'EXIF.Sharpness',
-    'EXIF.SubjectArea',
-    'EXIF.SubjectDistanceRange',
     ('EXIF.XResolution', 'JFIF.XResolution'),
     ('EXIF.YResolution', 'JFIF.YResolution'),
-    'EXIF.YCbCrPositioning',
-    ('PNG.BitDepth', 'File.BitsPerSample'),
-    'File.ColorComponents',
-    'File.EncodingProcess',
-    'File.ExifByteOrder',
-    'File.FileSize',
-    'File.FileType',
-    'File.YCbCrSubSampling',
+    ('EXIF.ResolutionUnit', 'JFIF.ResolutionUnit'),
     'MakerNotes.HDRImageType',
+    'EXIF.Gamma',
+    'EXIF.Sharpness',
+    'EXIF.SensingMethod',
+    'EXIF.SceneType',
+    'EXIF.SceneCaptureType',
+    'EXIF.SubjectArea',
+    'EXIF.SubjectDistanceRange',
     'PNG.Filter',
-    'PNG.Interlace']
+    'PNG.Interlace',
+    ('PNG.BitDepth', 'File.BitsPerSample'),
+    ('PNG.ColorType', 'EXIF.ColorSpace'),
+    'File.ColorComponents',
+    'EXIF.ComponentsConfiguration',
+    'EXIF.YCbCrPositioning',
+    'File.YCbCrSubSampling',
+    'File.FileType',
+    'File.FileSize',
+    ('PNG.Compression', 'EXIF.Compression'),
+    'File.EncodingProcess',
+    'File.ExifByteOrder']
 
-SOFTWARE_ITEMS = [
-    'Composite.RunTimeSincePowerUp',
+ENVIRONMENT_ITEMS = [
+    'EXIF.Software',
     'EXIF.ExifVersion',
     'EXIF.FlashpixVersion',
-    'EXIF.InteropIndex',
-    'EXIF.InteropVersion',
-    'EXIF.Software',
     'JFIF.JFIFVersion',
-    'XMP.XMPToolkit']
+    'XMP.XMPToolkit',
+    'EXIF.InteropVersion',
+    'EXIF.InteropIndex',
+    'Composite.RunTimeSincePowerUp']
 
-PHYSICAL_ITEMS = [
-    'EXIF.LensInfo',
+HARDWARE_ITEMS = [
+    'EXIF.Make',
+    'EXIF.Model',
     'EXIF.LensMake',
     'EXIF.LensModel',
-    'EXIF.Make',
-    'EXIF.Model']
+    'EXIF.LensInfo']
 
 GPS_ITEMS = [
     'Composite.GPSAltitude',
@@ -84,10 +84,10 @@ class MetadataView(object):
     def render_html(self):
         template_vars = {
             'metadata': self.metadata,
-            'optical': self._collect_items(OPTICAL_ITEMS),
+            'camera': self._collect_items(CAMERA_ITEMS),
             'image': self._collect_items(IMAGE_ITEMS),
-            'software': self._collect_items(SOFTWARE_ITEMS),
-            'physical': self._collect_items(PHYSICAL_ITEMS),
+            'environment': self._collect_items(ENVIRONMENT_ITEMS),
+            'hardware': self._collect_items(HARDWARE_ITEMS),
             'gps': self._collect_items(GPS_ITEMS)}
 
         return render_template('metadata.html', **template_vars)
