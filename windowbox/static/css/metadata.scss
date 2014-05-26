@@ -1,17 +1,34 @@
 #metadata {
     position: absolute;
-    overflow-y: scroll;
-    box-sizing: border-box;
-    padding: 10px;
     top: 0;
     right: 0;
-    width: $content_width / 3;
     background: $body_color_accent;
-    font-size: 1.1em;
     box-shadow: #000 0 0 10px;
+
+    .pull-tab {
+        position: absolute;
+        top: 50px;
+        left: -60px;
+        width: 60px;
+        height: 50px;
+        background: $body_color_accent url('../images/details.png') no-repeat 10px 10px;
+        border-radius: 10px 0 0 10px;
+        box-shadow: #000 0 3px 10px;
+        cursor: pointer;
+    }
+
+    .scroll-wrap {
+        position: relative;
+        overflow-y: scroll;
+        box-sizing: border-box;
+        padding: 10px;
+        width: $content_width / 3;
+        background: $body_color_accent;
+    }
 
     .category {
         margin-bottom: 30px;
+        font-size: 1.1em;
 
         h1 {
             margin-bottom: 10px;

@@ -3,19 +3,19 @@
 var $ = require('jquery');
 
 module.exports = function () {
-    var inPos  = $('.arrow.previous').css('left'),
-        outPos = -$('.arrow.previous').width();
+    var $arrowPrev = $('.arrow.previous'),
+        $arrowNext = $('.arrow.next'),
+        inPos      = $arrowPrev.css('left'),
+        outPos     = -$arrowPrev.width();
 
-    $('.arrow.previous').css('left', outPos);
-    $('.arrow.next').css('right', outPos);
+    $arrowPrev.css('left', outPos);
+    $arrowNext.css('right', outPos);
 
     $('#attachment').hover(function () {
-        $('.arrow').stop();
-        $('.arrow.previous').animate({ left : inPos });
-        $('.arrow.next').animate({ right : inPos });
+        $arrowPrev.stop().animate({ left  : inPos });
+        $arrowNext.stop().animate({ right : inPos });
     }, function () {
-        $('.arrow').stop();
-        $('.arrow.previous').animate({ left : outPos });
-        $('.arrow.next').animate({ right : outPos });
+        $arrowPrev.stop().animate({ left  : outPos });
+        $arrowNext.stop().animate({ right : outPos });
     });
 };

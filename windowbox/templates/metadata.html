@@ -1,53 +1,57 @@
 <section id="metadata">
-    {% if camera %}
-        <section class="category camera">
-            <h1>Camera Metadata</h1>
+    <div class="pull-tab"></div>
 
-            <dl>
-                {% for item in camera %}
-                    <dt>{{ item.display_name }}</dt>
-                    <dd>{{ item.display_value }}</dd>
-                {% endfor %}
-            </dl>
-        </section>
-    {% endif %}
+    <div class="scroll-wrap">
+        {% if camera %}
+            <section class="category camera">
+                <h1>Camera Metadata</h1>
 
-    {% if image %}
-        <section class="category image">
-            <h1>Image Metadata</h1>
+                <dl>
+                    {% for item in camera %}
+                        <dt>{{ item.display_name }}</dt>
+                        <dd>{{ item.display_value }}</dd>
+                    {% endfor %}
+                </dl>
+            </section>
+        {% endif %}
 
-            <dl>
-                {% for item in image %}
-                    <dt>{{ item.display_name }}</dt>
-                    <dd>{{ item.display_value }}</dd>
-                {% endfor %}
-            </dl>
-        </section>
-    {% endif %}
+        {% if image %}
+            <section class="category image">
+                <h1>Image Metadata</h1>
 
-    {% if environment %}
-        <section class="category environment">
-            <h1>Environment</h1>
+                <dl>
+                    {% for item in image %}
+                        <dt>{{ item.display_name }}</dt>
+                        <dd>{{ item.display_value }}</dd>
+                    {% endfor %}
+                </dl>
+            </section>
+        {% endif %}
 
-            <dl>
-                {% for item in environment %}
-                    <dt>{{ item.display_name }}</dt>
-                    <dd>{{ item.display_value }}</dd>
-                {% endfor %}
-            </dl>
-        </section>
-    {% endif %}
+        {% if environment %}
+            <section class="category environment">
+                <h1>Environment</h1>
 
-    {% if hardware %}
-        <section class="category hardware">
-            <h1>Hardware</h1>
+                <dl>
+                    {% for item in environment %}
+                        <dt>{{ item.display_name }}</dt>
+                        <dd>{{ item.display_value }}</dd>
+                    {% endfor %}
+                </dl>
+            </section>
+        {% endif %}
 
-            <dl>
-                {% for item in hardware %}
-                    <dt>{{ item.display_name }}</dt>
-                    <dd>{{ item.display_value }}</dd>
-                {% endfor %}
-            </dl>
-        </section>
-    {% endif %}
+        {% if hardware %}
+            <section class="category hardware">
+                <h1>Hardware</h1>
+
+                <dl>
+                    {% for item in hardware %}
+                        <dt>{{ item.display_name }}</dt>
+                        <dd>{{ item.display_value }}</dd>
+                    {% endfor %}
+                </dl>
+            </section>
+        {% endif %}
+    </div>
 </section>
