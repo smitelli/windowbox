@@ -62,6 +62,9 @@ class AttachmentSchema(DeclarativeBase):
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.id'), index=True)
     mime_type = sa.Column(sa.String(255))
+    geo_latitude = sa.Column(sa.Float, nullable=True)
+    geo_longitude = sa.Column(sa.Float, nullable=True)
+    geo_address = sa.Column(sa.Unicode(255), nullable=True)
 
     # Used to form the one-to-many relationship with AttachmentAttributesSchema
     _attributes_dict = sa.orm.relation(
@@ -87,6 +90,15 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         super(Attachment, self).set_data(*args, **kwargs)
 
         self.attributes = self._load_exif_data()
+
+        try:
+            self.geo_latitude = float(self.attributes['Composite.GPSLatitude.num'])
+            self.geo_longitude = float(self.attributes['Composite.GPSLongitude.num'])
+            self.geo_address = self._load_address_data(self.geo_latitude, self.geo_longitude)
+        except KeyError:
+            self.geo_latitude = None
+            self.geo_longitude = None
+            self.geo_address = None
 
     def get_derivative(self, width=None, height=None, allow_crop=True):
         derivative = db_session.query(AttachmentDerivative).filter(
@@ -153,15 +165,10 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
 
         return flat_data
 
-    def _load_address_data(self):
-        try:
-            lat = self.attributes['Composite.GPSLatitude.num']
-            lng = self.attributes['Composite.GPSLongitude.num']
-        except KeyError:
-            return None
-
-        url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&sensor=true'.format(lat, lng)
-        response = requests.get(url, timeout=10)
+    @staticmethod
+    def _load_address_data(latitude, longitude, timeout=10):
+        url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&sensor=true'.format(latitude, longitude)
+        response = requests.get(url, timeout=timeout)
         if response.status_code is not requests.codes.ok:
             return None
 

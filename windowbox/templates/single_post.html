@@ -10,7 +10,9 @@
                         {{ item.get_created_date('%B %-d, %Y at %-I:%M %p') }}
                     </time>
                 </li>
-                <li>from {{ attachment._load_address_data() }}</li>
+                {% if attachment.geo_address %}
+                    <li>from {{ attachment.geo_address }}</li>
+                {% endif %}
             </ul>
         </header>
 
