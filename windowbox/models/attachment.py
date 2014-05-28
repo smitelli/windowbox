@@ -1,3 +1,4 @@
+from __future__ import division
 import json
 import os
 import re
@@ -245,42 +246,49 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
 
     @staticmethod
     def _resize_derivative(im, width, height, allow_crop):
+        def intround(value):
+            if isinstance(value, tuple):
+                return tuple(intround(v) for v in value)
+            elif isinstance(value, float):
+                return int(round(value))
+            return value
+
         im = im.convert('RGB')
 
         old_width, old_height = im.size
 
         if width > 0 and height > 0:
-            fx = float(old_width) / width
-            fy = float(old_height) / height
+            fx = old_width / width
+            fy = old_height / height
 
             if allow_crop:
                 f = min(fx, fy)
-                crop_size = int(width * f), int(height * f)
+                crop_size = width * f, height * f
 
                 crop_width, crop_height = crop_size
                 trim_x = (old_width - crop_width) / 2
                 trim_y = (old_height - crop_height) / 2
 
                 crop = trim_x, trim_y, crop_width + trim_x, crop_height + trim_y
-                im = im.transform(crop_size, PILImage.EXTENT, crop)
+                im = im.transform(intround(crop_size), PILImage.EXTENT, intround(crop))
 
                 size = width, height
             else:
                 f = max(fx, fy)
-                size = int(old_width / f), int(old_height / f)
+                size = old_width / f, old_height / f
 
         elif width > 0 and height is None:
-            f = float(old_width) / width
-            size = width, int(old_height / f)
+            f = old_width / width
+            size = width, old_height / f
 
         elif height > 0 and width is None:
-            f = float(old_height) / height
-            size = int(old_width / f), height
+            f = old_height / height
+            size = old_width / f, height
 
         else:
             return im
 
-        return im.resize(size, PILImage.ANTIALIAS)
+        return im.resize(intround(size), PILImage.ANTIALIAS)
 
     def _save_derivative(self, im):
         save_options = {
