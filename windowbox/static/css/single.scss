@@ -5,20 +5,26 @@
     article {
         header {
             h1 {
-                float: left;
-                width: 100% * (2 / 3);
                 padding-bottom: 10px;
                 font: bold 2.4em $body_font_stack;
             }
 
             ul {
-                float: right;
-                width: 100% * (1 / 3);
+                overflow: hidden;
 
                 li {
                     list-style: none;
+                    padding-bottom: 5px;
                     font: 1.2em/1.2em $body_font_stack;
-                    text-align: right;
+
+                    &.date-line {
+                        float: left;
+                    }
+
+                    &.geo-line {
+                        float: right;
+                        text-align: right;
+                    }
                 }
             }
         }

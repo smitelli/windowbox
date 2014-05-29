@@ -4,14 +4,14 @@
             <h1>{{ item.message }}</h1>
 
             <ul>
-                <li>
-                    Sent on
+                <li class="date-line">
+                    sent on
                     <time datetime="{{ item.get_created_date('%Y-%m-%dT%H:%M:%S%z') }}">
-                        {{ item.get_created_date('%B %-d, %Y at %-I:%M %p') }}
+                        <strong>{{ item.get_created_date('%B %-d, %Y at %-I:%M %p') }}</strong>
                     </time>
                 </li>
                 {% if attachment.geo_address %}
-                    <li>from {{ attachment.geo_address }}</li>
+                    <li class="geo-line">from <strong>{{ attachment.geo_address }}</strong></li>
                 {% endif %}
             </ul>
         </header>
