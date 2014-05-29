@@ -38,19 +38,19 @@
                 display: block;
                 overflow: hidden;
                 position: absolute;
-                top: 50%;
+                top: 0;  //overridden by JS
                 height: 60px;
                 width: 50px;
                 background: transparent url('../images/arrow-sprites.png') no-repeat;
                 text-indent: -1000px;
 
                 &.previous {
-                    left: 20px;
+                    left: 20px;  //overridden by JS
                     background-position: 0px 0px;
                 }
 
                 &.next {
-                    right: 20px;
+                    right: 20px;  //overridden by JS
                     background-position: -45px 0px;
                 }
             }

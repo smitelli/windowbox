@@ -1,7 +1,7 @@
 #metadata {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 0;  //overridden by JS
     background: $body_color_accent;
     box-shadow: #000 0 0 10px;
 
@@ -21,6 +21,7 @@
         position: relative;
         overflow-y: scroll;
         box-sizing: border-box;
+        height: 0;  //overridden by JS
         padding: 10px;
         width: $content_width / 3;
         background: $body_color_accent;
