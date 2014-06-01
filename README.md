@@ -13,11 +13,13 @@ npm Modules:
 * grunt-cli
 * run `npm install`
 
-Python Packages:
-
-* run `pip install -r reqs.txt`
-* Dev requirements: `pip install flake8`
-
 Ruby Gems:
 
 * sass
+
+Python Packages:
+
+NOTE: Make a virtualenv, unless you don't care.
+
+* run `pip install -r reqs.txt`
+* Dev requirements: `pip install flake8`
