@@ -60,7 +60,7 @@ module.exports = function (grunt) {
             },
             dist : {
                 files : {
-                    '<%= pkg.dir.stylesheet %>/main.css' : '<%= pkg.dir.stylesheet %>/main.scss'
+                    '<%= pkg.dir.stylesheet %>/main-dist.css' : '<%= pkg.dir.stylesheet %>/main.scss'
                 }
             }
         },

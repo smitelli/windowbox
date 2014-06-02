@@ -2,8 +2,8 @@
 _importable/
 node_modules/
 storage/
-*.css
 *.pyc
 *.sqlite
 *.sqlite-journal
+windowbox/static/css/main-dist.css
 windowbox/static/js/main-dist.js
