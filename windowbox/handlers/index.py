@@ -1,4 +1,4 @@
-from flask import abort
+from flask import abort, jsonify
 from windowbox.models.post import PostManager
 from windowbox.views.index import IndexView
 from windowbox.views.page import PageView
@@ -25,4 +25,6 @@ class IndexHandler():
 
     @staticmethod
     def _render_json(posts, has_next):
-        return 'TODO not implemented'
+        response = jsonify(TODO='not implemented')
+
+        return response

@@ -1,4 +1,4 @@
-from flask import abort
+from flask import abort, jsonify
 from jinja2.exceptions import UndefinedError
 from windowbox.models.metadata import Metadata
 from windowbox.models.post import PostManager
@@ -31,4 +31,6 @@ class PostHandler():
 
     @staticmethod
     def _render_json(post, attachment, metadata, previous, next):
-        return 'TODO not implemented either'
+        response = jsonify(TODO='not implemented either')
+
+        return response

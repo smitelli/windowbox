@@ -26,6 +26,9 @@ class MetadataItem(object):
         self.raw_value = None
         self.value = None
 
+    def __repr__(self):
+        return '<{} key={}>'.format(self.__class__.__name__, self.key)
+
     def add_data(self, kind, data):
         if kind == 'desc':
             self.description = data

@@ -17,7 +17,8 @@ def request_wants_json():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return ErrorHandler.get(error)
+    as_json = request_wants_json()
+    return ErrorHandler.get(error, as_json=as_json)
 
 
 @app.route('/')
