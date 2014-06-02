@@ -1,9 +1,9 @@
-<section id="error" class="code-{{ code }}">
+<section id="error" class="code-{{ error.code }}">
     <img src="{{ url_for('static', filename='images/windowbox-dark.png') }}" alt="Windowbox" class="filler">
 
     <h1>{{ title }}</h1>
 
-    {% if code == 404 %}
+    {% if error.code == 404 %}
         <p>Whatever you're looking for isn't here. Sorry about that.</p>
     {% endif %}
 </section>

@@ -1,10 +1,10 @@
 from flask import Flask, request
 from windowbox.database import session as db_session
+from windowbox.handlers.attachment import AttachmentDerivativeHandler
 from windowbox.handlers.error import ErrorHandler
+from windowbox.handlers.feed import FeedHandler
 from windowbox.handlers.index import IndexHandler
 from windowbox.handlers.post import PostHandler
-from windowbox.handlers.attachment import AttachmentDerivativeHandler
-from windowbox.handlers.feed import FeedHandler
 
 app = Flask(__name__)
 
@@ -17,7 +17,7 @@ def request_wants_json():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return ErrorHandler.get(code=404)
+    return ErrorHandler.get(error)
 
 
 @app.route('/')
