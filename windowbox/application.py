@@ -17,21 +17,18 @@ def request_wants_json():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    as_json = request_wants_json()
-    return ErrorHandler.get(error, as_json=as_json)
+    return ErrorHandler.get(error, as_json=request_wants_json())
 
 
 @app.route('/')
 def get_index():
     until_id = request.args.get('until')
-    as_json = request_wants_json()
-    return IndexHandler.get(until_id=until_id, as_json=as_json)
+    return IndexHandler.get(until_id=until_id, as_json=request_wants_json())
 
 
 @app.route('/post/<int:post_id>')
 def get_post(post_id):
-    as_json = request_wants_json()
-    return PostHandler.get(post_id, as_json=as_json)
+    return PostHandler.get(post_id, as_json=request_wants_json())
 
 
 @app.route('/attachment/<int:attachment_id>')
