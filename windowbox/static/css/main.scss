@@ -3,6 +3,7 @@
 @import 'reset';
 
 body {
+    min-width: $content_width + 20px;
     color: $body_color_text;
     background-color: $body_color_bg;
     font: 10px $body_font_stack;
