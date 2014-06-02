@@ -15,17 +15,12 @@ class IndexView(object):
         return render_template('index_posts.html', **template_vars)
 
     def render_rss2(self):
-        return self._render_xml(format='rss2')
+        return self._render_xml('index_posts_rss2.xml', content_type='application/rss+xml')
 
     def render_atom(self):
-        return self._render_xml(format='atom')
+        return self._render_xml('index_posts_atom.xml', content_type='application/atom+xml')
 
-    def _render_xml(self, format):
-        template_name, content_type = {
-            'rss2': ('index_posts_rss2.xml', 'application/rss+xml'),
-            'atom': ('index_posts_atom.xml', 'application/atom+xml')
-        }[format]
-
+    def _render_xml(self, template_name, content_type):
         template_vars = {
             'items': self.items}
 
