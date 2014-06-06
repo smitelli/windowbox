@@ -11,11 +11,11 @@
     xmlns:media="http://search.yahoo.com/mrss/"
 >
     <channel>
-        <title>TODO WordPress.com News</title>
-        <atom:link href="http://TODO/rss.xml" rel="self" type="application/rss+xml" />
-        <link>http://TODO</link>
-        <description>TODO The latest news on WordPress.com and the WordPress community.</description>
-        <lastBuildDate>TODO RFC 822</lastBuildDate>
+        <title>Windowbox</title>
+        <atom:link href="{{ base_href }}{{ url_for('get_rss2') }}" rel="self" type="application/rss+xml" />
+        <link>{{ base_href }}{{ url_for('get_rss2') }}</link>
+        <description>Because moblogs aren't hip anymore.</description>
+        <lastBuildDate>{{ items[0].get_created_date('%D, %d %M %y %H:%i:%s %O') }}</lastBuildDate>
         <language>en</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>

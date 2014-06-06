@@ -11,6 +11,8 @@ DATABASE_KWARGS = {
     'convert_unicode': True,
     'echo': False}
 
+BASE_HREF = 'http://tarvos-ubuntu:5000'
+
 DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
 
 STORAGE_DIR = AppPath.package('../storage')
