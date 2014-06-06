@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import render_template, make_response
 from windowbox.configs.base import BASE_HREF
 
@@ -24,7 +25,8 @@ class IndexView(object):
     def _render_xml(self, template_name, content_type):
         template_vars = {
             'items': self.items,
-            'base_href': BASE_HREF}
+            'base_href': BASE_HREF,
+            'copyright_year': datetime.now().year}
 
         body_xml = render_template(template_name, **template_vars)
 

@@ -1,5 +1,7 @@
 import sqlalchemy as sa
 import windowbox.configs.base as cfg
+from calendar import timegm
+from email.utils import formatdate
 from windowbox.database import DeclarativeBase, session as db_session, UTCDateTime
 from windowbox.models import BaseModel
 from windowbox.models.attachment import AttachmentManager
@@ -55,6 +57,9 @@ class Post(PostSchema, BaseModel):
         if format is None:
             format = '%Y-%m-%d %H:%M:%S %Z'
 
-        date_local = self.created_utc.astimezone(cfg.DISPLAY_TIMEZONE)
+        created_local = self.created_utc.astimezone(cfg.DISPLAY_TIMEZONE)
 
-        return date_local.strftime(format)
+        return created_local.strftime(format)
+
+    def get_created_date_rfc822(self):
+        return formatdate(timegm(self.created_utc.timetuple()))

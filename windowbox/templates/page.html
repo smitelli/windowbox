@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>{% if page_title %}{{ page_title }} &bull; {% endif %}Windowbox</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main-dist.css') }}" type="text/css">
+    <link rel="alternate" href="{{ url_for('get_rss2') }}" type="application/rss+xml" title="Windowbox RSS Feed">
+    <link rel="alternate" href="{{ url_for('get_atom') }}" type="application/atom+xml" title="Windowbox Atom Feed">
     <script src="{{ url_for('static', filename='js/main-dist.js') }}"></script>
 </head>
 
