@@ -14,6 +14,9 @@
             <link href="{{ base_href }}{{ url_for('get_post', post_id=post.id) }}" rel="alternate" />
             <title>{{ post.message }}</title>
             <updated>{{ post.created_utc.isoformat() }}</updated>
+            <author>
+                <name>Windowbox</name>
+            </author>
             <summary type="html"><![CDATA[
                 <p>
                     <a href="{{ base_href }}{{ url_for('get_post', post_id=post.id) }}">

@@ -9,15 +9,15 @@
     <channel>
         <title>Windowbox</title>
         <atom:link href="{{ base_href }}{{ url_for('get_rss2') }}" rel="self" type="application/rss+xml" />
-        <link>{{ base_href }}{{ url_for('get_rss2') }}</link>
+        <link>{{ base_href }}{{ url_for('get_index') }}</link>
         <description>Because moblogs aren't hip anymore.</description>
         <lastBuildDate>{{ items[0].get_created_date_rfc822() }}</lastBuildDate>
-        <language>en</language>
+        <language>en-us</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
         <generator>Windowbox</generator>
-        <copyright>A contrivance by Scott Smitelli. &copy; 2004-{{ copyright_year }}.</copyright>
-        <docs>http://backend.userland.com/rss</docs>
+        <copyright>A contrivance by Scott Smitelli. &#169; 2004-{{ copyright_year }}.</copyright>
+        <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
         <image>
             <url>{{ base_href }}{{ url_for('static', filename='images/windowbox-dark.png') }}</url>
             <title>Windowbox</title>
@@ -39,10 +39,9 @@
                     </p>
                 ]]></description>
                 <media:thumbnail url="{{ base_href }}{{ attachment.get_derivative_url(300, 300) }}" />
-                <media:content url="{{ base_href }}{{ attachment.get_derivative_url(300, 300) }}" medium="image">
+                <media:content url="{{ base_href }}{{ attachment.get_derivative_url() }}" medium="image">
                     <media:title type="html">{{ post.message }}</media:title>
                 </media:content>
-                <!-- TODO geo? -->
             </item>
         {% endfor %}
     </channel>

@@ -27,7 +27,7 @@ class AttachmentManager():
     @staticmethod
     def encode_dimensions(width=None, height=None):
         if not width and not height:
-            return ''
+            return None
         else:
             return '{}x{}'.format(width or '', height or '')
 
