@@ -4,7 +4,7 @@
     <link href="{{ base_href }}{{ url_for('get_atom') }}" rel="self" type="application/atom+xml" />
     <link href="{{ base_href }}{{ url_for('get_index') }}" rel="alternate" />
     <title>Windowbox</title>
-    <subtitle>Because moblogs aren't hip anymore.</subtitle>
+    <subtitle>Because moblogs aren&#39;t hip anymore.</subtitle>
     <updated>{{ items[0].created_utc.isoformat() }}</updated>
 
     {% for post in items %}

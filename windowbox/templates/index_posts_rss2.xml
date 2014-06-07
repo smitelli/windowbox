@@ -10,7 +10,7 @@
         <title>Windowbox</title>
         <atom:link href="{{ base_href }}{{ url_for('get_rss2') }}" rel="self" type="application/rss+xml" />
         <link>{{ base_href }}{{ url_for('get_index') }}</link>
-        <description>Because moblogs aren't hip anymore.</description>
+        <description>Because moblogs aren&#39;t hip anymore.</description>
         <lastBuildDate>{{ items[0].get_created_date_rfc822() }}</lastBuildDate>
         <language>en-us</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
