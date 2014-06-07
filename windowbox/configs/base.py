@@ -6,7 +6,7 @@ FLASK_KWARGS = {
     'debug': True,
     'host': '0.0.0.0'}
 
-DATABASE_URI = 'sqlite:///' +  AppPath.package('../db.sqlite')
+DATABASE_URI = 'sqlite:///' + AppPath.package('../db.sqlite')
 DATABASE_KWARGS = {
     'convert_unicode': True,
     'echo': False}
