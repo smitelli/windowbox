@@ -1,30 +1,32 @@
-import imaplib
 import email
+import imaplib
 import pytz
+from collections import defaultdict
 from datetime import datetime
+from email.utils import mktime_tz, parsedate_tz
 
-imapSession = imaplib.IMAP4_SSL('imap.gmail.com')
+imap_session = imaplib.IMAP4_SSL('imap.gmail.com')
 
-(typ, _) = imapSession.login('', '')
+(typ, _) = imap_session.login('', '')
 if typ != 'OK':
     raise Exception
 
-imapSession.select('[Gmail]/All Mail')
+imap_session.select('[Gmail]/All Mail')
 
-(typ, results) = imapSession.uid('SEARCH', None, 'ALL')
+(typ, results) = imap_session.uid('SEARCH', None, 'ALL')
 if typ != 'OK':
     raise Exception
 
 for uid in results[0].split():
-    (typ, parts) = imapSession.uid('FETCH', uid, '(BODY[])')
+    (typ, parts) = imap_session.uid('FETCH', uid, '(BODY[])')
     if typ != 'OK':
         raise Exception
 
     message = email.message_from_string(parts[0][1])
 
-    created_utc = datetime.fromtimestamp(email.utils.mktime_tz(email.utils.parsedate_tz(message.get('date'))), pytz.utc)
+    created_utc = datetime.fromtimestamp(mktime_tz(parsedate_tz(message.get('date'))), pytz.utc)
     user_agent = message.get('x-mailer')
-    message_body = {}
+    message_body = defaultdict(str)
     attachments = []
 
     for part in message.walk():
@@ -36,12 +38,9 @@ for uid in results[0].split():
             charset = str(part.get_content_charset())
             payload = part.get_payload(decode=True)
 
-            if ctype not in message_body:
-                message_body[ctype] = ''
-
-            message_body[ctype] += unicode(payload, encoding=charset, errors='ignore').encode('utf8', errors='replace')
+            message_body[ctype] += payload.decode(charset, errors='replace')
         else:
             attachments.append(part)
 
-imapSession.close()
-imapSession.logout()
+imap_session.close()
+imap_session.logout()

@@ -4,66 +4,57 @@ import pytz
 from datetime import datetime
 from windowbox.database import session as db_session
 from windowbox.models.post import Post
-from windowbox.models.attachment import (Attachment, AttachmentDerivative, AttachmentAttributesSchema)
+from windowbox.models.attachment import Attachment, AttachmentDerivative, AttachmentAttributesSchema
 
 _path = os.path.abspath(os.path.dirname(__file__))
 _tz = pytz.timezone('America/New_York')
+_fields = ['post_id', 'attachment_id', 'timestamp', 'message', 'user_agent']
 
 
-def get_attachment_path(id):
-    ipath = os.path.join(_path, '_importable/originals/{}.jpg'.format(id))
-    if os.path.isfile(ipath):
-        return ('image/jpeg', ipath)
+def get_attachment_path(attachment_id):
+    checks = [
+        '_importable/originals/{}.jpg',
+        '_importable/originals/{}.png',
+        '_importable/posts/{}.jpg',
+        '_importable/posts/{}.png']
 
-    ipath = os.path.join(_path, '_importable/originals/{}.png'.format(id))
-    if os.path.isfile(ipath):
-        return ('image/png', ipath)
-
-    ipath = os.path.join(_path, '_importable/posts/{}.jpg'.format(id))
-    if os.path.isfile(ipath):
-        return ('image/jpeg', ipath)
-
-    ipath = os.path.join(_path, '_importable/posts/{}.png'.format(id))
-    if os.path.isfile(ipath):
-        return ('image/png', ipath)
-
-    return (None, None)
+    for check in checks:
+        attachment_path = os.path.join(_path, check.format(attachment_id))
+        if os.path.isfile(attachment_path):
+            return attachment_path
+    raise Exception
 
 Post.__table__.create()
 Attachment.__table__.create()
 AttachmentDerivative.__table__.create()
 AttachmentAttributesSchema.__table__.create()
 
-fields = ['post_id', 'attachment_id', 'timestamp', 'message', 'user_agent']
-data = csv.reader(open(os.path.join(_path, '_importable/mob1_posts.csv')))
+with open(os.path.join(_path, '_importable/mob1_posts.csv')) as fh:
+    for row in csv.reader(fh):
+        row_data = dict(zip(_fields, row))
 
-for row in data:
-    # Convert from the miserable CoMoblog post table format
-    rowdata = dict(zip(fields, row))
+        created = _tz.localize(datetime.fromtimestamp(float(row_data['timestamp'])))
 
-    try:
-        body = unicode(rowdata['message'], 'ascii')
-    except UnicodeError:
-        body = unicode(rowdata['message'], 'utf-8')
+        try:
+            body = row_data['message'].decode('ascii', errors='strict')
+        except UnicodeError:
+            body = row_data['message'].decode('utf_8', errors='strict')
 
-    postdata = {
-        'id': rowdata['post_id'],
-        'created_utc': _tz.localize(datetime.fromtimestamp(float(rowdata['timestamp']))),
-        'message': body,
-        'user_agent': rowdata['user_agent']}
+        post_data = {
+            'id': row_data['post_id'],
+            'created_utc': created,
+            'message': body,
+            'user_agent': row_data['user_agent']}
 
-    print 'Inserting post #{}...'.format(rowdata['post_id'])
-    post = Post(**postdata).save(commit=True)
+        print 'Inserting post #{}...'.format(row_data['post_id'])
+        post = Post(**post_data).save(commit=True)
 
-    imime, ipath = get_attachment_path(rowdata['attachment_id'])
-    attach_data = {
-        'post_id': post.id,
-        'mime_type': '',
-        'attributes': {}}
+        attach_data = {
+            'post_id': post.id}
 
-    print 'Inserting attachment...'
-    attachment = Attachment(**attach_data)
-    attachment.set_data_from_file(ipath)
-    attachment.save(commit=True)
+        print 'Inserting attachment...'
+        attachment = Attachment(**attach_data)
+        attachment.set_data_from_file(get_attachment_path(row_data['attachment_id']))
+        attachment.save(commit=True)
 
 db_session.close()
