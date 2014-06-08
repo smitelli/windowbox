@@ -63,6 +63,9 @@ class IMAPMessage(object):
         self.message = message
         self.parts = self._read_body_parts(self.message)
 
+    def __cmp__(self, other):
+        return cmp(self.created_utc, other.created_utc)
+
     @property
     def sender(self):
         return parseaddr(self.message.get('from'))

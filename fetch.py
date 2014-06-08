@@ -6,7 +6,7 @@ from windowbox.models.post import Post
 imap_manager = IMAPManager('imap.gmail.com', '', '')
 messages = imap_manager.scrape_mailbox('Inbox')
 
-for message in messages:
+for message in sorted(messages):
     real_name, email = message.sender
     if email != 'scott@smitelli.com':
         print 'Skipping, {} is not a permitted sender'.format(email)
