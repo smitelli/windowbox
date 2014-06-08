@@ -49,11 +49,8 @@ with open(os.path.join(_path, '_importable/mob1_posts.csv')) as fh:
         print 'Inserting post #{}...'.format(row_data['post_id'])
         post = Post(**post_data).save(commit=True)
 
-        attach_data = {
-            'post_id': post.id}
-
         print 'Inserting attachment...'
-        attachment = Attachment(**attach_data)
+        attachment = Attachment(post_id=post.id)
         attachment.set_data_from_file(get_attachment_path(row_data['attachment_id']))
         attachment.save(commit=True)
 

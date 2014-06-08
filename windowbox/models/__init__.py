@@ -27,7 +27,7 @@ class BaseFSEntity():
         return buffer_str
 
     def set_data(self, buffer_str):
-        self.mime_type = self._identify_mime_type(buffer_str)
+        self.mime_type = Magic(mime=True).from_buffer(buffer_str)
 
         # Ensures we have an auto-increment ID for get_file_name().
         self.save(commit=False)
@@ -48,9 +48,7 @@ class BaseFSEntity():
 
     def set_data_from_file(self, source_file):
         with open(source_file, mode='rb') as fh:
-            buffer_str = fh.read()
-
-        self.set_data(buffer_str)
+            self.set_data(fh.read())
 
     def get_file_name(self):
         primary_key = sa.orm.class_mapper(self.__class__).primary_key[0].name
@@ -72,8 +70,3 @@ class BaseFSEntity():
         file_name = '{}{}'.format(id_str, extension)
 
         return os.path.join(self.storage_path, d1, d2, file_name)
-
-    @staticmethod
-    def _identify_mime_type(buffer):
-        magic = Magic(mime=True)
-        return magic.from_buffer(buffer)

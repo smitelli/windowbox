@@ -1,0 +1,107 @@
+import email
+import imaplib
+import pytz
+from collections import defaultdict
+from datetime import datetime
+from email.utils import mktime_tz, parsedate_tz
+
+
+class IMAPException(Exception):
+    pass
+
+
+class IMAPManager(object):
+    def __init__(self, host, user, password, port=993):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
+
+        self.session = imaplib.IMAP4_SSL(host, port)
+        self.last_type = None
+
+        self._do('LOGIN', user=self.user, password=self.password)
+
+    def close(self):
+        self.session.expunge()
+        self.session.close()
+        self.session.logout()
+
+    def scrape_mailbox(self, mailbox):
+        self._do('SELECT', mailbox=mailbox)
+
+        matches = self._do_uid('SEARCH', None, 'ALL')
+
+        for uid in matches[0].split():
+            parts = self._do_uid('FETCH', uid, '(BODY[])')
+            message = email.message_from_string(parts[0][1])
+
+            yield IMAPMessage(message)
+
+            #TODO self._do_uid('STORE', uid, '+FLAGS', '\\Deleted')
+
+    def _do(self, method, *args, **kwargs):
+        try:
+            fn = getattr(self.session, method)
+        except AttributeError:
+            raise IMAPException('No method {}'.format(method))
+
+        (self.last_type, results) = fn(*args, **kwargs)
+        if self.last_type != 'OK':
+            raise IMAPException()
+
+        return results
+
+    def _do_uid(self, *args, **kwargs):
+        return self._do('UID', *args, **kwargs)
+
+
+class IMAPMessage(object):
+    def __init__(self, message):
+        self.message = message
+        self.parts = self._read_body_parts(self.message)
+
+    @property
+    def created_utc(self):
+        ts = mktime_tz(parsedate_tz(self.message.get('date')))
+        return datetime.fromtimestamp(ts, pytz.utc)
+
+    @property
+    def message_body(self):
+        return self.parts['text/plain'].strip_signature()
+
+    @property
+    def user_agent(self):
+        return self.message.get('x-mailer')
+
+    @staticmethod
+    def _read_body_parts(message):
+        body_parts = defaultdict(IMAPContent)
+
+        for part in message.walk():
+            if not part.is_multipart():
+                ctype = str(part.get_content_type())
+                body_parts[ctype].append(part)
+
+        return body_parts
+
+
+class IMAPContent(object):
+    def __init__(self):
+        self.payloads = []
+        self.is_attachment = False
+
+    def append(self, part):
+        payload = part.get_payload(decode=True)
+
+        if part.get('content-disposition') is None:
+            charset = str(part.get_content_charset())
+            self.payloads.append(payload.decode(charset, errors='replace'))
+        else:
+            self.is_attachment = True
+            self.payloads.append(payload)
+
+    def strip_signature(self):
+        payloads = [p.strip() for p in self.payloads]
+
+        return payloads
