@@ -1,9 +1,10 @@
 import email
 import imaplib
+import re
 import pytz
 from collections import defaultdict
 from datetime import datetime
-from email.utils import mktime_tz, parsedate_tz
+from email.utils import mktime_tz, parseaddr, parsedate_tz
 
 
 class IMAPException(Exception):
@@ -27,7 +28,7 @@ class IMAPManager(object):
         self.session.close()
         self.session.logout()
 
-    def scrape_mailbox(self, mailbox):
+    def scrape_mailbox(self, mailbox, delete=True):
         self._do('SELECT', mailbox=mailbox)
 
         matches = self._do_uid('SEARCH', None, 'ALL')
@@ -38,7 +39,8 @@ class IMAPManager(object):
 
             yield IMAPMessage(message)
 
-            #TODO self._do_uid('STORE', uid, '+FLAGS', '\\Deleted')
+            if delete:
+                self._do_uid('STORE', uid, '+FLAGS', '\\Deleted')
 
     def _do(self, method, *args, **kwargs):
         try:
@@ -62,6 +64,14 @@ class IMAPMessage(object):
         self.parts = self._read_body_parts(self.message)
 
     @property
+    def sender(self):
+        return parseaddr(self.message.get('from'))
+
+    @property
+    def user_agent(self):
+        return self.message.get('x-mailer')
+
+    @property
     def created_utc(self):
         ts = mktime_tz(parsedate_tz(self.message.get('date')))
         return datetime.fromtimestamp(ts, pytz.utc)
@@ -70,9 +80,15 @@ class IMAPMessage(object):
     def message_body(self):
         return self.parts['text/plain'].strip_signature()
 
-    @property
-    def user_agent(self):
-        return self.message.get('x-mailer')
+    def get_attachment_data(self, valid_types):
+        if isinstance(valid_types, basestring):
+            valid_types = [valid_types]
+
+        for mime_type in valid_types:
+            if mime_type in self.parts:
+                return self.parts[mime_type].largest_payload()
+
+        return None
 
     @staticmethod
     def _read_body_parts(message):
@@ -96,12 +112,24 @@ class IMAPContent(object):
 
         if part.get('content-disposition') is None:
             charset = str(part.get_content_charset())
-            self.payloads.append(payload.decode(charset, errors='replace'))
+            text = payload.decode(charset, errors='replace')
+            self.payloads.append(self._normalize_crlf(text))
         else:
             self.is_attachment = True
             self.payloads.append(payload)
 
     def strip_signature(self):
-        payloads = [p.strip() for p in self.payloads]
+        if self.is_attachment:
+            raise IMAPException('Cannot strip an attachment')
 
-        return payloads
+        text = ''.join(self.payloads)
+        text = re.split('^\s*-+\s*$', text, flags=re.MULTILINE)[0]
+
+        return text.strip()
+
+    def largest_payload(self):
+        return max(self.payloads, key=len)
+
+    @staticmethod
+    def _normalize_crlf(text):
+        return re.sub('\r\n', '\n', text)
