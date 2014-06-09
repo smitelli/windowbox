@@ -3,8 +3,8 @@ import os
 import pytz
 from datetime import datetime
 from windowbox.application import app, db
+from windowbox.models.attachment import Attachment
 from windowbox.models.post import Post
-from windowbox.models.attachment import Attachment, AttachmentDerivative, AttachmentAttributesSchema
 
 _path = os.path.abspath(os.path.dirname(__file__))
 _tz = pytz.timezone('America/New_York')
@@ -25,10 +25,7 @@ def get_attachment_path(attachment_id):
     raise Exception
 
 with app.app_context():
-    Post.__table__.create()
-    Attachment.__table__.create()
-    AttachmentDerivative.__table__.create()
-    AttachmentAttributesSchema.__table__.create()
+    db.create_all()
 
 with open(os.path.join(_path, '_importable/mob1_posts.csv')) as fh:
     for row in csv.reader(fh):
