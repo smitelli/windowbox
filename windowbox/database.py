@@ -1,19 +1,12 @@
 import pytz
-import sqlalchemy as sa
-import sqlalchemy.orm as orm
 from datetime import datetime
-from sqlalchemy.ext.declarative import declarative_base
-from windowbox.configs.base import DATABASE_URI, DATABASE_KWARGS
+from flask_sqlalchemy import SQLAlchemy
 
-_engine = sa.create_engine(DATABASE_URI, **DATABASE_KWARGS)
-
-DeclarativeBase = declarative_base(bind=_engine)
-
-session = orm.sessionmaker(bind=_engine, autocommit=False, autoflush=False)()
+db = SQLAlchemy()
 
 
-class UTCDateTime(sa.types.TypeDecorator):
-    impl = sa.types.DateTime
+class UTCDateTime(db.TypeDecorator):
+    impl = db.DateTime
 
     def process_bind_param(self, value, dialect):
         if value is not None:

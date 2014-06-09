@@ -1,12 +1,15 @@
 from flask import Flask, request
-from windowbox.database import session as db_session
+from windowbox.database import db
 from windowbox.handlers.attachment import AttachmentDerivativeHandler
 from windowbox.handlers.error import ErrorHandler
 from windowbox.handlers.feed import FeedHandler
 from windowbox.handlers.index import IndexHandler
 from windowbox.handlers.post import PostHandler
 
+
 app = Flask(__name__)
+app.config.from_object('windowbox.configs.base')
+db.init_app(app)
 
 
 def request_wants_json():
@@ -46,8 +49,3 @@ def get_rss2():
 @app.route('/atom.xml')
 def get_atom():
     return FeedHandler.get_atom()
-
-
-@app.teardown_request
-def shutdown_session(exception=None):
-    db_session.close()

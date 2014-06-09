@@ -4,25 +4,24 @@ import os
 import re
 import subprocess
 import requests
-import sqlalchemy as sa
 import windowbox.configs.base as cfg
 from PIL import Image as PILImage
 from StringIO import StringIO
 from flask import url_for
 from sqlalchemy.orm.collections import column_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy
-from windowbox.database import DeclarativeBase, session as db_session
+from windowbox.database import db
 from windowbox.models import BaseModel, BaseFSEntity
 
 
 class AttachmentManager():
     @staticmethod
     def get_by_id(attachment_id):
-        return db_session.query(Attachment).filter(Attachment.id == attachment_id).first()
+        return db.session.query(Attachment).filter(Attachment.id == attachment_id).first()
 
     @staticmethod
     def get_by_post_id(post_id):
-        return db_session.query(Attachment).filter(Attachment.post_id == post_id).first()
+        return db.session.query(Attachment).filter(Attachment.post_id == post_id).first()
 
     @staticmethod
     def encode_dimensions(width=None, height=None):
@@ -50,25 +49,25 @@ class AttachmentManager():
         return (width, height)
 
 
-class AttachmentAttributesSchema(DeclarativeBase):
+class AttachmentAttributesSchema(db.Model):
     __tablename__ = 'attachment_attributes'
-    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    attachment_id = sa.Column(sa.Integer, sa.ForeignKey('attachments.id'))
-    name = sa.Column(sa.String(64))
-    value = sa.Column(sa.String(255))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    attachment_id = db.Column(db.Integer, db.ForeignKey('attachments.id'))
+    name = db.Column(db.String(64))
+    value = db.Column(db.String(255))
 
 
-class AttachmentSchema(DeclarativeBase):
+class AttachmentSchema(db.Model):
     __tablename__ = 'attachments'
-    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    post_id = sa.Column(sa.Integer, sa.ForeignKey('posts.id'), index=True)
-    mime_type = sa.Column(sa.String(255))
-    geo_latitude = sa.Column(sa.Float, nullable=True)
-    geo_longitude = sa.Column(sa.Float, nullable=True)
-    geo_address = sa.Column(sa.Unicode(255), nullable=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), index=True)
+    mime_type = db.Column(db.String(255))
+    geo_latitude = db.Column(db.Float, nullable=True)
+    geo_longitude = db.Column(db.Float, nullable=True)
+    geo_address = db.Column(db.Unicode(255), nullable=True)
 
     # Used to form the one-to-many relationship with AttachmentAttributesSchema
-    _attributes_dict = sa.orm.relation(
+    _attributes_dict = db.relation(
         AttachmentAttributesSchema,
         collection_class=column_mapped_collection(AttachmentAttributesSchema.name))
 
@@ -102,7 +101,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             self.geo_address = None
 
     def get_derivative(self, width=None, height=None, allow_crop=True):
-        derivative = db_session.query(AttachmentDerivative).filter(
+        derivative = db.session.query(AttachmentDerivative).filter(
             AttachmentDerivative.attachment_id == self.id,
             AttachmentDerivative.width == width,
             AttachmentDerivative.height == height,
@@ -185,16 +184,16 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         return None
 
 
-class AttachmentDerivativeSchema(DeclarativeBase):
+class AttachmentDerivativeSchema(db.Model):
     __tablename__ = 'attachment_derivatives'
-    __table_args__ = (sa.Index(
+    __table_args__ = (db.Index(
         'attachment_id_dimensions', 'attachment_id', 'width', 'height', 'allow_crop', unique=True), )
-    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    attachment_id = sa.Column(sa.Integer, sa.ForeignKey('attachments.id'))
-    width = sa.Column(sa.Integer, nullable=True)
-    height = sa.Column(sa.Integer, nullable=True)
-    allow_crop = sa.Column(sa.Boolean)
-    mime_type = sa.Column(sa.String(255))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    attachment_id = db.Column(db.Integer, db.ForeignKey('attachments.id'))
+    width = db.Column(db.Integer, nullable=True)
+    height = db.Column(db.Integer, nullable=True)
+    allow_crop = db.Column(db.Boolean)
+    mime_type = db.Column(db.String(255))
 
 
 class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):

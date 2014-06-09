@@ -1,4 +1,3 @@
 from windowbox.application import app
-from windowbox.configs.base import FLASK_KWARGS
 
-app.run(**FLASK_KWARGS)
+app.run(host=app.config['LISTEN_INTERFACE'], port=app.config['LISTEN_PORT'])

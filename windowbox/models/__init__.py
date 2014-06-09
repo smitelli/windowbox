@@ -1,17 +1,16 @@
 import errno
 import os
-import sqlalchemy as sa
 from magic import Magic
-from windowbox.database import session
+from windowbox.database import db
 
 
 class BaseModel():
     def save(self, commit=False):
-        session.add(self)
-        session.flush()
+        db.session.add(self)
+        db.session.flush()
 
         if commit:
-            session.commit()
+            db.session.commit()
 
         return self
 
@@ -51,7 +50,7 @@ class BaseFSEntity():
             self.set_data(fh.read())
 
     def get_file_name(self):
-        primary_key = sa.orm.class_mapper(self.__class__).primary_key[0].name
+        primary_key = db.class_mapper(self.__class__).primary_key[0].name
         id_str = str(getattr(self, primary_key))
 
         extension = ''

@@ -1,8 +1,7 @@
-import sqlalchemy as sa
 import windowbox.configs.base as cfg
 from calendar import timegm
 from email.utils import formatdate
-from windowbox.database import DeclarativeBase, session as db_session, UTCDateTime
+from windowbox.database import db, UTCDateTime
 from windowbox.models import BaseModel
 from windowbox.models.attachment import AttachmentManager
 
@@ -10,7 +9,7 @@ from windowbox.models.attachment import AttachmentManager
 class PostManager():
     @staticmethod
     def get_all(until_id=None, limit=None):
-        query = db_session.query(Post).order_by(Post.id.desc())
+        query = db.session.query(Post).order_by(Post.id.desc())
 
         if until_id is not None:
             query = query.filter(Post.id < until_id)
@@ -28,22 +27,22 @@ class PostManager():
 
     @staticmethod
     def get_by_id(post_id):
-        return db_session.query(Post).filter(Post.id == post_id).first()
+        return db.session.query(Post).filter(Post.id == post_id).first()
 
     @staticmethod
     def get_adjacent_by_id(post_id):
-        prev = db_session.query(Post).filter(Post.id < post_id).order_by(sa.desc(Post.id)).first()
-        next = db_session.query(Post).filter(Post.id > post_id).order_by(Post.id).first()
+        prev = db.session.query(Post).filter(Post.id < post_id).order_by(db.desc(Post.id)).first()
+        next = db.session.query(Post).filter(Post.id > post_id).order_by(Post.id).first()
 
         return (prev, next)
 
 
-class PostSchema(DeclarativeBase):
+class PostSchema(db.Model):
     __tablename__ = 'posts'
-    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    created_utc = sa.Column(UTCDateTime)
-    message = sa.Column(sa.UnicodeText)
-    user_agent = sa.Column(sa.String(255))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created_utc = db.Column(UTCDateTime)
+    message = db.Column(db.UnicodeText)
+    user_agent = db.Column(db.String(255))
 
 
 class Post(PostSchema, BaseModel):

@@ -2,16 +2,15 @@ import pytz
 from windowbox import AppPath
 
 
-FLASK_KWARGS = {
-    'debug': True,
-    'host': '0.0.0.0'}
+DEBUG = True
+SERVER_NAME = 'tarvos-ubuntu:5000'
+PREFERRED_URL_SCHEME = 'http'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + AppPath.package('../db.sqlite')
+SQLALCHEMY_ECHO = False
 
-DATABASE_URI = 'sqlite:///' + AppPath.package('../db.sqlite')
-DATABASE_KWARGS = {
-    'convert_unicode': True,
-    'echo': False}
-
-BASE_HREF = 'http://titan-ubuntu:5000'
+LISTEN_INTERFACE = '0.0.0.0'
+LISTEN_PORT = 5000
+BASE_HREF = '{}://{}'.format(PREFERRED_URL_SCHEME, SERVER_NAME)
 
 DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
 

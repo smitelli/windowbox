@@ -2,7 +2,7 @@ import csv
 import os
 import pytz
 from datetime import datetime
-from windowbox.database import session as db_session
+from windowbox.application import app, db
 from windowbox.models.post import Post
 from windowbox.models.attachment import Attachment, AttachmentDerivative, AttachmentAttributesSchema
 
@@ -46,12 +46,14 @@ with open(os.path.join(_path, '_importable/mob1_posts.csv')) as fh:
             'message': body,
             'user_agent': row_data['user_agent']}
 
-        print 'Inserting post #{}...'.format(row_data['post_id'])
-        post = Post(**post_data).save(commit=True)
+        with app.app_context():
+            print 'Inserting post #{}...'.format(row_data['post_id'])
+            post = Post(**post_data).save(commit=True)
 
-        print 'Inserting attachment...'
-        attachment = Attachment(post_id=post.id)
-        attachment.set_data_from_file(get_attachment_path(row_data['attachment_id']))
-        attachment.save(commit=True)
+            print 'Inserting attachment...'
+            attachment = Attachment(post_id=post.id)
+            attachment.set_data_from_file(get_attachment_path(row_data['attachment_id']))
+            attachment.save(commit=True)
 
-db_session.close()
+with app.app_context():
+    db.session.close()
