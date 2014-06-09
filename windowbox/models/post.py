@@ -1,6 +1,6 @@
 from calendar import timegm
 from email.utils import formatdate
-from windowbox.application import app
+from flask import current_app
 from windowbox.database import db, UTCDateTime
 from windowbox.models import BaseModel
 from windowbox.models.attachment import AttachmentManager
@@ -56,7 +56,7 @@ class Post(PostSchema, BaseModel):
         if format is None:
             format = '%Y-%m-%d %H:%M:%S %Z'
 
-        created_local = self.created_utc.astimezone(app.config['DISPLAY_TIMEZONE'])
+        created_local = self.created_utc.astimezone(current_app.config['DISPLAY_TIMEZONE'])
 
         return created_local.strftime(format)
 
