@@ -11,6 +11,13 @@ app = Flask(__name__)
 app.config.from_object('windowbox.configs.base')
 db.init_app(app)
 
+import pdb ; pdb.set_trace()
+
+
+def start_app():
+    app.run(host=app.config['LISTEN_INTERFACE'], port=app.config['LISTEN_PORT'])
+    return app
+
 
 def request_wants_json():
     json_score = request.accept_mimetypes['application/json']

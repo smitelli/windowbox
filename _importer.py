@@ -24,10 +24,11 @@ def get_attachment_path(attachment_id):
             return attachment_path
     raise Exception
 
-Post.__table__.create()
-Attachment.__table__.create()
-AttachmentDerivative.__table__.create()
-AttachmentAttributesSchema.__table__.create()
+with app.app_context():
+    Post.__table__.create()
+    Attachment.__table__.create()
+    AttachmentDerivative.__table__.create()
+    AttachmentAttributesSchema.__table__.create()
 
 with open(os.path.join(_path, '_importable/mob1_posts.csv')) as fh:
     for row in csv.reader(fh):
