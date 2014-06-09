@@ -26,7 +26,7 @@
                 <a href="{{ url_for('get_post', post_id=next_item.id) }}" class="arrow next">Next Post</a>
             {% endif %}
 
-            {{ metadata|safe }}
+            {{ metadata }}
         </div>
     </article>
 </section>

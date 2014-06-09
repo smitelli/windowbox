@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import Markup, render_template
 from windowbox.views.metadata import MetadataView
 
 
@@ -16,7 +16,7 @@ class SingleView(object):
         template_vars = {
             'item': self.item,
             'attachment': self.attachment,
-            'metadata': metadata_html,
+            'metadata': Markup(metadata_html),
             'prev_item': self.prev_item,
             'next_item': self.next_item}
 
