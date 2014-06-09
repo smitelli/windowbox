@@ -4,12 +4,12 @@ import os
 import re
 import subprocess
 import requests
-import windowbox.configs.base as cfg
 from PIL import Image as PILImage
 from StringIO import StringIO
 from flask import url_for
 from sqlalchemy.orm.collections import column_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy
+from windowbox.application import app
 from windowbox.database import db
 from windowbox.models import BaseModel, BaseFSEntity
 
@@ -17,11 +17,11 @@ from windowbox.models import BaseModel, BaseFSEntity
 class AttachmentManager():
     @staticmethod
     def get_by_id(attachment_id):
-        return db.session.query(Attachment).filter(Attachment.id == attachment_id).first()
+        return Attachment.query.filter(Attachment.id == attachment_id).first()
 
     @staticmethod
     def get_by_post_id(post_id):
-        return db.session.query(Attachment).filter(Attachment.post_id == post_id).first()
+        return Attachment.query.filter(Attachment.post_id == post_id).first()
 
     @staticmethod
     def encode_dimensions(width=None, height=None):
@@ -77,7 +77,7 @@ class AttachmentSchema(db.Model):
 
 
 class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
-    storage_path = os.path.join(cfg.STORAGE_DIR, 'attachments')
+    storage_path = os.path.join(app.config['STORAGE_DIR'], 'attachments')
     mime_extension_map = {
         'image/gif': '.gif',
         'image/jpeg': '.jpg',
@@ -101,7 +101,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             self.geo_address = None
 
     def get_derivative(self, width=None, height=None, allow_crop=True):
-        derivative = db.session.query(AttachmentDerivative).filter(
+        derivative = AttachmentDerivative.query.filter(
             AttachmentDerivative.attachment_id == self.id,
             AttachmentDerivative.width == width,
             AttachmentDerivative.height == height,
@@ -138,7 +138,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             return dict([item for k, v in d.items() for item in expand(k, v)])
 
         # Ask ExifTool to read file info, then convert it to a dict
-        args = [cfg.EXIFTOOL, '-json', '-long', '-groupHeadings', self.get_file_name()]
+        args = [app.config['EXIFTOOL'], '-json', '-long', '-groupHeadings', self.get_file_name()]
         json_data = subprocess.check_output(args)
         dict_data = json.loads(json_data)[0]
         flat_data = flatten_dict(dict_data)
@@ -197,7 +197,7 @@ class AttachmentDerivativeSchema(db.Model):
 
 
 class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
-    storage_path = os.path.join(cfg.STORAGE_DIR, 'derivatives')
+    storage_path = os.path.join(app.config['STORAGE_DIR'], 'derivatives')
     mime_extension_map = Attachment.mime_extension_map
 
     def __repr__(self):

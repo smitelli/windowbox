@@ -1,12 +1,12 @@
-import windowbox.configs.base as cfg
 from flask import make_response, abort
+from windowbox.application import app
 from windowbox.models.attachment import AttachmentManager
 
 
 class AttachmentDerivativeHandler():
     @staticmethod
     def get(attachment_id=None, dimensions='', allow_crop=True):
-        if dimensions in cfg.ALLOWED_DIMENSIONS:
+        if dimensions in app.config['ALLOWED_DIMENSIONS']:
             width, height = AttachmentManager.decode_dimensions(dimensions)
         else:
             width = height = None

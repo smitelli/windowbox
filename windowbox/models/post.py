@@ -1,6 +1,6 @@
-import windowbox.configs.base as cfg
 from calendar import timegm
 from email.utils import formatdate
+from windowbox.application import app
 from windowbox.database import db, UTCDateTime
 from windowbox.models import BaseModel
 from windowbox.models.attachment import AttachmentManager
@@ -9,15 +9,15 @@ from windowbox.models.attachment import AttachmentManager
 class PostManager():
     @staticmethod
     def get_all(until_id=None, limit=None):
-        query = db.session.query(Post).order_by(Post.id.desc())
+        qu = Post.query.order_by(Post.id.desc())
 
         if until_id is not None:
-            query = query.filter(Post.id < until_id)
+            qu = qu.filter(Post.id < until_id)
 
         if limit is not None:
-            query = query.limit(limit + 1)
+            qu = qu.limit(limit + 1)
 
-        posts = query.all()
+        posts = qu.all()
 
         if limit is not None:
             has_next = (len(posts) > limit)
@@ -27,12 +27,12 @@ class PostManager():
 
     @staticmethod
     def get_by_id(post_id):
-        return db.session.query(Post).filter(Post.id == post_id).first()
+        return Post.query.filter(Post.id == post_id).first()
 
     @staticmethod
     def get_adjacent_by_id(post_id):
-        prev = db.session.query(Post).filter(Post.id < post_id).order_by(db.desc(Post.id)).first()
-        next = db.session.query(Post).filter(Post.id > post_id).order_by(Post.id).first()
+        prev = Post.query.filter(Post.id < post_id).order_by(db.desc(Post.id)).first()
+        next = Post.query.filter(Post.id > post_id).order_by(Post.id).first()
 
         return (prev, next)
 
@@ -56,7 +56,7 @@ class Post(PostSchema, BaseModel):
         if format is None:
             format = '%Y-%m-%d %H:%M:%S %Z'
 
-        created_local = self.created_utc.astimezone(cfg.DISPLAY_TIMEZONE)
+        created_local = self.created_utc.astimezone(app.config['DISPLAY_TIMEZONE'])
 
         return created_local.strftime(format)
 
