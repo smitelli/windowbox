@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import pytz
-from windowbox import AppPath
+from os import path
+from windowbox.application import app
 
 
 class BaseConfig(object):
@@ -8,7 +9,7 @@ class BaseConfig(object):
     TESTING = False
     SERVER_NAME = 'tarvos-ubuntu:5000'
     PREFERRED_URL_SCHEME = 'http'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + AppPath.package('../db.sqlite')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(app.instance_path, 'db.sqlite')
     SQLALCHEMY_ECHO = False
 
     LISTEN_INTERFACE = '0.0.0.0'
@@ -17,7 +18,7 @@ class BaseConfig(object):
 
     DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
 
-    STORAGE_DIR = AppPath.package('../storage')
+    STORAGE_DIR = path.join(app.instance_path, 'storage')
 
     EXIFTOOL = '/usr/bin/exiftool'
 
