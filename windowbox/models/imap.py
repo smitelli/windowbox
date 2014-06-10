@@ -51,7 +51,7 @@ class IMAPManager(object):
 
         (self.last_type, results) = fn(*args, **kwargs)
         if self.last_type != 'OK':
-            raise IMAPException()
+            raise IMAPException('Method {} returned {}'.format(method, self.last_type))
 
         return results
 

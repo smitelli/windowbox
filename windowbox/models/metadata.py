@@ -14,9 +14,9 @@ class Metadata(object):
             item.key = key
 
     def __getitem__(self, item_key):
-        try:
+        if self.items[item_key].is_built():
             return self.items[item_key]
-        except KeyError:
+        else:
             return None
 
 

@@ -104,7 +104,7 @@ class MetadataView(object):
 
         for candidate in key:
             item = self.metadata[candidate]
-            if item.is_built():
+            if item:
                 return item
 
         return None
