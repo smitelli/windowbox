@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from flask import Markup, render_template
 from windowbox.views.metadata import MetadataView
 

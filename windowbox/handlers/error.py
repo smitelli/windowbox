@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from flask import jsonify, make_response
 from windowbox.views.error import ErrorView
 from windowbox.views.page import PageView

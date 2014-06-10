@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from flask import abort, jsonify
 from windowbox.models.post import PostManager
 from windowbox.views.index import IndexView

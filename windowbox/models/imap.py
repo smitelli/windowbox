@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import email
 import imaplib
 import re
@@ -66,6 +67,9 @@ class IMAPMessage(object):
     def __cmp__(self, other):
         return cmp(self.created_utc, other.created_utc)
 
+    def __repr__(self):
+        return '<{} TODO>'.format(self.__class__.__name__)
+
     @property
     def sender(self):
         return parseaddr(self.message.get('from'))
@@ -109,6 +113,9 @@ class IMAPContent(object):
     def __init__(self):
         self.payloads = []
         self.is_attachment = False
+
+    def __repr__(self):
+        return '<{} payloads={}>'.format(self.__class__.__name__, str(self.payloads))
 
     def append(self, part):
         payload = part.get_payload(decode=True)

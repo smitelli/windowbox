@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from calendar import timegm
 from email.utils import formatdate
 from flask import current_app
-from windowbox.database import db, UTCDateTime
+from windowbox.database import UTCDateTime, db
 from windowbox.models import BaseModel
 from windowbox.models.attachment import AttachmentManager
 

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from flask import abort, current_app, make_response
 from windowbox.models.attachment import AttachmentManager
 

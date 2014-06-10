@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import csv
 import os
 import pytz
@@ -27,24 +28,23 @@ def get_attachment_path(attachment_id):
 with app.app_context():
     db.create_all()
 
-with open(os.path.join(_path, '_importable/mob1_posts.csv')) as fh:
-    for row in csv.reader(fh):
-        row_data = dict(zip(_fields, row))
+    with open(os.path.join(_path, '_importable', 'mob1_posts.csv')) as fh:
+        for row in csv.reader(fh):
+            row_data = dict(zip(_fields, row))
 
-        created = _tz.localize(datetime.fromtimestamp(float(row_data['timestamp'])))
+            created = _tz.localize(datetime.fromtimestamp(float(row_data['timestamp'])))
 
-        try:
-            body = row_data['message'].decode('ascii', errors='strict')
-        except UnicodeError:
-            body = row_data['message'].decode('utf_8', errors='strict')
+            try:
+                body = row_data['message'].decode('ascii', errors='strict')
+            except UnicodeError:
+                body = row_data['message'].decode('utf_8', errors='strict')
 
-        post_data = {
-            'id': row_data['post_id'],
-            'created_utc': created,
-            'message': body,
-            'user_agent': row_data['user_agent']}
+            post_data = {
+                'id': row_data['post_id'],
+                'created_utc': created,
+                'message': body,
+                'user_agent': row_data['user_agent']}
 
-        with app.app_context():
             print 'Inserting post #{}...'.format(row_data['post_id'])
             post = Post(**post_data).save(commit=True)
 
@@ -53,5 +53,4 @@ with open(os.path.join(_path, '_importable/mob1_posts.csv')) as fh:
             attachment.set_data_from_file(get_attachment_path(row_data['attachment_id']))
             attachment.save(commit=True)
 
-with app.app_context():
     db.session.close()

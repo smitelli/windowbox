@@ -1,16 +1,16 @@
-from __future__ import division
+from __future__ import absolute_import, division
 import json
 import os
 import re
 import subprocess
 import requests
-from PIL import Image as PILImage
 from StringIO import StringIO
+from PIL import Image as PILImage
 from flask import current_app, url_for
-from sqlalchemy.orm.collections import column_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.orm.collections import column_mapped_collection
 from windowbox.database import db
-from windowbox.models import BaseModel, BaseFSEntity
+from windowbox.models import BaseFSEntity, BaseModel
 
 
 class AttachmentManager():
@@ -76,14 +76,32 @@ class AttachmentSchema(db.Model):
 
 
 class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
-    storage_path = os.path.join(current_app.config['STORAGE_DIR'], 'attachments')
     mime_extension_map = {
         'image/gif': '.gif',
         'image/jpeg': '.jpg',
         'image/png': '.png'}
 
+    # The following bits of EXIF data are not useful; they will be stripped
+    _bad_exif_key_prefixes = (
+        'ExifTool',
+        'SourceFile',
+        'Composite.ThumbnailImage',
+        'EXIF.ThumbnailLength',
+        'EXIF.ThumbnailOffset',
+        'File.Directory',
+        'File.FileAccessDate',
+        'File.FileInodeChangeDate',
+        'File.FileModifyDate',
+        'File.FileName',
+        'File.FilePermissions',
+        'File.MIMEType',
+        'JFIF.ThumbnailImage')
+
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
+
+    def get_storage_path(self):
+        return os.path.join(current_app.config['STORAGE_DIR'], 'attachments')
 
     def set_data(self, *args, **kwargs):
         super(Attachment, self).set_data(*args, **kwargs)
@@ -143,24 +161,8 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         dict_data = json.loads(json_data)[0]
         flat_data = flatten_dict(dict_data)
 
-        # The following bits of data are not useful; they will be stripped
-        bad_keys = (
-            'ExifTool',
-            'SourceFile',
-            'Composite.ThumbnailImage',
-            'EXIF.ThumbnailLength',
-            'EXIF.ThumbnailOffset',
-            'File.Directory',
-            'File.FileAccessDate',
-            'File.FileInodeChangeDate',
-            'File.FileModifyDate',
-            'File.FileName',
-            'File.FilePermissions',
-            'File.MIMEType',
-            'JFIF.ThumbnailImage')
-
         for key in flat_data.keys():
-            if key.startswith(bad_keys):
+            if key.startswith(self._bad_exif_key_prefixes):
                 del flat_data[key]
 
         return flat_data
@@ -197,11 +199,13 @@ class AttachmentDerivativeSchema(db.Model):
 
 
 class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
-    storage_path = os.path.join(current_app.config['STORAGE_DIR'], 'derivatives')
     mime_extension_map = Attachment.mime_extension_map
 
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
+
+    def get_storage_path(self):
+        return os.path.join(current_app.config['STORAGE_DIR'], 'derivatives')
 
     def rebuild(self, source):
         self.mime_type = source.mime_type

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from datetime import datetime
 from flask import Markup, render_template
 

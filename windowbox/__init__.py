@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from os import path
 
 # This is the absolute, real path to the package directory

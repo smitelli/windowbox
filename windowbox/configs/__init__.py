@@ -1,10 +1,11 @@
+from __future__ import absolute_import
 import pytz
 from windowbox import AppPath
 
 
-class BaseConfiguration(object):
+class BaseConfig(object):
     DEBUG = True
-    TESTING = True
+    TESTING = False
     SERVER_NAME = 'tarvos-ubuntu:5000'
     PREFERRED_URL_SCHEME = 'http'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + AppPath.package('../db.sqlite')

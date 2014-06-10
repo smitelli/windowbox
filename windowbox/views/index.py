@@ -1,5 +1,6 @@
+from __future__ import absolute_import
 from datetime import datetime
-from flask import render_template, make_response
+from flask import make_response, render_template
 
 
 class IndexView(object):

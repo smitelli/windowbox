@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from windowbox.application import app, db
 from windowbox.models.attachment import Attachment
 from windowbox.models.post import Post

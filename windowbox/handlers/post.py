@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from flask import abort, jsonify
 from jinja2.exceptions import UndefinedError
 from windowbox.models.metadata import Metadata

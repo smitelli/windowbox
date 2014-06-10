@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import errno
 import os
 from magic import Magic
@@ -16,8 +17,10 @@ class BaseModel():
 
 
 class BaseFSEntity():
-    storage_path = ''
     mime_extension_map = {}
+
+    def get_storage_path(self):
+        raise NotImplementedError()
 
     def get_data(self):
         with open(self.get_file_name(), mode='rb') as fh:
@@ -68,4 +71,4 @@ class BaseFSEntity():
 
         file_name = '{}{}'.format(id_str, extension)
 
-        return os.path.join(self.storage_path, d1, d2, file_name)
+        return os.path.join(self.get_storage_path(), d1, d2, file_name)
