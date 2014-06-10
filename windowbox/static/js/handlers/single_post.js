@@ -7,8 +7,8 @@ module.exports = function () {
     var $attachment = $('#attachment'),
         $arrowPrev  = $('.arrow.previous'),
         $arrowNext  = $('.arrow.next'),
-        inPos       = $arrowPrev.css('left'),
-        outPos      = -$arrowPrev.width();
+        inPos       = ($arrowPrev.css('left') || $arrowNext.css('right')),
+        outPos      = -($arrowPrev.width() || $arrowNext.width());
 
     $attachment.find('img').each(function () {
         imgLoaded(this, function () {
