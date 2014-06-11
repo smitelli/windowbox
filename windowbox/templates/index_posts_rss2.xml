@@ -25,23 +25,24 @@
         </image>
 
         {% for post in items %}
-            {% set attachment = post.get_attachment() %}
             <item>
                 <title>{{ post.message }}</title>
                 <guid isPermaLink="true">{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}</guid>
                 <link>{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}</link>
                 <pubDate>{{ post.get_created_date_rfc822() }}</pubDate>
-                <description><![CDATA[
-                    <p>
-                        <a href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}">
-                            <img src="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" alt="{{ post.message }}" border="0" />
-                        </a>
-                    </p>
-                ]]></description>
-                <media:thumbnail url="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" />
-                <media:content url="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url() }}" medium="image">
-                    <media:title type="html">{{ post.message }}</media:title>
-                </media:content>
+                {% with attachment = post.get_attachment() %}
+                    <description><![CDATA[
+                        <p>
+                            <a href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}">
+                                <img src="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" alt="{{ post.message }}" border="0" />
+                            </a>
+                        </p>
+                    ]]></description>
+                    <media:thumbnail url="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" />
+                    <media:content url="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url() }}" medium="image">
+                        <media:title type="html">{{ post.message }}</media:title>
+                    </media:content>
+                {% endwith %}
             </item>
         {% endfor %}
     </channel>

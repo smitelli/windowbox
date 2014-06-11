@@ -8,7 +8,6 @@
     <updated>{{ items[0].created_utc.isoformat() }}</updated>
 
     {% for post in items %}
-        {% set attachment = post.get_attachment() %}
         <entry>
             <id>{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}</id>
             <link href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}" rel="alternate" />
@@ -17,13 +16,15 @@
             <author>
                 <name>Windowbox</name>
             </author>
-            <summary type="html"><![CDATA[
-                <p>
-                    <a href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}">
-                        <img src="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" alt="{{ post.message }}" border="0" />
-                    </a>
-                </p>
-            ]]></summary>
+            {% with attachment = post.get_attachment() %}
+                <summary type="html"><![CDATA[
+                    <p>
+                        <a href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}">
+                            <img src="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" alt="{{ post.message }}" border="0" />
+                        </a>
+                    </p>
+                ]]></summary>
+            {% endwith %}
         </entry>
     {% endfor %}
 </feed>
