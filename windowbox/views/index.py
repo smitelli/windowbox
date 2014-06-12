@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-from datetime import datetime
 from flask import make_response, render_template
 
 
@@ -24,8 +23,7 @@ class IndexView(object):
 
     def _render_xml(self, template_name, content_type):
         template_vars = {
-            'items': self.items,
-            'copyright_year': datetime.now().year}
+            'items': self.items}
 
         body_xml = render_template(template_name, **template_vars)
 

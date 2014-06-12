@@ -16,7 +16,7 @@
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
         <generator>Windowbox</generator>
-        <copyright>A contrivance by Scott Smitelli. &#169; 2004-{{ copyright_year }}.</copyright>
+        <copyright>A contrivance by Scott Smitelli. &#169; 2004-{{ g.copyright_year }}.</copyright>
         <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
         <image>
             <url>{{ config['BASE_HREF'] }}{{ url_for('static', filename='images/windowbox-dark.png') }}</url>

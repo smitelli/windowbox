@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from flask import Flask, request
 from windowbox.database import db
+from windowbox.handlers import AppGlobals
 from windowbox.handlers.attachment import AttachmentDerivativeHandler
 from windowbox.handlers.error import ErrorHandler
 from windowbox.handlers.feed import FeedHandler
@@ -10,6 +11,7 @@ from windowbox.handlers.post import PostHandler
 app = Flask(__name__)
 app.config.from_object('windowbox.configs.BaseConfig')
 db.init_app(app)
+AppGlobals.init_app(app)
 
 
 def start_app():
