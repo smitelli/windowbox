@@ -1,5 +1,6 @@
 from __future__ import absolute_import
-from flask import abort, current_app, make_response
+from flask import current_app, make_response
+from windowbox.handlers import get_or_404
 from windowbox.models.attachment import AttachmentManager
 
 
@@ -11,13 +12,10 @@ class AttachmentDerivativeHandler():
         else:
             width = height = None
 
-        try:
-            attachment = AttachmentManager.get_by_id(attachment_id)
-            derivative = attachment.get_derivative(width, height, allow_crop=allow_crop)
+        attachment = get_or_404(AttachmentManager.get_by_id, attachment_id)
+        derivative = attachment.get_derivative(width, height, allow_crop=allow_crop)
 
-            response = make_response(derivative.get_data())
-            response.headers['Content-Type'] = derivative.mime_type
+        response = make_response(derivative.get_data())
+        response.headers['Content-Type'] = derivative.mime_type
 
-            return response
-        except (AttributeError):
-            abort(404)
+        return response

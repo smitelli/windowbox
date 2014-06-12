@@ -127,8 +127,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         if not derivative:
             derivative = AttachmentDerivative(attachment_id=self.id, width=width, height=height, allow_crop=allow_crop)
             derivative.rebuild(source=self)
-
-        if not os.path.isfile(derivative.get_file_name()):
+        elif not os.path.isfile(derivative.get_file_name()):
             derivative.rebuild(source=self)
 
         return derivative

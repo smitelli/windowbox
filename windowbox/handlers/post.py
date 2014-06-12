@@ -1,6 +1,6 @@
 from __future__ import absolute_import
-from flask import abort, jsonify
-from jinja2.exceptions import UndefinedError
+from flask import jsonify
+from windowbox.handlers import get_or_404
 from windowbox.models.metadata import Metadata
 from windowbox.models.post import PostManager
 from windowbox.views.page import PageView
@@ -10,17 +10,14 @@ from windowbox.views.single import SingleView
 class PostHandler():
     @classmethod
     def get(cls, post_id=None, as_json=False):
-        try:
-            render = cls._render_json if as_json else cls._render_html
+        render = cls._render_json if as_json else cls._render_html
 
-            post = PostManager.get_by_id(post_id)
-            attachment = post.get_attachment()
-            metadata = Metadata(attachment.attributes)
-            previous, next = PostManager.get_adjacent_by_id(post_id)
+        post = get_or_404(PostManager.get_by_id, post_id)
+        attachment = get_or_404(post.get_attachment)
+        metadata = Metadata(attachment.attributes)
+        previous, next = PostManager.get_adjacent_by_id(post_id)
 
-            return render(post, attachment, metadata, previous, next)
-        except (AttributeError, UndefinedError):
-            abort(404)
+        return render(post, attachment, metadata, previous, next)
 
     @staticmethod
     def _render_html(post, attachment, metadata, previous, next):
