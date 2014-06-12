@@ -39,18 +39,16 @@ with app.app_context():
             except UnicodeError:
                 body = row_data['message'].decode('utf_8', errors='strict')
 
-            post_data = {
+            post_kwargs = {
                 'id': row_data['post_id'],
                 'created_utc': created,
                 'message': body,
                 'user_agent': row_data['user_agent']}
 
             print 'Inserting post #{}...'.format(row_data['post_id'])
-            post = Post(**post_data).save(commit=True)
+            post = Post(**post_kwargs).save(commit=True)
 
             print 'Inserting attachment...'
             attachment = Attachment(post_id=post.id)
             attachment.set_data_from_file(get_attachment_path(row_data['attachment_id']))
             attachment.save(commit=True)
-
-    db.session.close()

@@ -5,12 +5,18 @@ from windowbox.models.imap import IMAPManager
 from windowbox.models.post import Post
 
 with app.app_context():
-    imap_manager = IMAPManager('imap.gmail.com', '', '')
-    messages = imap_manager.scrape_mailbox('Inbox')
+    connect_kwargs = {
+        'host': app.config['IMAP_HOST'],
+        'port': app.config['IMAP_PORT'],
+        'user': app.config['IMAP_USER'],
+        'password': app.config['IMAP_PASSWORD']}
+
+    imap_manager = IMAPManager(**connect_kwargs)
+    messages = imap_manager.scrape_mailbox(app.config['IMAP_MAILBOX'])
 
     for message in sorted(messages):
         real_name, email = message.sender
-        if email != 'scott@smitelli.com':
+        if email not in app.config['IMAP_ALLOWED_FROM']:
             print 'Skipping, {} is not a permitted sender'.format(email)
             continue
 
@@ -21,16 +27,16 @@ with app.app_context():
             print 'Skipping, no usable attachment'
             continue
 
-        post_data = {
+        post_kwargs = {
             'created_utc': message.created_utc,
             'message': message.message_body,
             'user_agent': message.user_agent}
-        post = Post(**post_data).save(commit=True)
+        post = Post(**post_kwargs).save(commit=True)
 
         attachment = Attachment(post_id=post.id)
         attachment.set_data(attach_data)
         attachment.save(commit=True)
 
-        print 'ok'
+        print 'Inserted post {}, attachment {}'.format(post.id, attachment.id)
 
     imap_manager.close()

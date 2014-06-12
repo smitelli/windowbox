@@ -293,11 +293,11 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         return im.resize(intround(size), PILImage.ANTIALIAS)
 
     def _save_derivative(self, im):
-        save_options = {
+        save_kwargs = {
             'image/gif': {'format': 'GIF'},
             'image/jpeg': {'format': 'JPEG', 'quality': 95},
             'image/png': {'format': 'PNG', 'optimize': True}}
 
         io = StringIO()
-        im.save(io, **save_options[self.mime_type])
+        im.save(io, **save_kwargs[self.mime_type])
         self.set_data(io.getvalue())

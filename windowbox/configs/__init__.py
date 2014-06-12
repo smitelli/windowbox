@@ -16,6 +16,13 @@ class BaseConfig(object):
     LISTEN_PORT = 5000
     BASE_HREF = '{}://{}'.format(PREFERRED_URL_SCHEME, SERVER_NAME)
 
+    IMAP_HOST = 'imap.gmail.com'
+    IMAP_PORT = 993
+    IMAP_USER = ''
+    IMAP_PASSWORD = ''
+    IMAP_MAILBOX = 'Inbox'
+    IMAP_ALLOWED_FROM = ['scott@smitelli.com']
+
     DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
 
     STORAGE_DIR = path.join(app.instance_path, 'storage')
