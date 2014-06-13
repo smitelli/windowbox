@@ -11,6 +11,16 @@ class AppGlobals(object):
         app.before_request(self.set_globals)
 
 
+app_globals = AppGlobals()
+
+
+def request_wants_json():
+    json_score = request.accept_mimetypes['application/json']
+    html_score = request.accept_mimetypes['text/html']
+
+    return json_score > html_score
+
+
 def get_or_404(method, *args, **kwargs):
     result = method(*args, **kwargs)
 
@@ -21,13 +31,3 @@ def get_or_404(method, *args, **kwargs):
         abort(404)
 
     return result
-
-
-def request_wants_json():
-    json_score = request.accept_mimetypes['application/json']
-    html_score = request.accept_mimetypes['text/html']
-
-    return json_score > html_score
-
-
-app_globals = AppGlobals()

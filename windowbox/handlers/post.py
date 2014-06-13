@@ -29,6 +29,4 @@ class PostHandler():
 
     @staticmethod
     def _render_json(post, attachment, metadata, previous, next):
-        response = jsonify(TODO='not implemented either')
-
-        return response
+        return jsonify(TODO='not implemented either')

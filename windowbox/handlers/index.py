@@ -12,6 +12,7 @@ class IndexHandler():
     @classmethod
     def get(cls, until_id=None, as_json=False):
         render = cls._render_json if as_json else cls._render_html
+
         posts, has_next = get_or_404(PostManager.get_all, until_id=until_id, limit=cls.page_limit)
 
         return render(posts, has_next)
@@ -24,6 +25,4 @@ class IndexHandler():
 
     @staticmethod
     def _render_json(posts, has_next):
-        response = jsonify(TODO='not implemented')
-
-        return response
+        return jsonify(TODO='not implemented')
