@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <!-- TODO validate -->
     <id>{{ config['BASE_HREF'] }}{{ url_for('get_index') }}</id>
     <link href="{{ config['BASE_HREF'] }}{{ url_for('get_atom') }}" rel="self" type="application/atom+xml" />
     <link href="{{ config['BASE_HREF'] }}{{ url_for('get_index') }}" rel="alternate" />

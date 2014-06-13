@@ -5,5 +5,7 @@
 
     {% if error.code == 404 %}
         <p>Whatever you're looking for isn't here. Sorry about that.</p>
+    {% elif error.code == 500 %}
+        <p>Something bad happened while building this page. It's likely my fault.</p>
     {% endif %}
 </section>

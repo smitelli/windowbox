@@ -5,6 +5,7 @@ from windowbox.models.imap import IMAPManager
 from windowbox.models.post import Post
 
 with app.app_context():
+    valid_types = Attachment.mime_extension_map.keys()
     connect_kwargs = {
         'host': app.config['IMAP_HOST'],
         'port': app.config['IMAP_PORT'],
@@ -15,14 +16,14 @@ with app.app_context():
     messages = imap_manager.scrape_mailbox(app.config['IMAP_MAILBOX'])
 
     for message in sorted(messages):
+        # TODO print message UID or something identifiable
+
         real_name, email = message.sender
         if email not in app.config['IMAP_ALLOWED_FROM']:
             print 'Skipping, {} is not a permitted sender'.format(email)
             continue
 
-        valid_types = Attachment.mime_extension_map.keys()
         attach_data = message.get_attachment_data(valid_types)
-
         if not attach_data:
             print 'Skipping, no usable attachment'
             continue
@@ -37,6 +38,6 @@ with app.app_context():
         attachment.set_data(attach_data)
         attachment.save(commit=True)
 
-        print 'Inserted post {}, attachment {}'.format(post.id, attachment.id)
+        print 'Inserted post #{}, attachment #{}'.format(post.id, attachment.id)
 
     imap_manager.close()

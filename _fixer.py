@@ -7,6 +7,6 @@ with app.app_context():
         .filter(Attachment.geo_address.is_(None)).all()
 
     for bad in bads:
-        print 'Fixing geo address on attachment {}'.format(bad.id)
+        print 'Fixing geo address on attachment #{}'.format(bad.id)
         bad.geo_address = Attachment._load_address_data(bad.geo_latitude, bad.geo_longitude)
         bad.save(commit=True)

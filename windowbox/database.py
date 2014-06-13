@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import pytz
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy  # TODO canonical package name?
 
 db = SQLAlchemy()
 

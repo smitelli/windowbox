@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from flask import Flask, request
 from windowbox.database import db
-from windowbox.handlers import app_globals
+from windowbox.handlers import app_globals, request_wants_json
 from windowbox.handlers.attachment import AttachmentDerivativeHandler
 from windowbox.handlers.error import ErrorHandler
 from windowbox.handlers.feed import FeedHandler
@@ -17,12 +17,6 @@ app_globals.init_app(app)
 def start_app():
     app.run(host=app.config['LISTEN_INTERFACE'], port=app.config['LISTEN_PORT'])
     return app
-
-
-def request_wants_json():
-    json_score = request.accept_mimetypes['application/json']
-    html_score = request.accept_mimetypes['text/html']
-    return json_score > html_score
 
 
 @app.errorhandler(404)
