@@ -22,11 +22,29 @@ class BaseFSEntity():
     def get_storage_path(self):
         raise NotImplementedError()
 
+    def get_file_name(self):
+        pk_attribute = db.class_mapper(self.__class__).primary_key[0].name
+        id_str = str(getattr(self, pk_attribute))
+
+        try:
+            extension = self.mime_extension_map[self.mime_type]
+        except KeyError:
+            extension = ''
+
+        if len(id_str) <= 1:
+            d1, d2 = ('0', '0')
+        elif len(id_str) == 2:
+            d1, d2 = ('0', id_str[0])
+        else:
+            d1, d2 = (id_str[0], id_str[1])
+
+        file_name = '{}{}'.format(id_str, extension)
+
+        return os.path.join(self.get_storage_path(), d1, d2, file_name)
+
     def get_data(self):
         with open(self.get_file_name(), mode='rb') as fh:
-            buffer_str = fh.read()
-
-        return buffer_str
+            return fh.read()
 
     def set_data(self, buffer_str):
         self.mime_type = Magic(mime=True).from_buffer(buffer_str)
@@ -51,24 +69,3 @@ class BaseFSEntity():
     def set_data_from_file(self, source_file):
         with open(source_file, mode='rb') as fh:
             self.set_data(fh.read())
-
-    def get_file_name(self):
-        primary_key = db.class_mapper(self.__class__).primary_key[0].name
-        id_str = str(getattr(self, primary_key))
-
-        extension = ''
-        try:
-            extension = self.mime_extension_map[self.mime_type]
-        except KeyError:
-            pass
-
-        if len(id_str) <= 1:
-            d1, d2 = ('0', '0')
-        elif len(id_str) == 2:
-            d1, d2 = ('0', id_str[0])
-        else:
-            d1, d2 = (id_str[0], id_str[1])
-
-        file_name = '{}{}'.format(id_str, extension)
-
-        return os.path.join(self.get_storage_path(), d1, d2, file_name)
