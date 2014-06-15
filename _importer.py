@@ -23,7 +23,7 @@ def get_attachment_path(attachment_id):
         attachment_path = os.path.join(_path, check.format(attachment_id))
         if os.path.isfile(attachment_path):
             return attachment_path
-    raise Exception
+    raise Exception('No source file for attachment #{}'.format(attachment_id))
 
 with app.app_context():
     db.create_all()

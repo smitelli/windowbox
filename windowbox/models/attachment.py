@@ -5,7 +5,7 @@ import re
 import subprocess
 import requests
 from StringIO import StringIO
-from PIL import Image as PILImage
+from PIL import Image
 from flask import current_app, url_for
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm.collections import column_mapped_collection
@@ -13,14 +13,14 @@ from windowbox.database import db
 from windowbox.models import BaseFSEntity, BaseModel
 
 
-class AttachmentManager():
+class AttachmentManager(object):
     @staticmethod
     def get_by_id(attachment_id):
-        return Attachment.query.filter(Attachment.id == attachment_id).first()
+        return Attachment.query.filter_by(id=attachment_id).first()
 
     @staticmethod
     def get_by_post_id(post_id):
-        return Attachment.query.filter(Attachment.post_id == post_id).first()
+        return Attachment.query.filter_by(post_id=post_id).first()
 
     @staticmethod
     def encode_dimensions(width=None, height=None):
@@ -48,7 +48,7 @@ class AttachmentManager():
         return (width, height)
 
 
-class AttachmentAttributesSchema(db.Model):
+class AttachmentAttribute(db.Model):
     __tablename__ = 'attachment_attributes'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     attachment_id = db.Column(db.Integer, db.ForeignKey('attachments.id'))
@@ -56,7 +56,7 @@ class AttachmentAttributesSchema(db.Model):
     value = db.Column(db.String(255))
 
 
-class AttachmentSchema(db.Model):
+class Attachment(db.Model, BaseModel, BaseFSEntity):
     __tablename__ = 'attachments'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), index=True)
@@ -65,24 +65,21 @@ class AttachmentSchema(db.Model):
     geo_longitude = db.Column(db.Float, nullable=True)
     geo_address = db.Column(db.Unicode(255), nullable=True)
 
-    # Used to form the one-to-many relationship with AttachmentAttributesSchema
-    _attributes_dict = db.relation(
-        AttachmentAttributesSchema,
-        collection_class=column_mapped_collection(AttachmentAttributesSchema.name))
-
+    # Used to form the one-to-many relationship with AttachmentAttributes
+    _attributes_dict = db.relationship(
+        AttachmentAttribute,
+        collection_class=column_mapped_collection(AttachmentAttribute.name))
     attributes = association_proxy(
         '_attributes_dict', 'value',
-        creator=lambda n, v: AttachmentAttributesSchema(name=n, value=v))
+        creator=lambda n, v: AttachmentAttribute(name=n, value=v))
 
-
-class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
-    mime_extension_map = {
+    MIME_EXTENSION_MAP = {
         'image/gif': '.gif',
         'image/jpeg': '.jpg',
         'image/png': '.png'}
 
     # The following bits of EXIF data are not useful; they will be stripped
-    _bad_exif_key_prefixes = (
+    BAD_EXIF_KEY_PREFIXES = (
         'ExifTool',
         'SourceFile',
         'Composite.ThumbnailImage',
@@ -118,17 +115,15 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
             self.geo_address = None
 
     def get_derivative(self, width=None, height=None, allow_crop=True):
-        derivative = AttachmentDerivative.query.filter(
-            AttachmentDerivative.attachment_id == self.id,
-            AttachmentDerivative.width == width,
-            AttachmentDerivative.height == height,
-            AttachmentDerivative.allow_crop == allow_crop).first()
+        derivative = AttachmentDerivative.query.filter_by(
+            attachment_id=self.id, width=width, height=height, allow_crop=allow_crop).first()
 
         if not derivative:
-            derivative = AttachmentDerivative(attachment_id=self.id, width=width, height=height, allow_crop=allow_crop)
-            derivative.rebuild(source=self)
+            derivative = AttachmentDerivative(
+                attachment_id=self.id, width=width, height=height, allow_crop=allow_crop)
+            derivative.rebuild(source_attachment=self)
         elif not os.path.isfile(derivative.get_file_name()):
-            derivative.rebuild(source=self)
+            derivative.rebuild(source_attachment=self)
 
         return derivative
 
@@ -161,7 +156,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         flat_data = flatten_dict(dict_data)
 
         for key in flat_data.keys():
-            if key.startswith(self._bad_exif_key_prefixes):
+            if key.startswith(self.BAD_EXIF_KEY_PREFIXES):
                 del flat_data[key]
 
         return flat_data
@@ -185,7 +180,7 @@ class Attachment(AttachmentSchema, BaseModel, BaseFSEntity):
         return None
 
 
-class AttachmentDerivativeSchema(db.Model):
+class AttachmentDerivative(db.Model, BaseModel, BaseFSEntity):
     __tablename__ = 'attachment_derivatives'
     __table_args__ = (db.Index(
         'attachment_id_dimensions', 'attachment_id', 'width', 'height', 'allow_crop', unique=True), )
@@ -196,9 +191,7 @@ class AttachmentDerivativeSchema(db.Model):
     allow_crop = db.Column(db.Boolean)
     mime_type = db.Column(db.String(255))
 
-
-class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
-    mime_extension_map = Attachment.mime_extension_map
+    MIME_EXTENSION_MAP = Attachment.MIME_EXTENSION_MAP
 
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
@@ -206,15 +199,17 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
     def get_storage_path(self):
         return os.path.join(current_app.config['STORAGE_DIR'], 'derivatives')
 
-    def rebuild(self, source):
-        self.mime_type = source.mime_type
-        im = PILImage.open(source.get_file_name())
+    def rebuild(self, source_attachment):
+        self.mime_type = source_attachment.mime_type
+        im = Image.open(source_attachment.get_file_name())
 
         try:
-            orient_code = int(source.attributes['EXIF.Orientation.num'])
-            im = self._transpose_derivative(im, orient_code)
+            orient_code = int(source_attachment.attributes['EXIF.Orientation.num'])
         except (KeyError, ValueError):
-            pass
+            orient_code = None
+
+        if orient_code is not None:
+            im = self._transpose_derivative(im, orient_code)
 
         im = self._resize_derivative(im, self.width, self.height, self.allow_crop)
 
@@ -225,29 +220,32 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
     def _transpose_derivative(im, orient_code):
         operations = {
             1: (None, None),  # no rotation
-            2: (None, PILImage.FLIP_LEFT_RIGHT),  # no rotation - horizontal flip
-            3: (PILImage.ROTATE_180, None),  # 180deg rotate left
-            4: (PILImage.ROTATE_180, PILImage.FLIP_LEFT_RIGHT),  # 180deg rotate left - horizontal flip
-            5: (PILImage.ROTATE_270, PILImage.FLIP_LEFT_RIGHT),  # 90deg rotate right - horizontal flip
-            6: (PILImage.ROTATE_270, None),  # 90deg rotate right
-            7: (PILImage.ROTATE_90, PILImage.FLIP_LEFT_RIGHT),  # 90deg rotate left - horizontal flip
-            8: (PILImage.ROTATE_90, None)}  # 90deg rotate left
+            2: (None, Image.FLIP_LEFT_RIGHT),  # no rotation - horizontal flip
+            3: (Image.ROTATE_180, None),  # 180deg rotate left
+            4: (Image.ROTATE_180, Image.FLIP_LEFT_RIGHT),  # 180deg rotate left - horizontal flip
+            5: (Image.ROTATE_270, Image.FLIP_LEFT_RIGHT),  # 90deg rotate right - horizontal flip
+            6: (Image.ROTATE_270, None),  # 90deg rotate right
+            7: (Image.ROTATE_90, Image.FLIP_LEFT_RIGHT),  # 90deg rotate left - horizontal flip
+            8: (Image.ROTATE_90, None)}  # 90deg rotate left
 
         try:
             rotate, flip = operations[orient_code]
         except KeyError:
-            return im
+            rotate = flip = None
 
-        if rotate:
+        if rotate is not None:
             im = im.transpose(rotate)
 
-        if flip:
+        if flip is not None:
             im = im.transpose(flip)
 
         return im
 
     @staticmethod
     def _resize_derivative(im, width, height, allow_crop):
+        im = im.convert('RGB')
+        old_width, old_height = im.size
+
         def intround(value):
             if isinstance(value, tuple):
                 return tuple(intround(v) for v in value)
@@ -255,24 +253,19 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
                 return int(round(value))
             return value
 
-        im = im.convert('RGB')
-
-        old_width, old_height = im.size
-
         if width > 0 and height > 0:
             fx = old_width / width
             fy = old_height / height
 
             if allow_crop:
                 f = min(fx, fy)
-                crop_size = width * f, height * f
+                crop_size = crop_width, crop_height = width * f, height * f
 
-                crop_width, crop_height = crop_size
                 trim_x = (old_width - crop_width) / 2
                 trim_y = (old_height - crop_height) / 2
-
                 crop = trim_x, trim_y, crop_width + trim_x, crop_height + trim_y
-                im = im.transform(intround(crop_size), PILImage.EXTENT, intround(crop))
+
+                im = im.transform(intround(crop_size), Image.EXTENT, intround(crop))
 
                 size = width, height
             else:
@@ -290,7 +283,7 @@ class AttachmentDerivative(AttachmentDerivativeSchema, BaseModel, BaseFSEntity):
         else:
             return im
 
-        return im.resize(intround(size), PILImage.ANTIALIAS)
+        return im.resize(intround(size), Image.ANTIALIAS)
 
     def _save_derivative(self, im):
         save_kwargs = {

@@ -5,7 +5,7 @@ from magic import Magic
 from windowbox.database import db
 
 
-class BaseModel():
+class BaseModel(object):
     def save(self, commit=False):
         db.session.add(self)
         db.session.flush()
@@ -16,8 +16,8 @@ class BaseModel():
         return self
 
 
-class BaseFSEntity():
-    mime_extension_map = {}
+class BaseFSEntity(object):
+    MIME_EXTENSION_MAP = {}
 
     def get_storage_path(self):
         raise NotImplementedError()
@@ -27,7 +27,7 @@ class BaseFSEntity():
         id_str = str(getattr(self, pk_attribute))
 
         try:
-            extension = self.mime_extension_map[self.mime_type]
+            extension = self.MIME_EXTENSION_MAP[self.mime_type]
         except KeyError:
             extension = ''
 

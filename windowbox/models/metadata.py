@@ -38,7 +38,7 @@ class MetadataItem(object):
         elif kind == 'val':
             self.value = data
         else:
-            raise AttributeError
+            raise AttributeError('Unknown kind {}'.format(kind))
 
     def is_built(self):
         if not (self.description or self.key):

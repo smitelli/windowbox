@@ -4,7 +4,7 @@ from windowbox.views.error import ErrorView
 from windowbox.views.page import PageView
 
 
-class ErrorHandler():
+class ErrorHandler(object):
     @classmethod
     def get(cls, error, as_json=False):
         render = cls._render_json if as_json else cls._render_html

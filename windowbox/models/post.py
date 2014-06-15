@@ -7,7 +7,7 @@ from windowbox.models import BaseModel
 from windowbox.models.attachment import AttachmentManager
 
 
-class PostManager():
+class PostManager(object):
     @staticmethod
     def get_all(until_id=None, limit=None):
         qu = Post.query.order_by(Post.id.desc())
@@ -28,25 +28,23 @@ class PostManager():
 
     @staticmethod
     def get_by_id(post_id):
-        return Post.query.filter(Post.id == post_id).first()
+        return Post.query.filter_by(id=post_id).first()
 
     @staticmethod
     def get_adjacent_by_id(post_id):
-        prev = Post.query.filter(Post.id < post_id).order_by(db.desc(Post.id)).first()
-        next = Post.query.filter(Post.id > post_id).order_by(Post.id).first()
+        prev = Post.query.filter(Post.id < post_id).order_by(Post.id.desc()).first()
+        next = Post.query.filter(Post.id > post_id).order_by(Post.id.asc()).first()
 
         return (prev, next)
 
 
-class PostSchema(db.Model):
+class Post(db.Model, BaseModel):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     created_utc = db.Column(UTCDateTime)
     message = db.Column(db.UnicodeText)
     user_agent = db.Column(db.String(255))
 
-
-class Post(PostSchema, BaseModel):
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
 

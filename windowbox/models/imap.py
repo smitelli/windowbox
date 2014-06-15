@@ -19,7 +19,7 @@ class IMAPManager(object):
         self.user = user
         self.password = password
 
-        self.session = imaplib.IMAP4_SSL(host, port)
+        self.session = imaplib.IMAP4_SSL(self.host, self.port)
         self.last_type = None
 
         self._do('LOGIN', user=self.user, password=self.password)
@@ -68,7 +68,11 @@ class IMAPMessage(object):
         return cmp(self.created_utc, other.created_utc)
 
     def __repr__(self):
-        return '<{} TODO>'.format(self.__class__.__name__)
+        return '<{} message_id={}>'.format(self.__class__.__name__, self.message_id)
+
+    @property
+    def message_id(self):
+        return self.message.get('message-id')
 
     @property
     def sender(self):
@@ -103,16 +107,16 @@ class IMAPMessage(object):
 
         for part in message.walk():
             if not part.is_multipart():
-                ctype = str(part.get_content_type())
-                body_parts[ctype].append(part)
+                content_type = part.get_content_type()
+                body_parts[content_type].append(part)
 
         return body_parts
 
 
 class IMAPContent(object):
     def __init__(self):
-        self.payloads = []
         self.is_attachment = False
+        self.payloads = []
 
     def __repr__(self):
         return '<{} payloads={}>'.format(self.__class__.__name__, str(self.payloads))
@@ -121,7 +125,7 @@ class IMAPContent(object):
         payload = part.get_payload(decode=True)
 
         if part.get('content-disposition') is None:
-            charset = str(part.get_content_charset())
+            charset = part.get_content_charset()
             text = payload.decode(charset, errors='replace')
             self.payloads.append(self._normalize_crlf(text))
         else:

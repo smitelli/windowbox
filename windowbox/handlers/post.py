@@ -7,7 +7,7 @@ from windowbox.views.page import PageView
 from windowbox.views.single import SingleView
 
 
-class PostHandler():
+class PostHandler(object):
     @classmethod
     def get(cls, post_id=None, as_json=False):
         render = cls._render_json if as_json else cls._render_html

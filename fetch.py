@@ -5,7 +5,7 @@ from windowbox.models.imap import IMAPManager
 from windowbox.models.post import Post
 
 with app.app_context():
-    valid_types = Attachment.mime_extension_map.keys()
+    valid_types = Attachment.MIME_EXTENSION_MAP.keys()
     connect_kwargs = {
         'host': app.config['IMAP_HOST'],
         'port': app.config['IMAP_PORT'],
@@ -16,7 +16,7 @@ with app.app_context():
     messages = imap_manager.scrape_mailbox(app.config['IMAP_MAILBOX'])
 
     for message in sorted(messages):
-        # TODO print message UID or something identifiable
+        print 'Message ID {}, sent on {}'.format(message.message_id, message.created_utc)
 
         real_name, email = message.sender
         if email not in app.config['IMAP_ALLOWED_FROM']:

@@ -3,8 +3,9 @@ from windowbox.application import app
 from windowbox.models.attachment import Attachment
 
 with app.app_context():
-    bads = Attachment.query.filter(Attachment.geo_latitude.isnot(None)) \
-        .filter(Attachment.geo_address.is_(None)).all()
+    bads = Attachment.query.filter(
+        Attachment.geo_latitude.isnot(None), Attachment.geo_longitude.isnot(None),
+        Attachment.geo_address.is_(None)).all()
 
     for bad in bads:
         print 'Fixing geo address on attachment #{}'.format(bad.id)

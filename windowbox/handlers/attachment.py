@@ -4,7 +4,7 @@ from windowbox.handlers import get_or_404
 from windowbox.models.attachment import AttachmentManager
 
 
-class AttachmentDerivativeHandler():
+class AttachmentDerivativeHandler(object):
     @staticmethod
     def get(attachment_id=None, dimensions='', allow_crop=True):
         if dimensions in current_app.config['ALLOWED_DIMENSIONS']:
