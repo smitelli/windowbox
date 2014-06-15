@@ -7,14 +7,12 @@ from windowbox.application import app
 class BaseConfig(object):
     DEBUG = True
     TESTING = False
-    SERVER_NAME = 'tarvos-ubuntu:5000'
     PREFERRED_URL_SCHEME = 'http'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(app.instance_path, 'db.sqlite')
     SQLALCHEMY_ECHO = False
 
     LISTEN_INTERFACE = '0.0.0.0'
     LISTEN_PORT = 5000
-    BASE_HREF = '{}://{}'.format(PREFERRED_URL_SCHEME, SERVER_NAME)
 
     IMAP_HOST = 'imap.gmail.com'
     IMAP_PORT = 993

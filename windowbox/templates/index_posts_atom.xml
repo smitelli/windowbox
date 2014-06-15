@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-    <id>{{ config['BASE_HREF'] }}{{ url_for('get_index') }}</id>
-    <link href="{{ config['BASE_HREF'] }}{{ url_for('get_atom') }}" rel="self" type="application/atom+xml" />
-    <link href="{{ config['BASE_HREF'] }}{{ url_for('get_index') }}" rel="alternate" />
+    <id>{{ url_for('get_index', _external=True) }}</id>
+    <link href="{{ url_for('get_atom', _external=True) }}" rel="self" type="application/atom+xml" />
+    <link href="{{ url_for('get_index', _external=True) }}" rel="alternate" />
     <title>Windowbox</title>
     <subtitle>Because moblogs aren&#39;t hip anymore.</subtitle>
     <updated>{{ items[0].created_utc.isoformat() }}</updated>
 
     {% for post in items %}
         <entry>
-            <id>{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}</id>
-            <link href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}" rel="alternate" />
+            <id>{{ url_for('get_post', post_id=post.id, _external=True) }}</id>
+            <link href="{{ url_for('get_post', post_id=post.id, _external=True) }}" rel="alternate" />
             <title>{{ post.message }}</title>
             <updated>{{ post.created_utc.isoformat() }}</updated>
             <author>
@@ -19,8 +19,8 @@
             {% with attachment = post.get_attachment() %}
                 <summary type="html"><![CDATA[
                     <p>
-                        <a href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}">
-                            <img src="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" alt="{{ post.message }}" border="0" />
+                        <a href="{{ url_for('get_post', post_id=post.id, _external=True) }}">
+                            <img src="{{ attachment.get_derivative_url(300, 300, _external=True) }}" alt="{{ post.message }}" border="0" />
                         </a>
                     </p>
                 ]]></summary>

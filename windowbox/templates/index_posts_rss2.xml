@@ -6,8 +6,8 @@
 >
     <channel>
         <title>Windowbox</title>
-        <atom:link href="{{ config['BASE_HREF'] }}{{ url_for('get_rss2') }}" rel="self" type="application/rss+xml" />
-        <link>{{ config['BASE_HREF'] }}{{ url_for('get_index') }}</link>
+        <atom:link href="{{ url_for('get_rss2', _external=True) }}" rel="self" type="application/rss+xml" />
+        <link>{{ url_for('get_index', _external=True) }}</link>
         <description>Because moblogs aren&#39;t hip anymore.</description>
         <lastBuildDate>{{ items[0].get_created_date_rfc822() }}</lastBuildDate>
         <language>en-us</language>
@@ -17,27 +17,27 @@
         <copyright>A contrivance by Scott Smitelli. &#169; 2004-{{ g.copyright_year }}.</copyright>
         <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
         <image>
-            <url>{{ config['BASE_HREF'] }}{{ url_for('static', filename='images/windowbox-dark.png') }}</url>
+            <url>{{ url_for('static', filename='images/windowbox-dark.png', _external=True) }}</url>
             <title>Windowbox</title>
-            <link>{{ config['BASE_HREF'] }}{{ url_for('get_index') }}</link>
+            <link>{{ url_for('get_index', _external=True) }}</link>
         </image>
 
         {% for post in items %}
             <item>
                 <title>{{ post.message }}</title>
-                <guid isPermaLink="true">{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}</guid>
-                <link>{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}</link>
+                <guid isPermaLink="true">{{ url_for('get_post', post_id=post.id, _external=True) }}</guid>
+                <link>{{ url_for('get_post', post_id=post.id, _external=True) }}</link>
                 <pubDate>{{ post.get_created_date_rfc822() }}</pubDate>
                 {% with attachment = post.get_attachment() %}
                     <description><![CDATA[
                         <p>
-                            <a href="{{ config['BASE_HREF'] }}{{ url_for('get_post', post_id=post.id) }}">
-                                <img src="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" alt="{{ post.message }}" border="0" />
+                            <a href="{{ url_for('get_post', post_id=post.id, _external=True) }}">
+                                <img src="{{ attachment.get_derivative_url(300, 300, _external=True) }}" alt="{{ post.message }}" border="0" />
                             </a>
                         </p>
                     ]]></description>
-                    <media:thumbnail url="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url(300, 300) }}" />
-                    <media:content url="{{ config['BASE_HREF'] }}{{ attachment.get_derivative_url() }}" medium="image">
+                    <media:thumbnail url="{{ attachment.get_derivative_url(300, 300, _external=True) }}" />
+                    <media:content url="{{ attachment.get_derivative_url(_external=True) }}" medium="image">
                         <media:title type="html">{{ post.message }}</media:title>
                     </media:content>
                 {% endwith %}

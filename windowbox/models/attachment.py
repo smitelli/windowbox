@@ -127,12 +127,12 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
 
         return derivative
 
-    def get_derivative_url(self, width=None, height=None, allow_crop=True):
+    def get_derivative_url(self, width=None, height=None, allow_crop=True, **kwargs):
         dimensions = AttachmentManager.encode_dimensions(width, height)
 
-        kwargs = {
+        kwargs.update({
             'attachment_id': self.id,
-            'dimensions': dimensions}
+            'dimensions': dimensions})
 
         if not allow_crop:
             kwargs['crop'] = 'false'
