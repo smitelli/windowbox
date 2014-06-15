@@ -5,7 +5,6 @@
     xmlns:media="http://search.yahoo.com/mrss/"
 >
     <channel>
-        <!-- TODO validate -->
         <title>Windowbox</title>
         <atom:link href="{{ config['BASE_HREF'] }}{{ url_for('get_rss2') }}" rel="self" type="application/rss+xml" />
         <link>{{ config['BASE_HREF'] }}{{ url_for('get_index') }}</link>
