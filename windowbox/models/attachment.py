@@ -11,6 +11,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm.collections import column_mapped_collection
 from windowbox.database import db
 from windowbox.models import BaseFSEntity, BaseModel
+from windowbox.models.metadata import Metadata
 
 
 class AttachmentManager(object):
@@ -114,6 +115,9 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
             self.geo_longitude = None
             self.geo_address = None
 
+    def get_metadata(self):
+        return Metadata(self.attributes)
+
     def get_derivative(self, width=None, height=None, allow_crop=True):
         derivative = AttachmentDerivative.query.filter_by(
             attachment_id=self.id, width=width, height=height, allow_crop=allow_crop).first()
@@ -147,7 +151,7 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
             'geo_address': self.geo_address}
 
         if lookup_children:
-            data['metadata'] = 'TODO'
+            data['metadata'] = self.get_metadata().to_dict()
 
         return data
 
