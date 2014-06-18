@@ -29,4 +29,12 @@ class PostHandler(object):
 
     @staticmethod
     def _render_json(post, attachment, metadata, previous, next):
-        return jsonify(TODO='not implemented either')
+        data = {
+            'post': post.to_dict(),
+            'previous_id': previous.id if previous else None,
+            'next_id': next.id if next else None}
+
+        data['post']['attachment'] = attachment.to_dict()
+        data['post']['attachment']['metadata'] = 'TODO'
+
+        return jsonify(**data)

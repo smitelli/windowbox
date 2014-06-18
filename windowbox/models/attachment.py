@@ -139,6 +139,18 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
 
         return url_for('get_attachment_derivative', **kwargs)
 
+    def to_dict(self, lookup_children=False):
+        data = {
+            'id': self.id,
+            'post_id': self.post_id,
+            'mime_type': self.mime_type,
+            'geo_address': self.geo_address}
+
+        if lookup_children:
+            data['metadata'] = 'TODO'
+
+        return data
+
     def _load_exif_data(self):
         def flatten_dict(d):
             def expand(key, value):

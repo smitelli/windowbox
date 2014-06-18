@@ -61,3 +61,15 @@ class Post(db.Model, BaseModel):
 
     def get_created_date_rfc822(self):
         return formatdate(timegm(self.created_utc.timetuple()))
+
+    def to_dict(self, lookup_children=False):
+        data = {
+            'id': self.id,
+            'created': self.created_utc.isoformat(),
+            'message': self.message,
+            'user_agent': self.user_agent}
+
+        if lookup_children:
+            data['attachment'] = self.get_attachment().to_dict(lookup_children=True)
+
+        return data

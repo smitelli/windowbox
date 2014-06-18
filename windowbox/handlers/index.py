@@ -25,4 +25,6 @@ class IndexHandler(object):
 
     @staticmethod
     def _render_json(posts, has_next):
-        return jsonify(TODO='not implemented')
+        post_list = [p.to_dict(lookup_children=True) for p in posts]
+
+        return jsonify(posts=post_list, has_next=has_next)
