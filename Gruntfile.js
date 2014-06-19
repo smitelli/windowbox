@@ -65,6 +65,18 @@ module.exports = function (grunt) {
             }
         },
 
+        uglify : {
+            options : {
+                banner           : '/* Windowbox - <%= grunt.template.today("isoDateTime") %> */\n',
+                preserveComments : false
+            },
+            dist : {
+                files : {
+                    '<%= pkg.dir.javascript %>/main-dist.js': '<%= pkg.dir.javascript %>/main-dist.js'
+                }
+            }
+        },
+
         watch : {
             javascript : {
                 files : ['<%= pkg.dir.javascript %>/**/*.js', '!<%= pkg.dir.javascript %>/main-dist.js'],
@@ -79,12 +91,12 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-sass');
-    //TODO grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-flake8');
 
     grunt.registerTask('default', ['watch']);
-    grunt.registerTask('dev', ['browserify', 'sass']);
+    grunt.registerTask('dev', ['browserify', 'uglify', 'sass']);
     grunt.registerTask('lint', ['flake8', 'jshint']);
 };
