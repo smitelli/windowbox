@@ -7,6 +7,12 @@
         <p>Whatever you're looking for isn't here. Sorry about that.</p>
     {% elif error.code == 500 %}
         <p>Something bad happened while building this page. It's likely my fault.</p>
+
+        {% if config['DEBUG'] and stack: %}
+<pre>You found a secret area! Good job!
+
+{{ stack }}</pre>
+        {% endif %}
     {% else %}
         <p>{{ error.description }}</p>
     {% endif %}

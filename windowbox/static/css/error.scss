@@ -20,4 +20,11 @@
         padding-bottom: 30px;
         font-size: 1.6em;
     }
+
+    pre {
+        overflow-x: scroll;
+        width: 530px;
+        background: #ccc;
+        font-size: 1.4em;
+    }
 }
