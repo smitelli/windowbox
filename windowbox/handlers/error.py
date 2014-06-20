@@ -10,8 +10,8 @@ class ErrorHandler(object):
     @classmethod
     def get(cls, error, as_json=False):
         if not isinstance(error, HTTPException):
-            stack = traceback.format_exc()
             error = InternalServerError()
+            stack = traceback.format_exc()
         else:
             stack = None
 
@@ -33,7 +33,7 @@ class ErrorHandler(object):
             'error': error.code,
             'title': error.name}
 
-        if current_app.config['DEBUG']:
+        if current_app.config['DEBUG'] and stack:
             kwargs['stack'] = stack
 
         response = jsonify(**kwargs)
