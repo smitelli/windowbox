@@ -20,7 +20,9 @@ def start_app():
 
 
 @app.errorhandler(404)
-def page_not_found(error):
+@app.errorhandler(500)
+@app.errorhandler(Exception)
+def error_handler(error):
     return ErrorHandler.get(error, as_json=request_wants_json())
 
 

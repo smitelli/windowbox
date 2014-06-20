@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from flask import jsonify, make_response
+from werkzeug.exceptions import HTTPException, InternalServerError
 from windowbox.views.error import ErrorView
 from windowbox.views.page import PageView
 
@@ -7,6 +8,9 @@ from windowbox.views.page import PageView
 class ErrorHandler(object):
     @classmethod
     def get(cls, error, as_json=False):
+        if not isinstance(error, HTTPException):
+            error = InternalServerError()
+
         render = cls._render_json if as_json else cls._render_html
 
         return render(error)
