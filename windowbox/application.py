@@ -10,6 +10,8 @@ from windowbox.handlers.post import PostHandler
 
 app = Flask(__name__)
 app.config.from_object('windowbox.configs.BaseConfig')
+app.config.from_envvar('WINDOWBOX_CONFIG_FILE', silent=True)
+
 db.init_app(app)
 app_globals.init_app(app)
 
