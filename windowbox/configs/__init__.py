@@ -14,6 +14,8 @@ class BaseConfig(object):
     LISTEN_INTERFACE = '0.0.0.0'
     LISTEN_PORT = 5000
 
+    FETCH_LOG = path.join(app.instance_path, 'fetch.log')
+
     IMAP_HOST = 'imap.gmail.com'
     IMAP_PORT = 993
     IMAP_USER = ''
