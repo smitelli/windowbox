@@ -16,7 +16,6 @@ with app.app_context():
 
     imap_manager = IMAPManager(**connect_kwargs)
     messages = imap_manager.scrape_mailbox(app.config['IMAP_MAILBOX'])
-    app.logger.debug('Got %d message(s)', len(messages))
 
     for message in sorted(messages):
         app.logger.info('Message ID %s, sent on %s', message.message_id, message.created_utc)
