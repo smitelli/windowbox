@@ -18,7 +18,10 @@ Copy the built CSS and JS files into `./windowbox/static/{css,js}`.
 
 The WSGI module is `windowbox.application`, and the callable is `app`.
 
-The cron script that fetches new posts is `fetch.py`.
+The production config file can be specified with the `WINDOWBOX_CONFIG_FILE`
+environment variable. If this is unset, development defaults will be used.
+
+`fetch.py` is the cron script that fetches new posts from an IMAP server.
 
 Additionally, to develop or build the app:
 ------------------------------------------
