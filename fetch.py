@@ -7,7 +7,10 @@ from windowbox.models.post import Post
 
 with app.app_context():
     if not app.debug:
-        logging.basicConfig(filename=app.config['FETCH_LOG'], level=logging.DEBUG)
+        handler = logging.FileHandler(app.config['FETCH_LOG'])
+        handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
+        app.logger.addHandler(handler)
+        app.logger.setLevel(logging.DEBUG)
 
     app.logger.info('Checking for new IMAP messages')
 
