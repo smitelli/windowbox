@@ -33,7 +33,7 @@ class ErrorHandler(object):
             'error': error.code,
             'title': error.name}
 
-        if current_app.config['DEBUG'] and stack:
+        if current_app.debug and stack:
             kwargs['stack'] = stack
 
         response = jsonify(**kwargs)
