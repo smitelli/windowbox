@@ -12,7 +12,7 @@ with app.app_context():
         app.logger.addHandler(handler)
         app.logger.setLevel(logging.DEBUG)
 
-    app.logger.info('Checking for new IMAP messages')
+    app.logger.info('Checking for new IMAP messages...')
 
     valid_types = Attachment.MIME_EXTENSION_MAP.keys()
     connect_kwargs = {
@@ -29,23 +29,22 @@ with app.app_context():
 
         real_name, email = message.sender
         if email not in app.config['IMAP_ALLOWED_FROM']:
-            app.logger.error('Skipping, %s is not a permitted sender', email)
+            app.logger.error('Skipping; %s is not a permitted sender', email)
             continue
 
         attach_data = message.get_attachment_data(valid_types)
         if not attach_data:
-            app.logger.error('Skipping, no usable attachment')
+            app.logger.error('Skipping; no usable attachment')
             continue
 
         post_kwargs = {
             'created_utc': message.created_utc,
             'message': message.message_body,
             'user_agent': message.user_agent}
-
         app.logger.debug('Inserting post data: %s', repr(post_kwargs))
         post = Post(**post_kwargs).save(commit=True)
 
-        app.logger.debug('Inserting attachment: <%s bytes>', len(attach_data))
+        app.logger.debug('Inserting attachment: <%d bytes>', len(attach_data))
         attachment = Attachment(post_id=post.id)
         attachment.set_data(attach_data)
         attachment.save(commit=True)
@@ -53,4 +52,4 @@ with app.app_context():
         app.logger.info('Created post #%d, attachment #%d', post.id, attachment.id)
 
     imap_manager.close()
-    app.logger.info('Check has finished')
+    app.logger.info('Check has finished.')
