@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import logging
 from flask import Flask, request
 from windowbox.database import db
 from windowbox.handlers import app_globals, request_wants_json
@@ -11,6 +12,12 @@ from windowbox.handlers.post import PostHandler
 app = Flask(__name__)
 app.config.from_object('windowbox.configs.BaseConfig')
 app.config.from_envvar('WINDOWBOX_CONFIG_FILE', silent=True)
+
+if not app.debug:
+    handler = logging.FileHandler(app.config['APPLICATION_LOG'])
+    handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
+    app.logger.addHandler(handler)
+    app.logger.setLevel(logging.DEBUG)
 
 db.init_app(app)
 app_globals.init_app(app)

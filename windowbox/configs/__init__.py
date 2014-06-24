@@ -15,6 +15,7 @@ class BaseConfig(object):
     LISTEN_PORT = 5000
 
     LOG_FORMAT = '%(asctime)s %(module)s [%(levelname)s] %(message)s'
+    APPLICATION_LOG = path.join(app.instance_path, 'application.log')
     FETCH_LOG = path.join(app.instance_path, 'fetch.log')
 
     IMAP_HOST = 'imap.gmail.com'
