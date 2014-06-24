@@ -111,6 +111,7 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
             self.geo_longitude = float(self.attributes['Composite.GPSLongitude.num'])
             self.geo_address = self._load_address_data(self.geo_latitude, self.geo_longitude)
         except KeyError:
+            current_app.logger.error('Could not get geo address for %d,%d', self.geo_latitude, self.geo_longitude)
             self.geo_latitude = None
             self.geo_longitude = None
             self.geo_address = None
@@ -123,10 +124,12 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
             attachment_id=self.id, width=width, height=height, allow_crop=allow_crop).first()
 
         if not derivative:
+            current_app.logger.debug('Building new derivative')
             derivative = AttachmentDerivative(
                 attachment_id=self.id, width=width, height=height, allow_crop=allow_crop)
             derivative.rebuild(source_attachment=self)
         elif not os.path.isfile(derivative.get_file_name()):
+            current_app.logger.warn('Could not find derivative file; rebuilding')
             derivative.rebuild(source_attachment=self)
 
         return derivative
@@ -182,10 +185,12 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
         url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&sensor=true'.format(latitude, longitude)
         response = requests.get(url, timeout=timeout)
         if response.status_code is not requests.codes.ok:
+            current_app.logger.debug('Maps API did not return HTTP OK')
             return None
 
         response_dict = response.json()
         if response_dict['status'] != 'OK':
+            current_app.logger.debug('Maps API JSON did not contain OK status')
             return None
 
         for result in response_dict['results']:
@@ -193,6 +198,7 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
                 continue
             return result['formatted_address']
 
+        current_app.logger.debug('Maps API did not return any usable location types')
         return None
 
 
@@ -222,6 +228,7 @@ class AttachmentDerivative(db.Model, BaseModel, BaseFSEntity):
         try:
             orient_code = int(source_attachment.attributes['EXIF.Orientation.num'])
         except (KeyError, ValueError):
+            current_app.logger.debug('Image does not contain EXIF rotation data')
             orient_code = None
 
         if orient_code is not None:
@@ -247,6 +254,7 @@ class AttachmentDerivative(db.Model, BaseModel, BaseFSEntity):
         try:
             rotate, flip = operations[orient_code]
         except KeyError:
+            current_app.logger.debug('Orient code %d is out of range', orient_code)
             rotate = flip = None
 
         if rotate is not None:

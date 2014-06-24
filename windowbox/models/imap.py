@@ -6,6 +6,7 @@ import pytz
 from collections import defaultdict
 from datetime import datetime
 from email.utils import mktime_tz, parseaddr, parsedate_tz
+from flask import current_app
 
 
 class IMAPException(Exception):
@@ -35,12 +36,14 @@ class IMAPManager(object):
         matches = self._do_uid('SEARCH', None, 'ALL')
 
         for uid in matches[0].split():
+            current_app.logger.debug('Fetching message %d', uid)
             parts = self._do_uid('FETCH', uid, '(BODY[])')
             message = email.message_from_string(parts[0][1])
 
             yield IMAPMessage(message)
 
             if delete:
+                current_app.logger.debug('Deleting message %d', uid)
                 self._do_uid('STORE', uid, '+FLAGS', '\\Deleted')
 
     def _do(self, method, *args, **kwargs):
@@ -99,6 +102,7 @@ class IMAPMessage(object):
             if mime_type in self.parts:
                 return self.parts[mime_type].largest_payload()
 
+        current_app.logger.warn('Message does not contain any parts matching %s', repr(valid_types))
         return None
 
     @staticmethod

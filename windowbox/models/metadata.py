@@ -164,8 +164,8 @@ class MetadataItem(object):
 
     @property
     def display_name(self):
-        return self.description or '<{}>'.format(self.key)
+        return self.description or '<key={}>'.format(self.key)
 
     @property
     def display_value(self):
-        return self.value or '<{}>'.format(self.raw_value)
+        return self.value or '<raw_value={}>'.format(self.raw_value)
