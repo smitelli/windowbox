@@ -17,7 +17,7 @@ if not app.debug:
     handler = logging.FileHandler(app.config['APPLICATION_LOG'])
     handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
     app.logger.addHandler(handler)
-    app.logger.setLevel(logging.DEBUG)
+    app.logger.setLevel(app.config['LOG_LEVEL'])
 
 db.init_app(app)
 app_globals.init_app(app)

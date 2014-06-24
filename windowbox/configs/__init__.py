@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import logging
 import pytz
 from os import path
 from windowbox.application import app
@@ -15,6 +16,7 @@ class BaseConfig(object):
     LISTEN_PORT = 5000
 
     LOG_FORMAT = '%(asctime)s %(module)s [%(levelname)s] %(message)s'
+    LOG_LEVEL = logging.DEBUG
     APPLICATION_LOG = path.join(app.instance_path, 'application.log')
     FETCH_LOG = path.join(app.instance_path, 'fetch.log')
 
