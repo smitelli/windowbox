@@ -18,6 +18,9 @@ if not app.debug:
     handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
     app.logger.addHandler(handler)
     app.logger.setLevel(app.config['LOG_LEVEL'])
+    app.logger.info('Sending log output to %s', app.config['APPLICATION_LOG'])
+else:
+    app.logger.info('Sending log output to standard error')
 
 db.init_app(app)
 app_globals.init_app(app)

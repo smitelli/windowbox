@@ -10,9 +10,11 @@ class ErrorHandler(object):
     @classmethod
     def get(cls, error, as_json=False):
         if not isinstance(error, HTTPException):
+            current_app.logger.debug('Got a non-HTTP exception')
             error = InternalServerError()
             stack = traceback.format_exc()
         else:
+            current_app.logger.debug('Got an HTTPException')
             stack = None
 
         render = cls._render_json if as_json else cls._render_html
@@ -34,6 +36,7 @@ class ErrorHandler(object):
             'title': error.name}
 
         if current_app.debug and stack:
+            current_app.logger.debug('Including the stack')
             kwargs['stack'] = stack
 
         response = jsonify(**kwargs)

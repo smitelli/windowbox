@@ -1,12 +1,15 @@
 from __future__ import absolute_import
 import errno
 import os
+from flask import current_app
 from magic import Magic
 from windowbox.database import db
 
 
 class BaseModel(object):
     def save(self, commit=False):
+        current_app.logger.debug('Saving (commit=%s)', repr(commit))
+
         db.session.add(self)
         db.session.flush()
 
@@ -29,6 +32,7 @@ class BaseFSEntity(object):
         try:
             extension = self.MIME_EXTENSION_MAP[self.mime_type]
         except KeyError:
+            current_app.logger.warning('%s has no entry in MIME_EXTENSION_MAP', self.mime_type)
             extension = ''
 
         if len(id_str) <= 1:
