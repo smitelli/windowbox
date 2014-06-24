@@ -7,8 +7,9 @@ class AppGlobals(object):
     def set_globals(self):
         g.copyright_year = datetime.now().year
 
-    def set_headers(self, response, *args, **kwargs):
+    def set_headers(self, response):
         response.headers['X-George-Carlin'] = "I put a dollar in a change machine. Nothing changed."
+
         return response
 
     def init_app(self, app):
