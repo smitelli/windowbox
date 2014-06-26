@@ -51,6 +51,17 @@ class Post(db.Model, BaseModel):
     def get_attachment(self):
         return AttachmentManager.get_by_post_id(self.id)
 
+    def get_message(self, length=None, suffix='...'):
+        if length is None or len(self.message) <= length:
+            return self.message
+
+        length -= len(suffix)
+
+        if self.message[length].isspace():
+            return self.message[:length] + suffix
+        else:
+            return self.message[:length].rsplit(' ', 1)[0] + suffix
+
     def get_created_date(self, format=None):
         if format is None:
             format = '%Y-%m-%d %H:%M:%S %Z'

@@ -22,3 +22,10 @@ class SingleView(object):
             'next_item': self.next_item}
 
         return render_template('single_post.html', **template_vars)
+
+    def render_head_extra(self):
+        template_vars = {
+            'item': self.item,
+            'attachment': self.attachment}
+
+        return render_template('single_post_head.html', **template_vars)

@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <link rel="alternate" href="{{ url_for('get_rss2') }}" type="application/rss+xml" title="Windowbox RSS Feed">
     <link rel="alternate" href="{{ url_for('get_atom') }}" type="application/atom+xml" title="Windowbox Atom Feed">
+    {% if head_extra %}{{ head_extra }}{% endif %}
 </head>
 
 <!-- "Everyone you will ever meet knows something you don't." -->
