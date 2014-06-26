@@ -20,11 +20,16 @@ class PostHandler(object):
 
     @staticmethod
     def _render_html(post, attachment, metadata, previous, next):
-        view = SingleView(item=post, attachment=attachment, metadata=metadata, prev_item=previous, next_item=next)
-        head_extra = view.render_head_extra()
-        body_html = view.render_html()
+        view = SingleView(
+            item=post, attachment=attachment, metadata=metadata,
+            prev_item=previous, next_item=next)
 
-        return PageView(title=post.message, head_extra=head_extra, body=body_html).render_html()
+        kwargs = {
+            'title': post.get_message(length=50),
+            'head_extra': view.render_head_extra(),
+            'body': view.render_html()}
+
+        return PageView(**kwargs).render_html()
 
     @staticmethod
     def _render_json(post, attachment, metadata, previous, next):
