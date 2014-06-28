@@ -10,12 +10,12 @@ class ErrorHandler(object):
     @classmethod
     def get(cls, error, as_json=False):
         if not isinstance(error, HTTPException):
-            current_app.logger.debug('Got a non-HTTP exception')
             error = InternalServerError()
             stack = traceback.format_exc()
+            current_app.logger.debug('Got a non-HTTP exception; stack follows:\n%s', stack)
         else:
-            current_app.logger.debug('Got an HTTPException')
             stack = None
+            current_app.logger.debug('Got an HTTPException')
 
         render = cls._render_json if as_json else cls._render_html
 

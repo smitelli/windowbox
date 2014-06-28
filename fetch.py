@@ -1,17 +1,10 @@
 from __future__ import absolute_import
-import logging
 from windowbox.application import app
 from windowbox.models.attachment import Attachment
 from windowbox.models.imap import IMAPManager
 from windowbox.models.post import Post
 
 with app.app_context():
-    if not app.debug:
-        handler = logging.FileHandler(app.config['FETCH_LOG'])
-        handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
-        app.logger.addHandler(handler)
-        app.logger.setLevel(app.config['LOG_LEVEL'])
-
     app.logger.info('Checking for new IMAP messages...')
 
     valid_types = Attachment.MIME_EXTENSION_MAP.keys()
