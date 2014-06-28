@@ -18,7 +18,6 @@ class BaseConfig(object):
     LOG_FORMAT = '%(asctime)s %(module)s [%(levelname)s] %(message)s'
     LOG_LEVEL = logging.DEBUG
     APPLICATION_LOG = path.join(app.instance_path, 'application.log')
-    FETCH_LOG = path.join(app.instance_path, 'fetch.log')
 
     IMAP_HOST = 'imap.gmail.com'
     IMAP_PORT = 993
