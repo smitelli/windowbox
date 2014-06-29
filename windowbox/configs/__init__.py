@@ -28,6 +28,7 @@ class BaseConfig(object):
 
     DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
     ALLOWED_DIMENSIONS = ['300x300', '960:720', '750:750', '']
+    GA_TRACKING_CODE = None
 
     STORAGE_DIR = path.join(app.instance_path, 'storage')
     EXIFTOOL = '/usr/bin/exiftool'
