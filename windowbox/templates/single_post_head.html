@@ -1,5 +1,5 @@
 <meta name="twitter:card" content="photo">
 <meta name="twitter:title" content="{{ item.get_message(length=70) }}">
-<meta name="twitter:image" content="{{ attachment.get_derivative_url(width=750, height=750, crop='false', _external=True) }}">
+<meta name="twitter:image" content="{{ attachment.get_derivative_url(750, 750, allow_crop=False, _external=True) }}">
 <meta name="twitter:url" content="{{ url_for('get_index', _external=True) }}">
 <meta name="twitter:creator" content="@smitelli">

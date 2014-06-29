@@ -52,8 +52,7 @@ def get_post(post_id):
 @app.route('/attachment/<int:attachment_id>')
 @app.route('/attachment/<int:attachment_id>/<dimensions>')
 def get_attachment_derivative(attachment_id, dimensions=''):
-    allow_crop = False if request.args.get('crop') == 'false' else True
-    return AttachmentDerivativeHandler.get(attachment_id, dimensions=dimensions, allow_crop=allow_crop)
+    return AttachmentDerivativeHandler.get(attachment_id, dimensions=dimensions)
 
 
 @app.route('/rss.xml')

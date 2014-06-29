@@ -24,18 +24,20 @@ class AttachmentManager(object):
         return Attachment.query.filter_by(post_id=post_id).first()
 
     @staticmethod
-    def encode_dimensions(width=None, height=None):
+    def encode_dimensions(width=None, height=None, allow_crop=True):
         if not width and not height:
             return None
         else:
-            return '{}x{}'.format(width or '', height or '')
+            combiner = 'x' if allow_crop else ':'
+
+            return '{}{}{}'.format(width or '', combiner, height or '')
 
     @staticmethod
     def decode_dimensions(dimensions):
-        matches = re.match('(?P<width>\d*)x(?P<height>\d*)', dimensions)
+        matches = re.match('(?P<width>\d*)(?P<combiner>[x:])(?P<height>\d*)', dimensions)
 
         if not matches:
-            return (None, None)
+            return (None, None, True)
 
         def str_to_int(value):
             try:
@@ -45,8 +47,9 @@ class AttachmentManager(object):
 
         width = str_to_int(matches.group('width'))
         height = str_to_int(matches.group('height'))
+        allow_crop = (matches.group('combiner') == 'x')
 
-        return (width, height)
+        return (width, height, allow_crop)
 
 
 class AttachmentAttribute(db.Model):
@@ -135,14 +138,11 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
         return derivative
 
     def get_derivative_url(self, width=None, height=None, allow_crop=True, **kwargs):
-        dimensions = AttachmentManager.encode_dimensions(width, height)
+        dimensions = AttachmentManager.encode_dimensions(width, height, allow_crop)
 
         kwargs.update({
             'attachment_id': self.id,
             'dimensions': dimensions})
-
-        if not allow_crop:
-            kwargs['crop'] = 'false'
 
         return url_for('get_attachment_derivative', **kwargs)
 

@@ -27,7 +27,7 @@ class BaseConfig(object):
     IMAP_ALLOWED_FROM = ['scott@smitelli.com']
 
     DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
-    ALLOWED_DIMENSIONS = ['300x300', '960x720', '750x750', '']
+    ALLOWED_DIMENSIONS = ['300x300', '960:720', '750:750', '']
 
     STORAGE_DIR = path.join(app.instance_path, 'storage')
     EXIFTOOL = '/usr/bin/exiftool'

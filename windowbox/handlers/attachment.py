@@ -6,11 +6,12 @@ from windowbox.models.attachment import AttachmentManager
 
 class AttachmentDerivativeHandler(object):
     @staticmethod
-    def get(attachment_id=None, dimensions='', allow_crop=True):
+    def get(attachment_id=None, dimensions=''):
         if dimensions in current_app.config['ALLOWED_DIMENSIONS']:
-            width, height = AttachmentManager.decode_dimensions(dimensions)
+            width, height, allow_crop = AttachmentManager.decode_dimensions(dimensions)
         else:
             current_app.logger.debug('`%s` is not in ALLOWED_DIMENSIONS', dimensions)
+            allow_crop = True
             width = height = None
 
         attachment = get_or_404(AttachmentManager.get_by_id, attachment_id)
