@@ -31,6 +31,7 @@ def start_app():
     return app
 
 
+@app.errorhandler(400)
 @app.errorhandler(404)
 @app.errorhandler(500)
 @app.errorhandler(Exception)
@@ -40,8 +41,9 @@ def error_handler(error):
 
 @app.route('/')
 def get_index():
+    since_id = request.args.get('since')
     until_id = request.args.get('until')
-    return IndexHandler.get(until_id=until_id, as_json=request_wants_json())
+    return IndexHandler.get(since_id=since_id, until_id=until_id, as_json=request_wants_json())
 
 
 @app.route('/post/<int:post_id>')

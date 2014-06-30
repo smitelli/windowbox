@@ -9,8 +9,11 @@ from windowbox.models.attachment import AttachmentManager
 
 class PostManager(object):
     @staticmethod
-    def get_all(until_id=None, limit=None):
-        qu = Post.query.order_by(Post.id.desc())
+    def get_all(since_id=None, until_id=None, limit=None):
+        if since_id is not None:
+            qu = Post.query.order_by(Post.id.asc()).filter(Post.id > since_id)
+        else:
+            qu = Post.query.order_by(Post.id.desc())
 
         if until_id is not None:
             qu = qu.filter(Post.id < until_id)

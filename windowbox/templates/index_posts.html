@@ -13,6 +13,6 @@
     {% endfor %}
 
     {% if has_next %}
-        <a href="{{ url_for('get_index', until=last_id) }}" class="next-page">Next Page</a>
+        <a href="{{ url_for('get_index', since=since, until=until) }}" class="next-page">Next Page</a>
     {% endif %}
 </section>

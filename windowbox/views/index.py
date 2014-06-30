@@ -3,15 +3,21 @@ from flask import make_response, render_template
 
 
 class IndexView(object):
-    def __init__(self, items, has_next):
+    MODE_SINCE = 'since'
+    MODE_UNTIL = 'until'
+
+    def __init__(self, items, has_next, mode):
         self.items = items
         self.has_next = has_next
+        self.mode = mode
 
     def render_html(self):
+        last_id = self.items[-1].id
         template_vars = {
             'items': self.items,
             'has_next': self.has_next,
-            'last_id': self.items[-1].id}
+            'since': last_id if self.mode == self.MODE_SINCE else None,
+            'until': last_id if self.mode == self.MODE_UNTIL else None}
 
         return render_template('index_posts.html', **template_vars)
 
