@@ -19,9 +19,10 @@ class AttachmentDerivativeHandler(object):
 
         if current_app.debug:
             response = make_response(derivative.get_data())
-            response.headers['Content-Type'] = derivative.mime_type
         else:
             response = make_response()
             response.headers['X-Accel-Redirect'] = derivative.get_sendfile_url()
+
+        response.headers['Content-Type'] = derivative.mime_type
 
         return response
