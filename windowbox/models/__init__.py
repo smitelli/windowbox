@@ -22,10 +22,10 @@ class BaseModel(object):
 class BaseFSEntity(object):
     MIME_EXTENSION_MAP = {}
 
-    def get_storage_path(self):
+    def get_storage_path(self, sendfile_mode=False):
         raise NotImplementedError()
 
-    def get_file_name(self):
+    def get_file_name(self, sendfile_mode=False):
         pk_attribute = db.class_mapper(self.__class__).primary_key[0].name
         id_str = str(getattr(self, pk_attribute))
 
@@ -44,7 +44,10 @@ class BaseFSEntity(object):
 
         file_name = '{}{}'.format(id_str, extension)
 
-        return os.path.join(self.get_storage_path(), d1, d2, file_name)
+        return os.path.join(self.get_storage_path(sendfile_mode=sendfile_mode), d1, d2, file_name)
+
+    def get_sendfile_url(self):
+        return self.get_file_name(sendfile_mode=True)
 
     def get_data(self):
         with open(self.get_file_name(), mode='rb') as fh:

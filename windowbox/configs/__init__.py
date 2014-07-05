@@ -31,4 +31,5 @@ class BaseConfig(object):
     GA_TRACKING_CODE = None
 
     STORAGE_DIR = path.join(app.instance_path, 'storage')
+    SENDFILE_BASE = '/int-storage'
     EXIFTOOL = '/usr/bin/exiftool'

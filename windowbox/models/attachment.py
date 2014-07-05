@@ -101,7 +101,10 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
 
-    def get_storage_path(self):
+    def get_storage_path(self, sendfile_mode=False):
+        if sendfile_mode:
+            raise NotImplementedError()
+
         return os.path.join(current_app.config['STORAGE_DIR'], 'attachments')
 
     def set_data(self, *args, **kwargs):
@@ -218,8 +221,13 @@ class AttachmentDerivative(db.Model, BaseModel, BaseFSEntity):
     def __repr__(self):
         return '<{} id={}>'.format(self.__class__.__name__, self.id)
 
-    def get_storage_path(self):
-        return os.path.join(current_app.config['STORAGE_DIR'], 'derivatives')
+    def get_storage_path(self, sendfile_mode=False):
+        if sendfile_mode:
+            base = current_app.config['SENDFILE_BASE']
+        else:
+            base = current_app.config['STORAGE_DIR']
+
+        return os.path.join(base, 'derivatives')
 
     def rebuild(self, source_attachment):
         self.mime_type = source_attachment.mime_type
