@@ -10,10 +10,10 @@ class FeedHandler(object):
     def get_rss2(cls):
         posts, has_next = PostManager.get_all(limit=cls.ITEM_LIMIT)
 
-        return IndexView(items=posts, has_next=has_next).render_rss2()
+        return IndexView(items=posts, has_next=has_next, mode=IndexView.MODE_SINCE).render_rss2()
 
     @classmethod
     def get_atom(cls):
         posts, has_next = PostManager.get_all(limit=cls.ITEM_LIMIT)
 
-        return IndexView(items=posts, has_next=has_next).render_atom()
+        return IndexView(items=posts, has_next=has_next, mode=IndexView.MODE_SINCE).render_atom()
