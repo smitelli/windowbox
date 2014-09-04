@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{{ url_for('get_index', _external=True) }}</loc>
+        <lastmod>{{ items[0].created_utc.isoformat() }}</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    {% for post in items %}
+        <url>
+            <loc>{{ url_for('get_post', post_id=post.id, _external=True) }}</loc>
+            <lastmod>{{ post.created_utc.isoformat() }}</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>0.5</priority>
+        </url>
+    {% endfor %}
+</urlset>

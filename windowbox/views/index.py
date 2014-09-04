@@ -27,6 +27,9 @@ class IndexView(object):
     def render_atom(self):
         return self._render_xml('index_posts_atom.xml', content_type='application/atom+xml')
 
+    def render_sitemap(self):
+        return self._render_xml('index_posts_sitemap.xml', content_type='application/xml')
+
     def _render_xml(self, template_name, content_type):
         template_vars = {
             'items': self.items}

@@ -65,3 +65,8 @@ def get_rss2():
 @app.route('/atom.xml')
 def get_atom():
     return FeedHandler.get_atom()
+
+
+@app.route('/sitemap.xml')
+def get_sitemap():
+    return FeedHandler.get_sitemap()

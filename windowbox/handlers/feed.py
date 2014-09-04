@@ -17,3 +17,9 @@ class FeedHandler(object):
         posts, has_next = PostManager.get_all(limit=cls.ITEM_LIMIT)
 
         return IndexView(items=posts, has_next=has_next, mode=IndexView.MODE_SINCE).render_atom()
+
+    @classmethod
+    def get_sitemap(cls):
+        posts, has_next = PostManager.get_all()
+
+        return IndexView(items=posts, has_next=has_next, mode=IndexView.MODE_SINCE).render_sitemap()
