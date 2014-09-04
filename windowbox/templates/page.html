@@ -24,7 +24,8 @@
 {{ page_body }}
     </main>
     <footer id="bottombar">
-        A contrivance by <a href="http://www.scottsmitelli.com/">Scott Smitelli</a>. &copy; 2004-{{ g.copyright_year }}.
+        <p>A contrivance by <a href="http://www.scottsmitelli.com/">Scott Smitelli</a>. &copy; 2004-{{ g.copyright_year }}.</p>
+        <p><a href="https://github.com/smitelli/windowbox">Point and laugh at me on GitHub.</a></p>
     </footer>
     <script src="{{ url_for('static', filename='js/main-dist.js') }}"></script>
     {% if config['GA_TRACKING_CODE'] %}
