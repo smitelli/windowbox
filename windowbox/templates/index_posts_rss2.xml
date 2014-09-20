@@ -17,7 +17,7 @@
         <copyright>A contrivance by Scott Smitelli. &#169; 2004-{{ g.copyright_year }}.</copyright>
         <docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
         <image>
-            <url>{{ url_for('static', filename='images/windowbox-dark.png', _external=True) }}</url>
+            <url>{{ url_for('static', filename='images/windowbox-dark100.png', _external=True) }}</url>
             <title>Windowbox</title>
             <link>{{ url_for('get_index', _external=True) }}</link>
         </image>
