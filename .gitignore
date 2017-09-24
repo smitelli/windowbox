@@ -1,7 +1,8 @@
 .sass-cache/
-_importable/
-instance/
+.virtualenv/
 node_modules/
+storage/
+
+src/windowbox/static/css/main-dist.css
+src/windowbox/static/js/main-dist.js
 *.pyc
-windowbox/static/css/main-dist.css
-windowbox/static/js/main-dist.js

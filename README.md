@@ -14,7 +14,7 @@ Python packages (NOTE: Make a virtualenv first, unless you don't care):
 
 * `pip install -r reqs.txt`
 
-Copy the built CSS and JS files into `./windowbox/static/{css,js}`.
+Copy the built CSS and JS files into `./src/windowbox/static/{css,js}`.
 
 The WSGI module is `windowbox.application`, and the callable is `app`.
 
@@ -48,6 +48,6 @@ Python Packages:
 
 **To watch for CSS/JS changes and continually rebuild:** `grunt`
 
-**To build the CSS and JS:** `grunt dev`
+**To build the CSS and JS:** `grunt build`
 
 **To lint the Python and JS code:** `grunt lint`
