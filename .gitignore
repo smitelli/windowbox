@@ -3,6 +3,7 @@
 node_modules/
 storage/
 
+src/windowbox/configs/production.cfg
 src/windowbox/static/css/main-dist.css
 src/windowbox/static/js/main-dist.js
 *.pyc
