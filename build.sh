@@ -6,6 +6,7 @@ SELF_DIR="$( cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )"
 cd "$SELF_DIR"
 
 # Python components
+rm -rf ./src/.virtualenv
 virtualenv --always-copy ./src/.virtualenv
 source ./src/.virtualenv/bin/activate
 pip install --upgrade pip
