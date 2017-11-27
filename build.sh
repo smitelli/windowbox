@@ -14,6 +14,7 @@ pip install -r ./reqs.txt
 deactivate
 
 # JS/CSS components
-npm install --prod
+# --no-save stops package-lock.json from being overwritten
+npm install --prod --no-save
 npm run-script build
 rm -rf ./node_modules
