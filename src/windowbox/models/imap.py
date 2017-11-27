@@ -36,14 +36,14 @@ class IMAPManager(object):
         matches = self._do_uid('SEARCH', None, 'ALL')
 
         for uid in matches[0].split():
-            current_app.logger.debug('Fetching message %d', uid)
+            current_app.logger.debug('Fetching message %s', str(uid))
             parts = self._do_uid('FETCH', uid, '(BODY[])')
             message = email.message_from_string(parts[0][1])
 
             yield IMAPMessage(message)
 
             if delete:
-                current_app.logger.debug('Deleting message %d', uid)
+                current_app.logger.debug('Deleting message %s', str(uid))
                 self._do_uid('STORE', uid, '+FLAGS', '\\Deleted')
 
     def _do(self, method, *args, **kwargs):
