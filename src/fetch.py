@@ -37,12 +37,12 @@ with app.app_context():
         app.logger.debug('Inserting post data: %s', repr(post_kwargs))
         post = Post(**post_kwargs).save(commit=True)
 
-        app.logger.debug('Inserting attachment: <%d bytes>', len(attach_data))
+        app.logger.debug('Inserting attachment: <%s bytes>', str(len(attach_data)))
         attachment = Attachment(post_id=post.id)
         attachment.set_data(attach_data)
         attachment.save(commit=True)
 
-        app.logger.info('Created post #%d, attachment #%d', post.id, attachment.id)
+        app.logger.info('Created post #%s, attachment #%s', str(post.id), str(attachment.id))
 
     imap_manager.close()
     app.logger.info('Check has finished.')
