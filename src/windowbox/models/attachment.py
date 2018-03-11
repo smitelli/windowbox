@@ -185,7 +185,7 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
 
     @staticmethod
     def _load_address_data(latitude, longitude, timeout=10):
-        url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&sensor=true'.format(latitude, longitude)
+        url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&sensor=true'.format(latitude, longitude)
         response = requests.get(url, timeout=timeout)
         if response.status_code is not requests.codes.ok:
             current_app.logger.debug('Maps API did not return HTTP OK')
