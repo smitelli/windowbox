@@ -31,4 +31,7 @@ class IndexHandler(object):
     def _render_json(posts, has_next, mode):
         post_list = [p.to_dict(lookup_children=True) for p in posts]
 
+        for p in post_list:
+            del p['attachment']['metadata']['gps']
+
         return jsonify(posts=post_list, has_next=has_next)
