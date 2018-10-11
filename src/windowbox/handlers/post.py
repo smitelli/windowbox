@@ -39,6 +39,9 @@ class PostHandler(object):
             'next_id': next.id if next else None}
 
         data['post']['attachment'] = attachment.to_dict()
-        data['post']['attachment']['metadata'] = metadata.to_dict()
+
+        md = metadata.to_dict()
+        del md['gps']
+        data['post']['attachment']['metadata'] = md
 
         return jsonify(**data)
