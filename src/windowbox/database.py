@@ -2,19 +2,27 @@ from __future__ import absolute_import
 import pytz
 from datetime import datetime
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.mysql import DATETIME
 
 db = SQLAlchemy()
 
 
 class UTCDateTime(db.TypeDecorator):
-    impl = db.DateTime
+    impl = DATETIME
+
+    def __init__(self, *args, **kwargs):
+        # kwargs['fsp'] = 6
+
+        super(UTCDateTime, self).__init__(*args, **kwargs)
 
     def process_bind_param(self, value, dialect):
         if value is not None:
-            return value.astimezone(pytz.utc)
+            value = value.astimezone(pytz.utc).replace(tzinfo=None)
+
+        return value
 
     def process_result_value(self, value, dialect):
         if value is not None:
-            return datetime(
-                value.year, value.month, value.day, value.hour, value.minute,
-                value.second, value.microsecond, tzinfo=pytz.utc)
+            value = value.replace(tzinfo=pytz.utc)
+
+        return value
