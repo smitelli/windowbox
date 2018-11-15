@@ -26,6 +26,8 @@ class BaseConfig(object):
     IMAP_MAILBOX = 'Inbox'
     IMAP_ALLOWED_FROM = ['scott@smitelli.com']
 
+    GOOGLE_API_KEY = None
+
     DISPLAY_TIMEZONE = pytz.timezone('America/New_York')
     ALLOWED_DIMENSIONS = ['300x300', '960:720', '750:750', '']
     GA_TRACKING_CODE = None

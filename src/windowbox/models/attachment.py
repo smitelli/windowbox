@@ -115,7 +115,8 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
         try:
             self.geo_latitude = float(self.attributes['Composite.GPSLatitude.num'])
             self.geo_longitude = float(self.attributes['Composite.GPSLongitude.num'])
-            self.geo_address = self._load_address_data(self.geo_latitude, self.geo_longitude)
+            self.geo_address = self._load_address_data(
+                self.geo_latitude, self.geo_longitude, current_app.config['GOOGLE_API_KEY'])
         except KeyError:
             current_app.logger.error('Could not get geo address for %d,%d', self.geo_latitude, self.geo_longitude)
             self.geo_latitude = None
@@ -184,8 +185,9 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
         return flat_data
 
     @staticmethod
-    def _load_address_data(latitude, longitude, timeout=10):
-        url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&sensor=true'.format(latitude, longitude)
+    def _load_address_data(latitude, longitude, api_key, timeout=10):
+        url = 'https://maps.googleapis.com/maps/api/geocode/json?' \
+            'latlng={},{}&key={}'.format(latitude, longitude, api_key)
         response = requests.get(url, timeout=timeout)
         if response.status_code is not requests.codes.ok:
             current_app.logger.debug('Maps API did not return HTTP OK')
@@ -193,7 +195,8 @@ class Attachment(db.Model, BaseModel, BaseFSEntity):
 
         response_dict = response.json()
         if response_dict['status'] != 'OK':
-            current_app.logger.debug('Maps API JSON did not contain OK status')
+            current_app.logger.debug('Maps API JSON status was {}, not OK'.format(
+                response_dict['status']))
             return None
 
         for result in response_dict['results']:
