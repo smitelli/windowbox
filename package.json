@@ -19,7 +19,7 @@
     "grunt-contrib-uglify": "0.11.1",
     "image-loaded": "0.0.2",
     "jquery": "2.1.1",
-    "lodash": "2.4.1"
+    "lodash": "4.17.13"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.10.0",
