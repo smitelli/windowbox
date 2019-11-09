@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://pics.scottsmitelli.com/sitemap.xml
