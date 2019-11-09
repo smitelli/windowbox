@@ -1,0 +1,60 @@
+@import 'vendor/normalize-8.0.1';
+@import 'variables';
+
+@mixin pagewrap {
+    margin: 0 auto;
+    width: $content_width;
+}
+
+body {
+    min-width: $content_width + 20px;
+    color: $body_color_text;
+    background-color: $body_color_bg;
+    font: 10px $body_font_stack;
+}
+
+a {
+    text-decoration: none;
+}
+
+main {
+    display: block;
+    background-color: $content_color_bg;
+}
+
+#topbar {
+    padding: 13px 0;
+    background: $body_color_accent;
+
+    .link-root {
+        @include pagewrap;
+        display: block;
+        height: 100px;
+
+        img {
+            width: auto;
+            height: 100%;
+        }
+    }
+}
+
+#bottombar {
+    @include pagewrap;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: $footer_color_text;
+    font-size: 1.4em;
+    text-align: center;
+
+    p {
+        margin: 5px auto;
+    }
+
+    a {
+        color: $body_color_accent;
+    }
+}
+
+@import 'error';
+@import 'index';
+@import 'post';

@@ -1,0 +1,10 @@
+*.egg-info/
+.pytest_cache/
+.vagrant/
+.webassets-cache/
+__pycache__/
+
+windowbox/configs/prod.py
+.coverage
+*.dist.css
+*.dist.js

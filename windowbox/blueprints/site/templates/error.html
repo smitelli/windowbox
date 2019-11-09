@@ -1,0 +1,28 @@
+{#
+    NOTE: This template may be used outsize of a blueprint;
+    always prefix url_for() endpoint names with `site.`!
+#}
+
+{% extends 'main.html' %}
+
+{% block title %}{{ error_exc.name }} &bull; {{ super() }}{% endblock %}
+
+{% block main %}
+    <section id="error">
+        <img
+            alt="{{ site_title }}" src="{{ url_for('static', filename='images/windowbox-dark-400.png') }}"
+            srcset="{{ url_for('static', filename='images/windowbox-dark-400.png') }} 1x, {{ url_for('static', filename='images/windowbox-dark-800.png') }} 2x">
+
+        <h1>{{ error_exc.name }}</h1>
+
+        {% if error_exc.code == 400 %}
+            <p>This request can't be processed in its current state. Apologies.</p>
+        {% elif error_exc.code == 404 %}
+            <p>Whatever you're looking for isn't here. Sorry about that.</p>
+        {% elif error_exc.code == 500 %}
+            <p>Something bad happened while building this page. It's likely my fault.</p>
+        {% else %}
+            <p>{{ error_exc.description }}</p>
+        {% endif %}
+    </section>
+{% endblock %}

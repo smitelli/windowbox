@@ -1,0 +1,29 @@
+#error {
+    @include pagewrap;
+    overflow: hidden;
+    padding: 15px 0;
+
+    img {
+        float: right;
+        margin-left: 30px;
+        width: 400px;
+        height: auto;
+    }
+
+    h1 {
+        margin: 0 0 30px;
+        font-size: 2.4em;
+        font-weight: bold;
+    }
+
+    p {
+        margin: 0 0 30px;
+        font-size: 1.6em;
+    }
+
+    pre {
+        overflow-x: scroll;
+        width: 530px;
+        background: #ccc;
+    }
+}

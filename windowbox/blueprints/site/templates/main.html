@@ -1,0 +1,48 @@
+{#
+    NOTE: This template may be used outsize of a blueprint;
+    always prefix url_for() endpoint names with `site.`!
+#}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta name="generator" content="{{ site_title }} {{ generator_version }}">
+        <link rel="alternate" href="{{ url_for('site.get_feed_rss') }}" type="application/rss+xml" title="RSS">
+        <link rel="alternate" href="{{ url_for('site.get_feed_atom') }}" type="application/atom+xml" title="Atom">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16.png') }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+        {% assets 'site_css' %}
+            <link rel="stylesheet" href="{{ ASSET_URL }}" type="text/css">
+        {% endassets %}
+        {% assets 'site_js' %}
+            <script defer src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        <title>{% block title %}{{ site_title }}{% endblock %}</title>
+    {% endblock %}
+</head>
+
+<!-- "Everyone you will ever meet knows something you don't." -->
+
+<body>
+    <nav id="topbar">
+        <a href="{{ url_for('site.get_index') }}" class="link-root">
+            <img
+                alt="{{ site_title }}" src="{{ url_for('static', filename='images/windowbox-light-100.png') }}"
+                srcset="{{ url_for('static', filename='images/windowbox-light-100.png') }} 1x, {{ url_for('static', filename='images/windowbox-light-200.png') }} 2x">
+        </a>
+    </nav>
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+    <footer id="bottombar">
+        <p>
+            Windowbox is a contrivance by <a href="https://www.scottsmitelli.com/">Scott Smitelli</a>.
+            &copy; {{ copyright_from }}&ndash;{{ copyright_to }}.</p>
+        <p>
+            <a href="{{ generator_url }}">This whole thing is on GitHub.</a>
+        </p>
+    </footer>
+</body>
+</html>
