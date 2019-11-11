@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
     VARDIR=/var/opt/windowbox
 
     sudo DEBIAN_FRONTEND=noninteractive apt-get -yq update
-    sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install exiftool virtualenv
+    sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install libimage-exiftool-perl virtualenv
 
     sudo install -o vagrant -g vagrant -m 755 -d $VARDIR
     virtualenv -p /usr/bin/python3 $VARDIR/.virtualenv

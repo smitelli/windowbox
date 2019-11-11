@@ -43,6 +43,7 @@ TODOs
 -----
 
 - prod docs, `WINDOWBOX_CONFIG=configs/dev.py windowbox-bark/fetch`
+- `flask assets clean; flask assets build`
 - make sure process runs with a umask that makes FS files look good
 - setup.py: url, project_urls, add non-*.py files to manifest
 - spellcheck/cap/indent style
