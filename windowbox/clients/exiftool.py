@@ -70,8 +70,10 @@ def flatten_dict(src_dict, *, _prefix=''):
     for key, value in src_dict.items():
         if isinstance(value, dict):
             dest_dict.update(flatten_dict(value, _prefix=f'{_prefix}{key}{FLATTEN_SEPARATOR}'))
-        else:
+        elif isinstance(value, (int, float, str)):
             dest_dict[f'{_prefix}{key}'] = value
+        else:
+            dest_dict[f'{_prefix}{key}'] = str(value)
 
     return dest_dict
 

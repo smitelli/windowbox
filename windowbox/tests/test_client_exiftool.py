@@ -64,7 +64,8 @@ def test_read_file_flatten(exiftool):
         "scalar2": "scalar two",
         "object1": {
             "foo": "object one foo",
-            "bar": "object one bar"
+            "bar": "object one bar",
+            "problem_list": [1, 2, 3]
         },
         "object2": {
             "foo": "object two foo",
@@ -90,6 +91,7 @@ def test_read_file_flatten(exiftool):
             'scalar2': 'scalar two',
             'object1.foo': 'object one foo',
             'object1.bar': 'object one bar',
+            'object1.problem_list': '[1, 2, 3]',
             'object2.foo': 'object two foo',
             'object2.bar': 'object two bar',
             'nested1.foo': 'nested one foo',

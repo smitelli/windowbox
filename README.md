@@ -50,3 +50,4 @@ TODOs
 - cache headers: etag, last-modified, cache-control?, expires?
 - document REST API schema and unit test its shape
 - split up overloaded tests
+- sender.email_address needs to be utf8mb4_unicode_520_ci on mysql; how to do that?
