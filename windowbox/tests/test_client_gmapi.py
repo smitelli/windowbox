@@ -63,6 +63,17 @@ def test_latlng_to_address(gmapi):
         assert address == 'Bingo, NC, USA'
 
 
+def test_latlng_to_address_zero_results(gmapi):
+    """
+    Should gracefully handle zero-results lookups.
+    """
+    response = Mock()
+    response.json.return_value = {'status': 'ZERO_RESULTS'}
+
+    with patch('requests.get', return_value=response):
+        assert gmapi.latlng_to_address(latitude=36, longitude=-78.9) is None
+
+
 def test_latlng_to_address_status(gmapi):
     """
     Should detect and raise on bad status.

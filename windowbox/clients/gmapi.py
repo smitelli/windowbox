@@ -54,7 +54,8 @@ class GoogleMapsAPIClient:
             longitude: Number in the range -180 (west) to 180 (east).
 
         Returns:
-            String representation of the address at the specified point.
+            String representation of the address at the specified point, or None
+            if there is no reasonable representation of the point.
 
         Raises:
             GMAPIClientError: The response from the API server was either not
@@ -71,6 +72,11 @@ class GoogleMapsAPIClient:
         response_data = response.json()
 
         logger.debug(f'...status is {response_data["status"]}')
+
+        # It's not an error if Google has zero results. (e.g. photo taken in an
+        # airplane in the middle of the Pacific Ocean)
+        if response_data['status'] == 'ZERO_RESULTS':
+            return None
 
         if response_data['status'] != 'OK':
             raise GMAPIClientError(f'got unexpected status: {response_data["status"]}')
