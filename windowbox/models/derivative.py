@@ -44,9 +44,9 @@ def exif_transpose(*, image, orientation):
         '3': Image.ROTATE_180,  # rotate 180 degrees
         '4': Image.FLIP_TOP_BOTTOM,  # flip vertically
         '5': Image.TRANSPOSE,  # flip about "top-left to bottom-right" diagonal
-        '6': Image.ROTATE_90,  # rotate 90 degrees counterclockwise
+        '6': Image.ROTATE_270,  # rotate 90 degrees clockwise
         '7': Image.TRANSVERSE,  # flip about "bottom-left to top-right" diagonal
-        '8': Image.ROTATE_270  # rotate 90 degrees clockwise
+        '8': Image.ROTATE_90  # rotate 90 degrees counterclockwise
     }
 
     method = methods.get(str(orientation))

@@ -184,15 +184,15 @@ def test_derivative_to_image_transpose(attachment_instance_with_data):
     assert out_pix[0, 99] == (0, 255, 0)
     assert out_pix[75, 99] == (0, 0, 0)
 
-    # Orientation 6: Rotate 90 degrees counterclockwise
+    # Orientation 6: Rotate 90 degrees clockwise
     derivative.attachment.orientation = 6
     out_img = derivative.to_image()
     out_pix = out_img.convert('RGB').load()
     assert out_img.size == (76, 100)
-    assert out_pix[0, 0] == (0, 255, 0)
-    assert out_pix[75, 0] == (0, 0, 0)
-    assert out_pix[0, 99] == (255, 0, 0)
-    assert out_pix[75, 99] == (0, 0, 255)
+    assert out_pix[0, 0] == (0, 0, 255)
+    assert out_pix[75, 0] == (255, 0, 0)
+    assert out_pix[0, 99] == (0, 0, 0)
+    assert out_pix[75, 99] == (0, 255, 0)
 
     # Orientation 7: Flip about "bottom-left to top-right" diagonal
     derivative.attachment.orientation = 7
@@ -204,15 +204,15 @@ def test_derivative_to_image_transpose(attachment_instance_with_data):
     assert out_pix[0, 99] == (0, 0, 255)
     assert out_pix[75, 99] == (255, 0, 0)
 
-    # Orientation 8: Rotate 90 degrees clockwise
+    # Orientation 8: Rotate 90 degrees counterclockwise
     derivative.attachment.orientation = 8
     out_img = derivative.to_image()
     out_pix = out_img.convert('RGB').load()
     assert out_img.size == (76, 100)
-    assert out_pix[0, 0] == (0, 0, 255)
-    assert out_pix[75, 0] == (255, 0, 0)
-    assert out_pix[0, 99] == (0, 0, 0)
-    assert out_pix[75, 99] == (0, 255, 0)
+    assert out_pix[0, 0] == (0, 255, 0)
+    assert out_pix[75, 0] == (0, 0, 0)
+    assert out_pix[0, 99] == (255, 0, 0)
+    assert out_pix[75, 99] == (0, 0, 255)
 
 
 def test_derivative_to_image_constrained_crop(attachment_instance_with_data):
