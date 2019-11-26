@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+
+{% block main %}
+    <section id="index-posts">
+        <h1>Recent Posts</h1>
+
+        {% for post in posts %}
+            <article>
+                <a href="{{ url_for('.get_post', post_id=post.id) }}">
+                    <h2>{{ post.caption }}</h2>
+                    {% if post.has_attachment %}
+                        <img alt="{{ post.caption }}" src="{{ post.top_attachment.derivative_url('thumbnail') }}"
+                            srcset="{{ post.top_attachment.derivative_url('thumbnail') }} 1x, {{ post.top_attachment.derivative_url('thumbnail2x') }} 2x">
+                    {% endif %}
+                </a>
+            </article>
+        {% endfor %}
+
+        {% if has_more %}
+            <a href="{{ url_for('.get_index', since=since_id, until=until_id) }}" class="next-page">
+                Next Page
+            </a>
+        {% endif %}
+    </section>
+{% endblock %}

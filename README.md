@@ -1,53 +1,52 @@
-To run the app:
----------------
+Windowbox
+=========
 
-System packages:
+Don't call it a moblog / I've posted for years.
 
-* python-pip
-* python-dev
-* libmysqlclient-dev
-* libjpeg-dev
-* zlib1g-dev
-* libimage-exiftool-perl
+by [Scott Smitelli](mailto:scott@smitelli.com)
 
-Python packages (NOTE: Make a virtualenv first, unless you don't care):
+Running in Development
+----------------------
 
-* `pip install -r reqs.txt`
+Windowbox is developed and tested in a [Vagrant](https://www.vagrantup.com/) environment. Assuming you have all the prerequisites (Vagrant and VirtualBox) installed, setup should be as simple as:
 
-Copy the built CSS and JS files into `./src/windowbox/static/{css,js}`.
+    cd /path/to/repo
+    vagrant up
+    vagrant ssh
 
-The WSGI module is `windowbox.application`, and the callable is `app`.
+Once inside the VM, everything should be installed and ready for use. The quickest way to get something running is:
 
-The production config file can be specified with the `WINDOWBOX_CONFIG_FILE`
-environment variable. If this is unset, development defaults will be used.
+    flask create
+    flask insert 10
+    flask run
 
-`fetch.py` is the cron script that fetches new posts from an IMAP server.
+Assuming everything worked correctly, the app will be accessible on the host at [http://localhost:5000](http://localhost:5000/).
 
-Additionally, to develop or build the app:
-------------------------------------------
+Using the Development VM
+------------------------
 
-System Packages:
+All commands should be run with the current working directory set to `/vagrant` -- any deviation from this may result in the `flask` script failing to locate the project directory.
 
-* npm
-* ruby
+The following shell commands are commonly used:
 
-npm Modules:
+- `flask create`: Create the development database and all tables within it. This command **must** be run before starting the app or any of its scrupts for the first time.
+- `flask drop`: Drop the app tables from the database and delete the Attachment/Derivative files from the storage path.
+- `flask insert [count]`: Generate _count_ Posts, each with an Attachment, and add it to the app. If `count` is omitted, it defaults to `1`.
+- `flask lint`: Run the flake8 style checker against the Python codebase.
+- `flask run`: Run the app. It will listen on port 5000, accessible on the host at [http://localhost:5000](http://localhost:5000/). The app will auto-reload if changes to the source code are detected. To stop it, hit Ctrl+C.
+- `flask shell`: Start an interactive REPL shell with an appropriate environment for app development. Noteworthy globals include `app` and `g`, which can be used immediately without importing anything.
+- `flask test`: Run the unit test suite and display the code coverage report. Any options supported by pytest (like `-v` or `-k some_module`) can be provided and will be passed to the underlying test runner.
 
-* `sudo npm install -g grunt-cli`
-* `npm install`
+Local storage is in `/var/opt/windowbox`. This is where the dev/test SQLite database files, the virtualenv, and the Attachment/Derivative storage data are all located.
 
-Ruby Gems:
+TODOs
+-----
 
-* `gem install sass`
-
-Python Packages:
-
-* `pip install flake8`
-
-**To run the dev app:** `python run_dev.py`
-
-**To watch for CSS/JS changes and continually rebuild:** `grunt`
-
-**To build the CSS and JS:** `grunt build`
-
-**To lint the Python and JS code:** `grunt lint`
+- prod docs, `WINDOWBOX_CONFIG=configs/dev.py windowbox-bark/fetch`
+- `flask assets clean; flask assets build`
+- setup.py: url, project_urls, add non-*.py files to manifest
+- spellcheck/cap/indent style
+- cache headers: etag, last-modified, cache-control?, expires?
+- document REST API schema and unit test its shape
+- split up overloaded tests
+- sender.email_address needs to be utf8mb4_unicode_520_ci on mysql; how to do that?

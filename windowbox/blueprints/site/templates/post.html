@@ -1,0 +1,80 @@
+{% extends 'main.html' %}
+
+{% block title %}{{ post.caption|truncate(70) }} &bull; {{ super() }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <meta name="twitter:card" content="photo">
+    <meta name="twitter:title" content="{{ post.caption|truncate(100) }}">
+    {% if post.has_attachment %}
+        <meta name="twitter:image" content="{{ post.top_attachment.derivative_url('opengraph', _external=True) }}">
+    {% endif %}
+    <meta name="twitter:url" content="{{ url_for('.get_index', _external=True) }}">
+    <meta name="twitter:creator" content="@smitelli">
+{% endblock %}
+
+{% block main %}
+    <section id="single-post">
+        <article>
+            <header>
+                <h1>{{ post.caption }}</h1>
+
+                <ul>
+                    <li class="date-line">
+                        sent on
+                        <strong>
+                            <time datetime="{{ post.created_utc.isoformat() }}">
+                                {{ post.created_utc.strftime('%B %-d, %Y at %-I:%M %p %Z') }}
+                            </time>
+                        </strong>
+                    </li>
+                    {% if post.has_attachment and post.top_attachment.geo_address %}
+                        <li class="geo-line">from <strong>{{ post.top_attachment.geo_address }}</strong></li>
+                    {% endif %}
+                </ul>
+            </header>
+
+            <div id="attachment">
+                {% if post.has_attachment %}
+                    <img alt="{{ post.caption }}" src="{{ post.top_attachment.derivative_url('single') }}"
+                        srcset="{{ post.top_attachment.derivative_url('single') }} 1x, {{ post.top_attachment.derivative_url('single2x') }} 2x">
+                {% endif %}
+
+                {% if newer_post %}
+                    <a href="{{ url_for('.get_post', post_id=newer_post.id) }}" class="arrow newer" title="Newer Post">Newer Post</a>
+                {% endif %}
+
+                {% if older_post %}
+                    <a href="{{ url_for('.get_post', post_id=older_post.id) }}" class="arrow older" title="Older Post">Older Post</a>
+                {% endif %}
+
+                <section id="metadata">
+                    <div class="pull-tab" title="Metadata"></div>
+
+                    <div class="scroll-wrap">
+                        {% if post.has_attachment %}
+                            {% for cat_key, cat_title in (
+                                ('camera', 'Camera Metadata'),
+                                ('image', 'Image Metadata'),
+                                ('environment', 'Environment'),
+                                ('hardware', 'Hardware'),
+                            ) %}
+                                {% if post.top_attachment.has_exif(cat_key) %}
+                                    <section class="category">
+                                        <h1>{{ cat_title }}</h1>
+                                        <dl>
+                                            {% for field in post.top_attachment.yield_exif(cat_key) %}
+                                                <dt>{{ field.description }}</dt>
+                                                <dd>{{ field.value }}</dd>
+                                            {% endfor %}
+                                        </dl>
+                                    </section>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </section>
+            </div>
+        </article>
+    </section>
+{% endblock %}

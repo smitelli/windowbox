@@ -1,9 +1,10 @@
-.sass-cache/
-.virtualenv/
-node_modules/
-storage/
+*.egg-info/
+.pytest_cache/
+.vagrant/
+.webassets-cache/
+__pycache__/
 
-src/windowbox/configs/production.cfg
-src/windowbox/static/css/main-dist.css
-src/windowbox/static/js/main-dist.js
-*.pyc
+windowbox/configs/prod.py
+.coverage
+*.dist.css
+*.dist.js

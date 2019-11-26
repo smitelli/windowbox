@@ -1,0 +1,3 @@
+[run]
+source = windowbox
+omit = */tests/*

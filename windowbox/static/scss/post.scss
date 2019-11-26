@@ -1,0 +1,127 @@
+#single-post {
+    @include pagewrap;
+    padding: 15px 0;
+
+    article {
+        header {
+            h1 {
+                margin: 0 0 5px;
+                font: bold 2.8em $body_font_stack;
+            }
+
+            ul {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+
+                li {
+                    list-style: none;
+                    padding-bottom: 5px;
+                    font: 1.2em/1.2em $body_font_stack;
+
+                    &.date-line {
+                        float: left;
+                    }
+
+                    &.geo-line {
+                        float: right;
+                        text-align: right;
+                    }
+                }
+            }
+        }
+
+        #attachment {
+            position: relative;
+            overflow: hidden;
+            clear: both;
+            background: #111 url('images/bg-attachment.png') repeat;
+
+            img {
+                display: block;
+                margin: 0 auto;
+            }
+
+            a.arrow {
+                display: block;
+                overflow: hidden;
+                position: absolute;
+                top: 0;  //overridden by JS
+                height: 78px;
+                width: 50px;
+                text-indent: -1000px;
+
+                &.newer {
+                    left: 20px;  //overridden by JS
+                    background: transparent url('images/icon-left.png') no-repeat;
+                    background-size: 50px;
+                }
+
+                &.older {
+                    right: 20px;  //overridden by JS
+                    background: transparent url('images/icon-right.png') no-repeat;
+                    background-size: 50px;
+                }
+            }
+        }
+    }
+}
+
+#metadata {
+    position: absolute;
+    top: 0;
+    right: 0;  //overridden by JS
+    color: #fff;
+    background: $body_color_accent;
+    box-shadow: #000 0 0 10px;
+
+    .pull-tab {
+        position: absolute;
+        top: 20px;
+        left: -60px;
+        width: 60px;
+        height: 50px;
+        background: $body_color_accent url('images/icon-details.png') no-repeat 10px 10px;
+        background-size: 30px;
+        border-radius: 10px 0 0 10px;
+        box-shadow: #000 0 3px 10px;
+        cursor: pointer;
+    }
+
+    .scroll-wrap {
+        position: relative;
+        overflow-y: scroll;
+        box-sizing: border-box;
+        height: 0;  //overridden by JS
+        padding: 10px;
+        width: $content_width / 3;
+        background: $body_color_accent;
+    }
+
+    .category {
+        margin-bottom: 30px;
+        font-size: 1.1em;
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: #444 0 1px 0;
+            letter-spacing: 0.15em;
+        }
+
+        dl {
+            margin: 0;
+        }
+
+        dt {
+            color: #bbb;
+            font-weight: bold;
+        }
+
+        dd {
+            margin: 5px 20px;
+        }
+    }
+}

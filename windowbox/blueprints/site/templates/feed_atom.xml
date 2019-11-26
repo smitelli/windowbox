@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ site_title }}</title>
+    <id>{{ url_for('.get_index', _external=True) }}</id>
+    <link rel="alternate" href="{{ url_for('.get_index', _external=True) }}" type="text/html" />
+    <link rel="self" href="{{ url_for('.get_feed_atom', _external=True) }}" type="application/atom+xml" />
+    <subtitle>{{ tagline }}</subtitle>
+    <rights>A contrivance by Scott Smitelli. &#169; {{ copyright_from }}-{{ copyright_to }}.</rights>
+    <updated>{{ updated.isoformat() }}</updated>
+    <generator uri="{{ generator_url }}" version="{{ generator_version }}">{{ site_title }}</generator>
+    <logo>{{ url_for('static', filename='images/windowbox-dark-100.png', _external=True) }}</logo>
+    {% for post in posts %}
+        <entry>
+            <id>{{ url_for('.get_post', post_id=post.id, _external=True) }}</id>
+            <link rel="alternate" href="{{ url_for('.get_post', post_id=post.id, _external=True) }}"
+                type="text/html" />
+            <title>{{ post.caption }}</title>
+            <content type="html">
+<![CDATA[
+<a href="{{ url_for('.get_post', post_id=post.id, _external=True) }}">
+    <h1>{{ post.caption }}</h1>
+    {% if post.has_attachment -%}
+        {%- set attachment = post.top_attachment -%}
+        <img alt="{{ post.caption }}" src="{{ attachment.derivative_url('thumbnail', _external=True) }}">
+    {%- endif %}
+</a>
+]]>
+            </content>
+            {% if post.has_attachment %}
+                {% set attachment = post.top_attachment %}
+                {% with mime_type, size_bytes = attachment.derivative_info('full') %}
+                    <link rel="enclosure" href="{{ attachment.derivative_url('full', _external=True) }}"
+                        type="{{ mime_type }}" length="{{ size_bytes }}" />
+                {% endwith %}
+            {% endif %}
+            <published>{{ post.created_utc.isoformat() }}</published>
+            <updated>{{ post.created_utc.isoformat() }}</updated>
+            <author>
+                <name>{{ post.sender.display_name }}</name>
+            </author>
+        </entry>
+    {% endfor %}
+</feed>

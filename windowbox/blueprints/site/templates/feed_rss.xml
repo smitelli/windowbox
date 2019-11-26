@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<rss version="2.0"
+        xmlns:atom="http://www.w3.org/2005/Atom"
+        xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>{{ site_title }}</title>
+        <link>{{ url_for('.get_index', _external=True) }}</link>
+        <atom:link rel="alternate" href="{{ url_for('.get_index', _external=True) }}" type="text/html" />
+        <atom:link rel="self" href="{{ url_for('.get_feed_rss', _external=True) }}" type="application/rss+xml" />
+        <description>{{ tagline }}</description>
+        <language>en-US</language>
+        <copyright>A contrivance by Scott Smitelli. &#169; {{ copyright_from }}-{{ copyright_to }}.</copyright>
+        <pubDate>{{ pub_date|rfc2822format }}</pubDate>
+        <lastBuildDate>{{ last_build_date|rfc2822format }}</lastBuildDate>
+        <generator>{{ site_title }} {{ generator_version }}</generator>
+        <image>
+            <url>{{ url_for('static', filename='images/windowbox-dark-100.png', _external=True) }}</url>
+            <title>{{ site_title }}</title>
+            <link>{{ url_for('.get_index', _external=True) }}</link>
+            <description>{{ tagline }}</description>
+        </image>
+        <docs>http://www.rssboard.org/rss-specification</docs>
+        <ttl>60</ttl>
+        {% for post in posts %}
+            <item>
+                <guid isPermaLink="true">{{ url_for('.get_post', post_id=post.id, _external=True) }}</guid>
+                <link>{{ url_for('.get_post', post_id=post.id, _external=True) }}</link>
+                <atom:link rel="alternate" href="{{ url_for('.get_post', post_id=post.id, _external=True) }}"
+                    type="text/html" />
+                <description>
+<![CDATA[
+<a href="{{ url_for('.get_post', post_id=post.id, _external=True) }}">
+    <h1>{{ post.caption }}</h1>
+    {% if post.has_attachment -%}
+        {%- set attachment = post.top_attachment -%}
+        <img alt="{{ post.caption }}" src="{{ attachment.derivative_url('thumbnail', _external=True) }}">
+    {%- endif %}
+</a>
+]]>
+                </description>
+                {% if post.has_attachment %}
+                    {% set attachment = post.top_attachment %}
+                    {% with mime_type, size_bytes = attachment.derivative_info('full') %}
+                        <enclosure url="{{ attachment.derivative_url('full', _external=True) }}"
+                            type="{{ mime_type }}" length="{{ size_bytes }}" />
+                    {% endwith %}
+                {% endif %}
+                <pubDate>{{ post.created_utc|rfc2822format }}</pubDate>
+                <dc:creator>{{ post.sender.display_name }}</dc:creator>
+            </item>
+        {% endfor %}
+    </channel>
+</rss>
