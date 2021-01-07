@@ -24,7 +24,7 @@ setup(
         'Flask==1.1.1',
         'htmlmin==0.1.12',
         'libsass==0.19.4',
-        'lxml==4.4.1',
+        'lxml==4.6.2',
         'Pillow==6.2.1',
         'requests==2.22.0',
         'tweepy==3.8.0',
