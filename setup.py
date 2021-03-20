@@ -20,7 +20,7 @@ setup(
     python_requires=">=3.6",
     install_requires=[
         'Flask-Assets==0.12',
-        'Flask-SQLAlchemy==2.4.1',
+        'Flask-SQLAlchemy==2.5.1',
         'Flask==1.1.1',
         'htmlmin==0.1.12',
         'libsass==0.19.4',
