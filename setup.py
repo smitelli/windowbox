@@ -17,7 +17,7 @@ setup(
     packages=find_namespace_packages(),
     include_package_data=True,
     zip_safe=False,
-    python_requires=">=3.6",
+    python_requires='>=3.6',
     install_requires=[
         'Flask-Assets==0.12',
         'Flask-SQLAlchemy==2.5.1',
