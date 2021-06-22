@@ -17,7 +17,7 @@ class TwitterClient:
 
     def __init__(
             self, consumer_key, consumer_secret, access_token,
-            access_token_secret, status_length=280, timeout=10):
+            access_token_secret, status_length=280, url_length=23, timeout=10):
         """
         Constructor.
 
@@ -28,6 +28,7 @@ class TwitterClient:
             access_token_secret: OAuth access token secret.
             status_length: Maximum length of status text accepted by the API at
                 this time.
+            url_length: Length of embedded short URLs at this time.
             timeout: Optional number of seconds to wait for a response from the
                 API server.
         """
@@ -36,6 +37,7 @@ class TwitterClient:
         self.access_token = access_token
         self.access_token_secret = access_token_secret
         self.status_length = status_length
+        self.url_length = url_length
         self.timeout = timeout
 
         self.client = None
@@ -53,26 +55,6 @@ class TwitterClient:
         auth.set_access_token(self.access_token, self.access_token_secret)
 
         return tweepy.API(auth, timeout=self.timeout)
-
-    @property
-    def url_length(self):
-        """
-        Get the maximum length of short URLs as stored in status text.
-
-        In cases where the lengths of HTTPS and non-HTTPS links differ, this
-        makes the pessimistic choice and uses the longer length.
-
-        Returns:
-            Integer length, at the time of this writing was 23.
-        """
-        if self.client is None:
-            self.client = self._make_client()
-
-        logger.debug('Getting remote Twitter configuration...')
-        config = self.client.configuration()
-        logger.debug('...done')
-
-        return max(config['short_url_length'], config['short_url_length_https'])
 
     def update_status(self, status_text):
         """
