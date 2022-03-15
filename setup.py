@@ -22,6 +22,7 @@ setup(
         'Flask-Assets==0.12',
         'Flask-SQLAlchemy==2.5.1',
         'Flask==1.1.4',
+        'MarkupSafe==2.0.1',
         'htmlmin==0.1.12',
         'libsass==0.19.4',
         'lxml==4.6.5',
