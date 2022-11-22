@@ -6,7 +6,7 @@ Attributes:
 """
 
 import logging
-from PIL import Image
+from PIL.Image import Resampling, Transform, Transpose
 from windowbox.database import db
 from windowbox.models import FilesystemMixin
 from windowbox.models.attachment import Attachment
@@ -40,13 +40,13 @@ def exif_transpose(*, image, orientation):
         PIL Image, correctly oriented.
     """
     methods = {
-        '2': Image.FLIP_LEFT_RIGHT,  # flip horizontally
-        '3': Image.ROTATE_180,  # rotate 180 degrees
-        '4': Image.FLIP_TOP_BOTTOM,  # flip vertically
-        '5': Image.TRANSPOSE,  # flip about "top-left to bottom-right" diagonal
-        '6': Image.ROTATE_270,  # rotate 90 degrees clockwise
-        '7': Image.TRANSVERSE,  # flip about "bottom-left to top-right" diagonal
-        '8': Image.ROTATE_90  # rotate 90 degrees counterclockwise
+        '2': Transpose.FLIP_LEFT_RIGHT,  # flip horizontally
+        '3': Transpose.ROTATE_180,  # rotate 180 degrees
+        '4': Transpose.FLIP_TOP_BOTTOM,  # flip vertically
+        '5': Transpose.TRANSPOSE,  # flip about "top-left to bottom-right" diagonal
+        '6': Transpose.ROTATE_270,  # rotate 90 degrees clockwise
+        '7': Transpose.TRANSVERSE,  # flip about "bottom-left to top-right" diagonal
+        '8': Transpose.ROTATE_90  # rotate 90 degrees counterclockwise
     }
 
     method = methods.get(str(orientation))
@@ -158,7 +158,7 @@ class Derivative(db.Model, FilesystemMixin):
                 cut_t = (old_h - source_h) / 2
 
                 image = image.transform(
-                    size=intround((source_w, source_h)), method=Image.EXTENT,
+                    size=intround((source_w, source_h)), method=Transform.EXTENT,
                     data=intround((
                         cut_l, cut_t,
                         (source_w + cut_l), (source_h + cut_t))))
@@ -186,4 +186,4 @@ class Derivative(db.Model, FilesystemMixin):
             # Most likely a full-size Derivative. Keep the existing dimensions.
             new_size = image.size
 
-        return image.resize(size=intround(new_size), resample=Image.LANCZOS)
+        return image.resize(size=intround(new_size), resample=Resampling.LANCZOS)

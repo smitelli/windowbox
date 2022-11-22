@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/contrib-buster64"
+  config.vm.box = "debian/bullseye64"
   config.vm.post_up_message = nil
 
   config.vm.provider "virtualbox" do |vb|
