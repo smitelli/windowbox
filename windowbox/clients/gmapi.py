@@ -86,6 +86,6 @@ class GoogleMapsAPIClient:
                 lambda r: r['geometry']['location_type'] == 'APPROXIMATE',
                 response_data['results']))
         except StopIteration:
-            raise GMAPIClientError(f'could not find an "approximate" location type')
+            raise GMAPIClientError('could not find an "approximate" location type')
 
         return approx_match['formatted_address']

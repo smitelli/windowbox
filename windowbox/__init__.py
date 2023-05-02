@@ -75,11 +75,11 @@ def prepare_response(response):
 
     minifier = None
     if response.content_type.startswith('text/html'):
-        app.logger.debug(f'Using HTML minifier')
+        app.logger.debug('Using HTML minifier')
         minifier = windowbox.utils.minify_html
     elif response.content_type.startswith('application/xml'):
-        app.logger.debug(f'Using XML minifier')
-        minifier = partial(windowbox.utils.minify_xml, encoding=response.charset)
+        app.logger.debug('Using XML minifier')
+        minifier = partial(windowbox.utils.minify_xml, encoding='utf-8')
 
     if minifier is not None:
         body = response.get_data(as_text=True)
@@ -130,4 +130,4 @@ def rfc2822format(dt):
     return windowbox.utils.datetime_to_rfc2822(dt)
 
 
-import windowbox.cli  # noqa: F401
+import windowbox.cli  # noqa: E402

@@ -304,7 +304,7 @@ class IMAPMessage:
         restype, _ = self.imap_connection.uid('STORE', self.uid, '+FLAGS', '\\Deleted')
         check_restype(restype, f'failed to flag UID {int(self.uid)} as deleted')
 
-        logger.debug(f'Expunging')
+        logger.debug('Expunging')
         restype, _ = self.imap_connection.expunge()
         check_restype(restype, 'failed to EXPUNGE')
 

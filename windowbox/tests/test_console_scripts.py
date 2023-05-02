@@ -26,26 +26,26 @@ def test_run_bark(app, db, post_instance):
     """
     app.config['SERVER_NAME'] = 'pytest-host'
 
-    db.session.add(post_instance)
-    db.session.flush()
+    with app.app_context():
+        db.session.add(post_instance)
+        db.session.flush()
 
-    mock_twitter = Mock()
-    mock_twitter.status_length = 280
-    mock_twitter.url_length = 23
+        mock_twitter = Mock()
+        mock_twitter.status_length = 280
+        mock_twitter.url_length = 23
 
-    with patch('windowbox.controllers.post.PostController.yield_unbarked') as mock_yu:
-        # Try no-Posts case
-        mock_yu.return_value = []
-        run_bark(twitter_client=mock_twitter)
+        with patch('windowbox.controllers.post.PostController.yield_unbarked') as mock_yu:
+            # Try no-Posts case
+            mock_yu.return_value = []
+            run_bark(twitter_client=mock_twitter)
 
-        # Try with a Post
-        mock_yu.return_value = [post_instance]
-        assert not post_instance.is_barked
-        with app.app_context():
+            # Try with a Post
+            mock_yu.return_value = [post_instance]
+            assert not post_instance.is_barked
             run_bark(twitter_client=mock_twitter)
             assert post_instance.is_barked
-        mock_twitter.update_status.assert_called_with(
-            f'{post_instance.caption} http://pytest-host/post/{post_instance.id}')
+            mock_twitter.update_status.assert_called_with(
+                f'{post_instance.caption} http://pytest-host/post/{post_instance.id}')
 
 
 def test_main_fetch():

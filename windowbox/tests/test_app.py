@@ -36,7 +36,7 @@ def test_prepare_response(app):
         with patch('windowbox.utils.minify_xml', return_value='mini xml') as mock_minify:
             res = prepare_response(
                 make_response('test xml', {'content-type': 'application/xml'}))
-            mock_minify.assert_called_once_with('test xml', encoding=res.charset)
+            mock_minify.assert_called_once_with('test xml', encoding='utf-8')
             assert res.get_data(as_text=True) == 'mini xml'
 
 

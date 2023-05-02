@@ -29,6 +29,7 @@ setup(
         'Pillow==9.3.0',
         'requests==2.22.0',
         'tweepy==3.8.0',
+        'SQLAlchemy==1.4.39'  # TODO Avoid 2.x upgrade breakage
     ],
     extras_require={
         'dev': [
