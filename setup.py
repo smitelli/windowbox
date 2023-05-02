@@ -19,24 +19,23 @@ setup(
     zip_safe=False,
     python_requires='>=3.6',
     install_requires=[
-        'Flask-Assets==0.12',
-        'Flask-SQLAlchemy==2.5.1',
-        'Flask==1.1.4',
-        'MarkupSafe==2.0.1',
+        'Flask-Assets==2.0',
+        'Flask-SQLAlchemy==3.0.3',
+        'Flask==2.3.2',
+        'MarkupSafe==2.1.2',
         'htmlmin==0.1.12',
-        'libsass==0.19.4',
-        'lxml==4.9.1',
-        'Pillow==9.3.0',
-        'requests==2.22.0',
-        'tweepy==3.8.0',
-        'SQLAlchemy==1.4.39'  # TODO Avoid 2.x upgrade breakage
+        'libsass==0.22.0',
+        'lxml==4.9.2',
+        'Pillow==9.5.0',
+        'requests==2.29.0',
+        'tweepy==4.14.0'
     ],
     extras_require={
         'dev': [
-            'flake8==3.7.9',
-            'pytest-cov==2.8.1',
-            'pytest==5.2.2',
-            'python-dotenv==0.10.3'
+            'flake8==6.0.0',
+            'pytest-cov==4.0.0',
+            'pytest==7.3.1',
+            'python-dotenv==1.0.0'
         ]
     },
     entry_points={

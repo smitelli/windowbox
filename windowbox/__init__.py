@@ -15,6 +15,7 @@ import windowbox.blueprints.site as site_bp
 import windowbox.utils
 from datetime import datetime
 from flask import Flask, request
+from flask.logging import default_handler
 from flask_assets import Environment
 from functools import partial
 from pathlib import Path
@@ -31,6 +32,10 @@ __version__ = '3.0.0'
 app = Flask(__name__)
 app.config.from_pyfile('configs/base.py')
 app.config.from_envvar('WINDOWBOX_CONFIG')
+
+for h in app.logger.handlers:
+    app.logger.removeHandler(h)  # pragma: nocover
+app.logger.addHandler(default_handler)
 app.logger.handlers[0].setFormatter(app.config['APP_LOG_FORMATTER'])
 app.logger.setLevel(app.config['APP_LOG_LEVEL'])
 

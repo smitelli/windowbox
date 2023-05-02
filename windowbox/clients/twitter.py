@@ -51,7 +51,7 @@ class TwitterClient:
         """
         logger.debug('Creating Twitter API client instance')
 
-        auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret)
+        auth = tweepy.OAuth1UserHandler(self.consumer_key, self.consumer_secret)
         auth.set_access_token(self.access_token, self.access_token_secret)
 
         return tweepy.API(auth, timeout=self.timeout)
