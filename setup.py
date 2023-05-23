@@ -27,7 +27,7 @@ setup(
         'libsass==0.22.0',
         'lxml==4.9.2',
         'Pillow==9.5.0',
-        'requests==2.29.0',
+        'requests==2.31.0',
         'tweepy==4.14.0'
     ],
     extras_require={
