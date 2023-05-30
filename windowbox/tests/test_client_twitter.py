@@ -42,8 +42,8 @@ def test_make_client(twitter):
     """
     client = twitter._make_client()
 
-    assert client.auth.consumer_key == 'consumerkey4twitter'
-    assert client.auth.consumer_secret == 'consumersecret4twitter'
+    assert client.auth.consumer_key == b'consumerkey4twitter'
+    assert client.auth.consumer_secret == b'consumersecret4twitter'
     assert client.auth.access_token == 'accesstoken4twitter'
     assert client.auth.access_token_secret == 'accesstokensecret4twitter'
     assert client.timeout == 15

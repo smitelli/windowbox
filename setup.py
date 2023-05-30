@@ -28,7 +28,7 @@ setup(
         'lxml==4.9.2',
         'Pillow==9.5.0',
         'requests==2.31.0',
-        'tweepy==4.14.0'
+        'tweepy==3.10.0'
     ],
     extras_require={
         'dev': [
