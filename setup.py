@@ -26,7 +26,7 @@ setup(
         'htmlmin==0.1.12',
         'libsass==0.22.0',
         'lxml==4.9.2',
-        'Pillow==9.5.0',
+        'Pillow==10.0.1',
         'requests==2.31.0',
         'tweepy==3.10.0'
     ],
