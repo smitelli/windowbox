@@ -19,14 +19,14 @@ setup(
     zip_safe=False,
     python_requires='>=3.6',
     install_requires=[
-        'Flask-Assets==2.0',
+        'Flask-Assets==2.1.0',
         'Flask-SQLAlchemy==3.0.3',
-        'Flask==2.3.2',
+        'Flask==2.3.3',
         'MarkupSafe==2.1.2',
+        'Pillow==10.0.1',
         'htmlmin==0.1.12',
         'libsass==0.22.0',
         'lxml==4.9.2',
-        'Pillow==10.0.1',
         'requests==2.31.0',
         'tweepy==3.10.0'
     ],
