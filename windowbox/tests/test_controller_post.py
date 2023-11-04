@@ -187,15 +187,3 @@ def test_post_yield_all(post_instances):
     Should be able to yield all the Posts in descending order.
     """
     assert [*PostController.yield_all()] == [*reversed(post_instances)]
-
-
-def test_post_yield_unbarked(post_instances):
-    """
-    Should be able to yield all the "unbarked" Posts in ascending order.
-    """
-    assert [*PostController.yield_unbarked()] == post_instances
-
-    for p in post_instances:
-        p.is_barked = True
-
-    assert [*PostController.yield_unbarked()] == []

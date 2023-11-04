@@ -23,6 +23,13 @@ class Post(db.Model):
     A Post is analogous to the text content (and metadata) of an email message.
     Each Post can have zero or more Attachments.
 
+    NOTE: The "barking" concept is a vestige from when this application
+    automatically submitted content to Twitter. A Post object began in an
+    "unbarked" state, and once it was successfully sent in a tweet it became
+    "barked" and would not be sent again in the future. Since Twitter went all
+    to hell, the barking functionality was removed but the "is_barked" field
+    remains due mostly to me being too lazy to modify the database schema.
+
     Attributes:
         USER_AGENT_LENGTH: The maximum size of the user_agent column.
     """

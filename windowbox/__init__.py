@@ -23,7 +23,6 @@ from werkzeug.exceptions import NotFound
 from windowbox.clients.exiftool import ExifToolClient
 from windowbox.clients.gmapi import GoogleMapsAPIClient
 from windowbox.clients.imap import IMAP_SSLClient
-from windowbox.clients.twitter import TwitterClient
 from windowbox.database import db
 from windowbox.models import import_all_models
 
@@ -46,11 +45,6 @@ app.gmapi_client = GoogleMapsAPIClient(api_key=app.config['GOOGLE_MAPS_API_KEY']
 app.imap_client = IMAP_SSLClient(
     host=app.config['IMAP_FETCH_HOST'], user=app.config['IMAP_FETCH_USER'],
     password=app.config['IMAP_FETCH_PASSWORD'])
-app.twitter_client = TwitterClient(
-    consumer_key=app.config['TWITTER_CONSUMER_KEY'],
-    consumer_secret=app.config['TWITTER_CONSUMER_SECRET'],
-    access_token=app.config['TWITTER_ACCESS_TOKEN'],
-    access_token_secret=app.config['TWITTER_ACCESS_TOKEN_SECRET'])
 
 import_all_models()
 db.init_app(app)

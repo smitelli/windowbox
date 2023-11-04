@@ -245,16 +245,3 @@ class PostController(BaseController):
             All known Post instances.
         """
         yield from Post.query.order_by(Post.id.desc())
-
-    @staticmethod
-    def yield_unbarked():
-        """
-        Return all "unbarked" Posts in ascending order.
-
-        This is written as a generator to avoid the overhead of constructing a
-        list of all instances up-front.
-
-        Yields:
-            All matching Post instances.
-        """
-        yield from Post.query.filter_by(is_barked=False).order_by(Post.id.asc())

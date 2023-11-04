@@ -42,7 +42,7 @@ Local storage is in `/var/opt/windowbox`. This is where the dev/test SQLite data
 TODOs
 -----
 
-- prod docs, `WINDOWBOX_CONFIG=configs/dev.py windowbox-bark/fetch`
+- prod docs, `WINDOWBOX_CONFIG=configs/dev.py windowbox-fetch`
 - `flask assets clean; flask assets build`
 - setup.py: url, project_urls, add non-*.py files to manifest
 - spellcheck/cap/indent style
