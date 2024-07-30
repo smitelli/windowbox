@@ -23,7 +23,7 @@ setup(
         'Flask-SQLAlchemy==3.0.3',
         'Flask==2.3.3',
         'MarkupSafe==2.1.2',
-        'Pillow==10.2.0',
+        'Pillow==10.3.0',
         'htmlmin==0.1.12',
         'libsass==0.22.0',
         'lxml==4.9.2',
