@@ -153,3 +153,9 @@ class FilesystemMixin:
             PIL Image object representing the storage path data.
         """
         return Image.open(self.storage_path())
+
+    def delete_storage_data(self):
+        """
+        Remove the file represented by the storage path, if it exists.
+        """
+        self.storage_path().unlink(missing_ok=True)

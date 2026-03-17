@@ -65,37 +65,45 @@ def run_fetch(*, attachments_path, exiftool_client, gmapi_client, imap_client):
             email authentication and mailbox values.
     """
     try:
-        for message in imap_client.yield_messages():
-            logger.info(
-                f'Processing message UID {int(message.uid)}, ID {message.message_id}')
+        messages = imap_client.yield_messages()
+    except NoMessages:
+        logger.info('There are no messages')
+        return
+
+    for message in messages:
+        logger.info(
+            f'Processing message UID {int(message.uid)}, ID {message.message_id}')
+
+        try:
+            post = PostController.message_to_post(message)
+        except PostController.UnknownSender:
+            logger.warning(
+                f'Unknown sender {message.from_name} <{message.from_address}>; '
+                'deleting message')
+            message.delete()
+            continue
+
+        db.session.add(post)
+
+        for mime_type, data in AttachmentController.message_to_data(message):
+            logger.debug(f'Got attachment type {mime_type}')
+
+            attachment = post.new_attachment(mime_type=mime_type)
+            db.session.add(attachment)
+            db.session.flush()
 
             try:
-                post = PostController.message_to_post(message)
-            except PostController.UnknownSender:
-                logger.warning(
-                    f'Unknown sender {message.from_name} <{message.from_address}>; '
-                    'deleting message')
-                message.delete()
-                continue
-
-            db.session.add(post)
-
-            for mime_type, data in AttachmentController.message_to_data(message):
-                logger.debug(f'Got attachment type {mime_type}')
-
-                attachment = post.new_attachment(mime_type=mime_type)
-                db.session.add(attachment)
-                db.session.flush()
-
                 attachment.base_path = attachments_path
                 attachment.set_storage_data(data)
                 attachment.populate_exif(exiftool_client=exiftool_client)
                 attachment.populate_geo(gmapi_client=gmapi_client)
+            except Exception:
+                # Avoids runaway disk usage due to persistent gmapi failures
+                attachment.delete_storage_data()
+                raise
 
-            db.session.commit()
-            message.delete()
-    except NoMessages:
-        logger.info('There are no messages')
+        db.session.commit()
+        message.delete()
 
 
 if __name__ == '__main__':  # pragma: nocover
