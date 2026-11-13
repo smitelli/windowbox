@@ -20,21 +20,21 @@ setup(
     python_requires='>=3.9',
     install_requires=[
         'Flask-Assets==2.1.0',
-        'Flask-SQLAlchemy==3.0.3',
+        'Flask-SQLAlchemy==3.1.1',
         'Flask==3.1.3',
-        'MarkupSafe==2.1.2',
-        'Pillow==10.3.0',
+        'MarkupSafe==3.0.4',
+        'Pillow==11.3.0',
         'htmlmin==0.1.12',
-        'libsass==0.22.0',
-        'lxml==6.1.0',
+        'libsass==0.23.0',
+        'lxml==6.1.3',
         'requests==2.32.5'
     ],
     extras_require={
         'dev': [
-            'flake8==6.0.0',
-            'pytest-cov==4.0.0',
-            'pytest==7.3.1',
-            'python-dotenv==1.0.0'
+            'flake8==7.3.0',
+            'pytest-cov==7.1.0',
+            'pytest==8.4.2',
+            'python-dotenv==1.2.1'
         ]
     },
     entry_points={
