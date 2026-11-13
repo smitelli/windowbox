@@ -21,7 +21,6 @@ Attributes:
 import logging
 import sys
 from windowbox import app
-from windowbox.clients.imap import NoMessages
 from windowbox.controllers.attachment import AttachmentController
 from windowbox.controllers.post import PostController
 from windowbox.database import db
@@ -64,13 +63,7 @@ def run_fetch(*, attachments_path, exiftool_client, gmapi_client, imap_client):
         imap_client: Instance of IMAP_SSLClient configured with the desired
             email authentication and mailbox values.
     """
-    try:
-        messages = imap_client.yield_messages()
-    except NoMessages:
-        logger.info('There are no messages')
-        return
-
-    for message in messages:
+    for message in imap_client.yield_messages():
         logger.info(
             f'Processing message UID {int(message.uid)}, ID {message.message_id}')
 

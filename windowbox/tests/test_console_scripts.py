@@ -7,7 +7,6 @@ from unittest.mock import Mock, patch
 from windowbox import app
 from windowbox.fetch import main as main_fetch, run_fetch
 from windowbox.clients.gmapi import GMAPIClientError
-from windowbox.clients.imap import NoMessages
 from windowbox.controllers.post import PostController
 
 
@@ -30,7 +29,7 @@ def test_run_fetch_empty():
     Should not do anything unpleasant if there are no messages.
     """
     mock_imap = Mock()
-    mock_imap.yield_messages.side_effect = NoMessages
+    mock_imap.yield_messages.return_value = iter([])
 
     run_fetch(
         attachments_path=None,

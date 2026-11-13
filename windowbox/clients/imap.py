@@ -33,13 +33,6 @@ class IMAPClientError(Exception):
     pass
 
 
-class NoMessages(IMAPClientError):
-    """
-    Indicates there are no messages to operate on.
-    """
-    pass
-
-
 def check_restype(restype, exc_message):
     """
     Check that `restype` is "OK", otherwise raise with `exc_message`.
@@ -147,11 +140,6 @@ class IMAP_SSLClient:
 
         Yields:
            For each message discovered within the mailbox.
-
-        Raises:
-            NoMessages: There is nothing in the mailbox and no messages to
-                yield. Some callers may prefer this condition to be expressed as
-                an empty generator, but Windowbox likes this behavior.
         """
         with imaplib.IMAP4_SSL(
                 host=self.host, port=self.port,
@@ -175,7 +163,7 @@ class IMAP_SSLClient:
             # nothing more to do.
             if not uids:
                 logger.debug('No messages in this mailbox')
-                raise NoMessages
+                return
 
             # Fetch a range of message headers, from the smallest UID to the
             # largest UID. Build a structure that links each UID to the `Date`

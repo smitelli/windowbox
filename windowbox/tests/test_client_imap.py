@@ -6,8 +6,7 @@ import pytest
 from copy import deepcopy
 from datetime import datetime, timezone
 from unittest.mock import Mock, call, patch
-from windowbox.clients.imap import (
-    IMAP_SSLClient, IMAPMessage, IMAPClientError, NoMessages)
+from windowbox.clients.imap import IMAP_SSLClient, IMAPMessage, IMAPClientError
 
 HEADERS = [
     (
@@ -233,8 +232,7 @@ def test_imapclient_yield_messages_empty(imap_client):
     with patch('imaplib.IMAP4_SSL') as mock_imap:
         mock_imap.return_value.__enter__.return_value = mock_ic
 
-        with pytest.raises(NoMessages):
-            [*imap_client.yield_messages()]
+        assert [*imap_client.yield_messages()] == []
 
 
 def test_imapclient_yield_messages_errors(imap_client):
