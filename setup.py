@@ -27,7 +27,7 @@ setup(
         'htmlmin==0.1.12',
         'libsass==0.22.0',
         'lxml==6.1.0',
-        'requests==2.32.4'
+        'requests==2.32.5'
     ],
     extras_require={
         'dev': [
